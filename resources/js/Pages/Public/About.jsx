@@ -253,9 +253,11 @@ export default function About() {
                         <div className="hero-card">
                             <b>Latin Terra</b>
                             <p>
-                                Productos industriales, comerciales y de
-                                seguridad con asesoría técnica y logística
-                                eficiente.
+                                Suministro de equipos de protección personal
+                                (EPP), herramientas, equipos para trabajo en
+                                altura, artículos de ferretería industrial y
+                                equipos de medición, con asesoría técnica
+                                especializada y gestión logística eficiente.
                             </p>
                             <div className="hero-tags">
                                 <span>EPP</span>
@@ -282,27 +284,33 @@ export default function About() {
                             <div className="about-copy reveal">
                                 <h2>¿Quiénes somos?</h2>
                                 <p>
-                                    <b>Latin Terra</b> es una empresa peruana
-                                    dedicada a la comercialización de productos
-                                    industriales, comerciales y de seguridad,
-                                    orientada a satisfacer las necesidades de
-                                    empresas, contratistas y profesionales de
-                                    diversos sectores productivos.
+                                    <b>Latin Terra</b> Latin Terra es una
+                                    empresa peruana especializada en la
+                                    comercialización de equipos de protección
+                                    personal (EPP), herramientas, equipos para
+                                    trabajo en altura, artículos de ferretería
+                                    industrial y equipos de medición, dirigida a
+                                    empresas de los sectores construcción,
+                                    industria, minería, mantenimiento y
+                                    servicios técnicos.
                                 </p>
                                 <p>
-                                    Nos especializamos en ofrecer productos de
-                                    alta calidad, provenientes de marcas
-                                    reconocidas, garantizando soluciones
-                                    confiables para operaciones industriales,
-                                    obras, mantenimiento, logística y seguridad
-                                    ocupacional.
+                                    Trabajamos con marcas reconocidas del
+                                    mercado y ofrecemos productos certificados
+                                    que cumplen con estándares de seguridad y
+                                    calidad, asegurando soluciones confiables
+                                    para operaciones en campo y planta.
                                 </p>
                                 <p>
-                                    Nuestro compromiso es brindar una atención
-                                    cercana, asesoría técnica especializada y un
-                                    servicio eficiente, convirtiéndonos en un
-                                    proveedor estratégico para nuestros clientes
-                                    a nivel nacional.
+                                    Brindamos asesoría técnica personalizada,
+                                    cotizaciones formales en PDF y atención
+                                    directa vía WhatsApp, garantizando rapidez
+                                    en la gestión, opciones de descuento y
+                                    facilidades de pago. Nuestro objetivo es
+                                    convertirnos en un proveedor estratégico que
+                                    aporte eficiencia, seguridad y continuidad
+                                    operativa a nuestros clientes a nivel
+                                    nacional.
                                 </p>
 
                                 <div className="about-features">
@@ -469,7 +477,7 @@ export default function About() {
                                     Ser una empresa líder en el mercado peruano
                                     en la comercialización de productos
                                     industriales y de seguridad, reconocida por
-                                    la calidad de sus productos, confiabilidad,
+                                    la calidad, confiabilidad,
                                     atención al cliente y compromiso con la
                                     mejora continua.
                                 </p>
