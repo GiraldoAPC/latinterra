@@ -31,10 +31,18 @@ Route::get('/', function () {
     sleep(1);
 })->name('home');
 
+
 Route::get('/nosotros', function () {
-    sleep(1);
+    /*sleep(1);*/
         return Inertia::render('Public/About');
 })->name('about');
+
+Route::get('/trabajos-en-altura', function () {
+    return Inertia::render('Public/Trabajosenaltura');
+})->name('trabajosenaltura');
+
+Route::redirect('/trabajosenaltura', '/trabajos-en-altura', 301);
+
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');

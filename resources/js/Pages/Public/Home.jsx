@@ -1,4 +1,4 @@
-import { Head, Link } from "@inertiajs/react";
+﻿import { Head, Link } from "@inertiajs/react";
 import { useEffect } from "react";
 import PublicLayout from "@/Layouts/PublicLayout";
 
@@ -36,7 +36,7 @@ export default function Home() {
                         <div className="name">LATIN TERRA</div>
                     </a>
 
-                    <nav aria-label="Navegación principal">
+                    <nav aria-label="NavegaciÃ³n principal">
                         <ul className="menu" id="menu">
                             <li>
                                 <a href="#inicio" className="active">
@@ -59,7 +59,7 @@ export default function Home() {
                                 <a href="#faq">FAQ</a>
                             </li>
                             <li>
-                                <a href="#contacto">Contáctanos</a>
+                                <a href="#contacto">ContÃ¡ctanos</a>
                             </li>
                         </ul>
                     </nav>
@@ -127,7 +127,7 @@ export default function Home() {
                         <button
                             className="burger"
                             id="burger"
-                            aria-label="Abrir menú"
+                            aria-label="Abrir menÃº"
                         >
                             <span></span>
                         </button>
@@ -141,7 +141,7 @@ export default function Home() {
                     className="drawer-panel"
                     role="dialog"
                     aria-modal="true"
-                    aria-label="Menú"
+                    aria-label="MenÃº"
                 >
                     <div className="drawer-head">
                         <div className="brand" style={{ minWidth: "auto" }}>
@@ -154,7 +154,7 @@ export default function Home() {
                         <button
                             className="burger"
                             id="drawerClose"
-                            aria-label="Cerrar menú"
+                            aria-label="Cerrar menÃº"
                         >
                             <span></span>
                         </button>
@@ -193,7 +193,7 @@ export default function Home() {
                         </li>
                         <li>
                             <a href="#contacto" data-close="1">
-                                Contáctanos
+                                ContÃ¡ctanos
                             </a>
                         </li>
                     </ul>
@@ -245,8 +245,8 @@ export default function Home() {
                 <div className="container hero-content">
                     <div>
                         <span className="pill reveal">
-                            Abastecimiento confiable • EPP • Herramientas •
-                            Eléctricos
+                            Abastecimiento confiable â€¢ EPP â€¢ Herramientas â€¢
+                            ElÃ©ctricos
                         </span>
 
                         <h1
@@ -263,7 +263,7 @@ export default function Home() {
                             style={{ transitionDelay: ".1s" }}
                         >
                             Abastecimiento confiable en herramientas, equipos
-                            eléctricos, EPP, trabajos en altura y más.
+                            elÃ©ctricos, EPP, trabajos en altura y mÃ¡s.
                         </p>
 
                         <div
@@ -287,7 +287,7 @@ export default function Home() {
                                 </svg>
                             </a>
                             <a className="btn btn-dark" href="#contacto">
-                                Contáctanos
+                                ContÃ¡ctanos
                                 <svg
                                     className="icon"
                                     viewBox="0 0 24 24"
@@ -317,12 +317,12 @@ export default function Home() {
                     >
                         <h3>Todo en un solo proveedor</h3>
                         <p className="mini">
-                            Cotiza rápido por WhatsApp y recibe atención
+                            Cotiza rÃ¡pido por WhatsApp y recibe atenciÃ³n
                             personalizada para tu obra, industria o comercio.
                         </p>
                         <div className="chips">
                             <span className="chip">EPP</span>
-                            <span className="chip">Eléctricos</span>
+                            <span className="chip">ElÃ©ctricos</span>
                             <span className="chip">Herramientas</span>
                             <span className="chip">Trabajos en altura</span>
                         </div>
@@ -393,13 +393,13 @@ export default function Home() {
                     <div className="section-head">
                         <div>
                             <h2 className="section-title reveal">
-                                Categorías Principales de Productos
+                                CategorÃ­as Principales de Productos
                             </h2>
                             <p
                                 className="section-sub reveal"
                                 style={{ transitionDelay: ".05s" }}
                             >
-                                Categorías destacadas. Cada una con imagen/ícono
+                                CategorÃ­as destacadas. Cada una con imagen/Ã­cono
                                 y enlace a productos.
                             </p>
                         </div>
@@ -408,17 +408,17 @@ export default function Home() {
                             href="/productos"
                             style={{ transitionDelay: ".08s" }}
                         >
-                            Ver catálogo
+                            Ver catÃ¡logo
                         </a>
                     </div>
 
                     <div className="grid">
                         {/* 1) TRABAJOS EN ALTURA */}
                         <article className="card reveal">
-                            {/* ✅ Imagen arriba */}
+                            {/* âœ… Imagen arriba */}
                             <div className="card-media">
                                 <img
-                                    src="/assets/img/categorias/clientes-corporativos-y-proyectos.jpg"
+                                    src="/assets/img/categorias/Trabajos-en-Altura.jpg"
                                     alt="Trabajos en Altura"
                                     loading="lazy"
                                 />
@@ -438,7 +438,7 @@ export default function Home() {
                                 </span>
                             </div>
 
-                            {/* Tu ícono + título (igual al anterior) */}
+                            {/* Tu Ã­cono + tÃ­tulo (igual al anterior) */}
                             <div className="cat-head">
                                 <div className="cat-ico">
                                     <svg
@@ -466,14 +466,14 @@ export default function Home() {
                             </div>
 
                             <p>
-                                Equipos técnicos de acceso por cuerda, escalada
-                                deportiva e industrial. Sistemas anticaídas,
-                                arneses, líneas de vida, mosquetones, conectores
+                                Equipos tÃ©cnicos de acceso por cuerda, escalada
+                                deportiva e industrial. Sistemas anticaÃ­das,
+                                arneses, lÃ­neas de vida, mosquetones, conectores
                                 y kits.
                             </p>
 
-                            <a className="link" href="/productos?cat=altura">
-                                Ver productos →{/* (tu opción pro) */}
+                            <a className="link" href="/trabajos-en-altura">
+                                Ver productos â†’{/* (tu opciÃ³n pro) */}
                             </a>
                         </article>
 
@@ -484,7 +484,7 @@ export default function Home() {
                         >
                             <div className="card-media">
                                 <img
-                                    src="/assets/img/categorias/epp.jpg"
+                                    src="/assets/img/categorias/EPP-y-seguridad.jpg"
                                     alt="EPP y Seguridad"
                                     loading="lazy"
                                 />
@@ -521,29 +521,29 @@ export default function Home() {
 
                             <p>
                                 Cascos, guantes, ropa de seguridad y equipos de
-                                protección personal.
+                                protecciÃ³n personal.
                             </p>
 
                             <a className="link" href="/productos?cat=epp">
-                                Ver productos →
+                                Ver productos â†’
                             </a>
                         </article>
 
-                        {/* 3) FERRETERÍA */}
+                        {/* 3) FERRETERÃA */}
                         <article
                             className="card reveal"
                             style={{ transitionDelay: ".08s" }}
                         >
                             <div className="card-media">
                                 <img
-                                    src="/assets/img/categorias/ferreteria.jpg"
-                                    alt="Artículos de Ferretería"
+                                    src="/assets/img/categorias/Ferreteria.jpg"
+                                    alt="ArtÃ­culos de FerreterÃ­a"
                                     loading="lazy"
                                 />
                             </div>
 
                             <div className="kicker">
-                                <span className="badge">Ferretería</span>
+                                <span className="badge">FerreterÃ­a</span>
                             </div>
 
                             <div className="cat-head">
@@ -568,7 +568,7 @@ export default function Home() {
                                         />
                                     </svg>
                                 </div>
-                                <h4>Artículos de Ferretería</h4>
+                                <h4>ArtÃ­culos de FerreterÃ­a</h4>
                             </div>
 
                             <p>
@@ -580,7 +580,7 @@ export default function Home() {
                                 className="link"
                                 href="/productos?cat=ferreteria"
                             >
-                                Ver productos →
+                                Ver productos â†’
                             </a>
                         </article>
 
@@ -588,7 +588,7 @@ export default function Home() {
                         <article className="card reveal">
                             <div className="card-media">
                                 <img
-                                    src="/assets/img/categorias/herramientas.jpg"
+                                    src="/assets/img/categorias/Herramientas.jpg"
                                     alt="Herramientas"
                                     loading="lazy"
                                 />
@@ -623,31 +623,31 @@ export default function Home() {
                                 <h4>Herramientas</h4>
                             </div>
 
-                            <p>Manuales, eléctricas y especializadas.</p>
+                            <p>Manuales, elÃ©ctricas y especializadas.</p>
 
                             <a
                                 className="link"
                                 href="/productos?cat=herramientas"
                             >
-                                Ver productos →
+                                Ver productos â†’
                             </a>
                         </article>
 
-                        {/* 5) MEDICIÓN */}
+                        {/* 5) MEDICIÃ“N */}
                         <article
                             className="card reveal"
                             style={{ transitionDelay: ".04s" }}
                         >
                             <div className="card-media">
                                 <img
-                                    src="/assets/img/categorias/medicion.jpg"
-                                    alt="Equipos Digitales y de Medición"
+                                    src="/assets/img/categorias/Equipos-digitales-y-de-mediciÃ³n.jpg"
+                                    alt="Equipos Digitales y de MediciÃ³n"
                                     loading="lazy"
                                 />
                             </div>
 
                             <div className="kicker">
-                                <span className="badge">Medición</span>
+                                <span className="badge">MediciÃ³n</span>
                             </div>
 
                             <div className="cat-head cat-green">
@@ -671,22 +671,22 @@ export default function Home() {
                                         />
                                     </svg>
                                 </div>
-                                <h4>Equipos Digitales y de Medición</h4>
+                                <h4>Equipos Digitales y de MediciÃ³n</h4>
                             </div>
 
                             <p>
-                                Instrumentos de medición, control y monitoreo.
+                                Instrumentos de mediciÃ³n, control y monitoreo.
                             </p>
 
                             <a className="link" href="/productos?cat=medicion">
-                                Ver productos →
+                                Ver productos â†’
                             </a>
                         </article>
                     </div>
                 </div>
             </section>
 
-            {/* ====== MARCAS ====== */}
+            {/* ====== MARCAS 
             <section id="marcas">
                 <div className="container">
                     <div className="section-head">
@@ -696,7 +696,7 @@ export default function Home() {
                                 className="section-sub reveal"
                                 style={{ transitionDelay: ".05s" }}
                             >
-                                Integra tus marcas favoritas. (Aquí puedes poner
+                                Integra tus marcas favoritas. (AquÃ­ puedes poner
                                 logos reales en una grilla).
                             </p>
                         </div>
@@ -711,7 +711,7 @@ export default function Home() {
                             }}
                         >
                             <h4>Marca 1</h4>
-                            <p>Logo aquí</p>
+                            <p>Logo aquÃ­</p>
                         </div>
                         <div
                             className="card reveal"
@@ -722,7 +722,7 @@ export default function Home() {
                             }}
                         >
                             <h4>Marca 2</h4>
-                            <p>Logo aquí</p>
+                            <p>Logo aquÃ­</p>
                         </div>
                         <div
                             className="card reveal"
@@ -733,7 +733,7 @@ export default function Home() {
                             }}
                         >
                             <h4>Marca 3</h4>
-                            <p>Logo aquí</p>
+                            <p>Logo aquÃ­</p>
                         </div>
                         <div
                             className="card reveal"
@@ -744,13 +744,13 @@ export default function Home() {
                             }}
                         >
                             <h4>Marca 4</h4>
-                            <p>Logo aquí</p>
+                            <p>Logo aquÃ­</p>
                         </div>
                     </div>
                 </div>
             </section>
 
-            {/* ====== CURSOS ====== */}
+            {/* ====== CURSOS ====== 
             <section
                 id="cursos"
                 style={{
@@ -766,7 +766,7 @@ export default function Home() {
                                 className="section-sub reveal"
                                 style={{ transitionDelay: ".05s" }}
                             >
-                                Capacitación y asesoría (seguridad, EPP,
+                                CapacitaciÃ³n y asesorÃ­a (seguridad, EPP,
                                 trabajos en altura, uso de equipos).
                             </p>
                         </div>
@@ -777,13 +777,13 @@ export default function Home() {
                             <div className="kicker">
                                 <span className="badge">Seguridad</span>
                             </div>
-                            <h4>Inducción de EPP</h4>
+                            <h4>InducciÃ³n de EPP</h4>
                             <p>
-                                Selección correcta, inspección, mantenimiento y
+                                SelecciÃ³n correcta, inspecciÃ³n, mantenimiento y
                                 normas de seguridad.
                             </p>
                             <a className="link" href="#contacto">
-                                Pedir información →
+                                Pedir informaciÃ³n â†’
                             </a>
                         </article>
 
@@ -796,11 +796,11 @@ export default function Home() {
                             </div>
                             <h4>Trabajos en Altura</h4>
                             <p>
-                                Arnés, anclajes, líneas de vida y prevención de
-                                caídas (teoría + práctica).
+                                ArnÃ©s, anclajes, lÃ­neas de vida y prevenciÃ³n de
+                                caÃ­das (teorÃ­a + prÃ¡ctica).
                             </p>
                             <a className="link" href="#contacto">
-                                Solicitar agenda →
+                                Solicitar agenda â†’
                             </a>
                         </article>
 
@@ -809,20 +809,20 @@ export default function Home() {
                             style={{ transitionDelay: ".1s" }}
                         >
                             <div className="kicker">
-                                <span className="badge">Eléctrico</span>
+                                <span className="badge">ElÃ©ctrico</span>
                             </div>
-                            <h4>Seguridad Eléctrica</h4>
+                            <h4>Seguridad ElÃ©ctrica</h4>
                             <p>
-                                Procedimientos, riesgos, señalización,
-                                bloqueo/etiquetado (según necesidad).
+                                Procedimientos, riesgos, seÃ±alizaciÃ³n,
+                                bloqueo/etiquetado (segÃºn necesidad).
                             </p>
                             <a className="link" href="#contacto">
-                                Consultar →
+                                Consultar â†’
                             </a>
                         </article>
                     </div>
                 </div>
-            </section>
+            </section>====== */}
 
             {/* ====== FAQ ====== */}
             <section id="faq">
@@ -836,7 +836,7 @@ export default function Home() {
                                 className="section-sub reveal"
                                 style={{ transitionDelay: ".05s" }}
                             >
-                                Respuestas rápidas para cotizaciones, envíos y
+                                Respuestas rÃ¡pidas para cotizaciones, envÃ­os y
                                 disponibilidad.
                             </p>
                         </div>
@@ -845,10 +845,10 @@ export default function Home() {
                     <div className="faq">
                         <details className="reveal">
                             <summary>
-                                ¿Cómo cotizo por WhatsApp? <span>+</span>
+                                Â¿CÃ³mo cotizo por WhatsApp? <span>+</span>
                             </summary>
                             <p>
-                                Envíanos tu lista o foto de requerimientos. Te
+                                EnvÃ­anos tu lista o foto de requerimientos. Te
                                 respondemos con precios y disponibilidad.
                             </p>
                         </details>
@@ -858,10 +858,10 @@ export default function Home() {
                             style={{ transitionDelay: ".04s" }}
                         >
                             <summary>
-                                ¿Hacen envíos y entregas? <span>+</span>
+                                Â¿Hacen envÃ­os y entregas? <span>+</span>
                             </summary>
                             <p>
-                                Sí. Coordinamos entrega según zona, volumen y
+                                SÃ­. Coordinamos entrega segÃºn zona, volumen y
                                 urgencia.
                             </p>
                         </details>
@@ -871,10 +871,10 @@ export default function Home() {
                             style={{ transitionDelay: ".08s" }}
                         >
                             <summary>
-                                ¿Venden por volumen a empresas? <span>+</span>
+                                Â¿Venden por volumen a empresas? <span>+</span>
                             </summary>
                             <p>
-                                Sí. Armamos propuestas para obras, industria y
+                                SÃ­. Armamos propuestas para obras, industria y
                                 compras recurrentes.
                             </p>
                         </details>
@@ -894,13 +894,13 @@ export default function Home() {
                     <div className="section-head">
                         <div>
                             <h2 className="section-title reveal">
-                                Contáctanos
+                                ContÃ¡ctanos
                             </h2>
                             <p
                                 className="section-sub reveal"
                                 style={{ transitionDelay: ".05s" }}
                             >
-                                Déjanos tu requerimiento o escríbenos directo
+                                DÃ©janos tu requerimiento o escrÃ­benos directo
                                 por WhatsApp.
                             </p>
                         </div>
@@ -919,7 +919,7 @@ export default function Home() {
                                     />
                                 </div>
                                 <div>
-                                    <label htmlFor="phone">Teléfono</label>
+                                    <label htmlFor="phone">TelÃ©fono</label>
                                     <input
                                         id="phone"
                                         name="phone"
@@ -943,7 +943,7 @@ export default function Home() {
                                     <input
                                         id="topic"
                                         name="topic"
-                                        placeholder="Cotización / Catálogo / Curso"
+                                        placeholder="CotizaciÃ³n / CatÃ¡logo / Curso"
                                     />
                                 </div>
                             </div>
@@ -990,7 +990,7 @@ export default function Home() {
                                     fontSize: ".95rem",
                                 }}
                             >
-                                Al enviar, se abrirá WhatsApp con el texto listo
+                                Al enviar, se abrirÃ¡ WhatsApp con el texto listo
                                 para mandar.
                             </p>
                         </form>
@@ -1002,15 +1002,15 @@ export default function Home() {
                             <div className="info-item">
                                 <div style={{ fontSize: "1.25rem" }}></div>
                                 <div>
-                                    <b>Ubicación</b>
-                                    <span>Huaraz, Áncash</span>
+                                    <b>UbicaciÃ³n</b>
+                                    <span>Huaraz, Ãncash</span>
                                 </div>
                             </div>
                             <div className="info-item">
                                 <div style={{ fontSize: "1.25rem" }}></div>
                                 <div>
                                     <b>Horario</b>
-                                    <span>Lun–Sáb: 8:00 a.m. – 6:00 p.m.</span>
+                                    <span>Lunâ€“SÃ¡b: 8:00 a.m. â€“ 6:00 p.m.</span>
                                 </div>
                             </div>
                             <div className="info-item">
@@ -1026,7 +1026,7 @@ export default function Home() {
                             >
                                 <div style={{ fontSize: "1.25rem" }}></div>
                                 <div>
-                                    <b>Atención rápida</b>
+                                    <b>AtenciÃ³n rÃ¡pida</b>
                                     <span>
                                         Respuesta por WhatsApp y seguimiento a
                                         cotizaciones.
@@ -1081,7 +1081,7 @@ export default function Home() {
                         <b>LATIN TERRA</b>
                     </div>
                     <div style={{ opacity: 0.9 }}>
-                        © <span id="year"></span> Latin Terra. Todos los
+                        Â© <span id="year"></span> Latin Terra. Todos los
                         derechos reservados.
                     </div>
                 </div>
@@ -1116,3 +1116,4 @@ export default function Home() {
         </PublicLayout>
     );
 }
+
