@@ -1,85 +1,115 @@
-﻿import { Head, Link } from "@inertiajs/react";
+import { Head, Link } from "@inertiajs/react";
 import { useEffect } from "react";
 
 const products = [
     {
-        name: "Aguerri",
-        logo: "/assets/img/categorias/trabajoenaltura/aguerri.jpg",
-        desc: "Marca de seguridad en altura para operaciones técnicas y trabajos verticales.",
+        name: "3M",
+        logo: "/assets/img/categorias/epp/3m.jpg",
+        desc: "Protección respiratoria, auditiva y soluciones EPP para uso industrial.",
     },
     {
-        name: "Avanti",
-        logo: "/assets/img/categorias/trabajoenaltura/avanti.jpg",
-        desc: "Soluciones para trabajo y acceso en altura con foco en seguridad operacional.",
+        name: "Absolute Zero",
+        logo: "/assets/img/categorias/epp/Absolute zero.jpg",
+        desc: "Ropa y accesorios de protección para ambientes de trabajo exigentes.",
     },
     {
-        name: "Beal",
-        logo: "/assets/img/categorias/trabajoenaltura/beal.jpg",
-        desc: "Especialistas en cuerdas y equipos técnicos para rescate y altura.",
+        name: "Activex",
+        logo: "/assets/img/categorias/epp/Activex.jpg",
+        desc: "Implementos de seguridad y protección personal para operación diaria.",
+    },
+    {
+        name: "Ansell",
+        logo: "/assets/img/categorias/epp/Ansel.jpg",
+        desc: "Guantes y soluciones de protección para manos en industria y laboratorio.",
     },
     {
         name: "Climbing Technologies",
-        logo: "/assets/img/categorias/trabajoenaltura/climingteclogies.jpg",
-        desc: "Equipamiento técnico certificado para protección y progresión en altura.",
+        logo: "/assets/img/categorias/epp/Climbing Tecnologies.jpg",
+        desc: "Equipos técnicos y elementos de seguridad para trabajos especializados.",
     },
     {
-        name: "Edelweis",
-        logo: "/assets/img/categorias/trabajoenaltura/ELEWESI.jpg",
-        desc: "Componentes y accesorios para sistemas de anclaje y sujeción segura.",
+        name: "Delta Plus",
+        logo: "/assets/img/categorias/epp/Delta plus.jpg",
+        desc: "Amplio portafolio de EPP para cabeza, manos, cuerpo y altura.",
     },
     {
-        name: "Fenix",
-        logo: "/assets/img/categorias/trabajoenaltura/fenix.jpg",
-        desc: "Iluminación y accesorios para trabajos exigentes en campo y altura.",
+        name: "Edge",
+        logo: "/assets/img/categorias/epp/Edge.jpg",
+        desc: "Protección visual y accesorios para seguridad ocupacional.",
     },
     {
-        name: "Forclaz",
-        logo: "/assets/img/categorias/trabajoenaltura/forclaz.jpg",
-        desc: "Equipos funcionales para actividades técnicas y condiciones de exigencia.",
+        name: "Eternety Safety",
+        logo: "/assets/img/categorias/epp/Eternety Safety.jpg",
+        desc: "Línea de seguridad industrial con enfoque en protección y cumplimiento.",
     },
     {
-        name: "Irudek",
-        logo: "/assets/img/categorias/trabajoenaltura/irudek.jpg",
-        desc: "Sistemas anticaídas y soluciones profesionales para trabajo en altura.",
+        name: "Full Risk",
+        logo: "/assets/img/categorias/epp/Full Risk.jpg",
+        desc: "Equipamiento de seguridad para ambientes de riesgo y operación continua.",
     },
     {
-        name: "Juragjanka",
-        logo: "/assets/img/categorias/trabajoenaltura/juragjanka.jpg",
-        desc: "Accesorios y componentes orientados a seguridad industrial en altura.",
+        name: "Honeywell",
+        logo: "/assets/img/categorias/epp/Honeywell.jpg",
+        desc: "Sistemas de seguridad industrial y EPP de alto desempeño.",
     },
     {
-        name: "Kaya",
-        logo: "/assets/img/categorias/trabajoenaltura/kaya.jpg",
-        desc: "Equipamiento técnico para rescate, evacuación y trabajos verticales.",
+        name: "HW - Hard Word",
+        logo: "/assets/img/categorias/epp/HW - Hard Word.jpg",
+        desc: "Equipos y accesorios de protección para trabajo pesado.",
     },
     {
-        name: "Petzel",
-        logo: "/assets/img/categorias/trabajoenaltura/petzel.jpg",
-        desc: "Marca reconocida en protección, iluminación y sistemas para altura.",
+        name: "Martell",
+        logo: "/assets/img/categorias/epp/Martell.jpg",
+        desc: "Soluciones de seguridad y componentes para uso industrial.",
     },
     {
-        name: "Safeface",
-        logo: "/assets/img/categorias/trabajoenaltura/safeface.jpg",
-        desc: "Protección personal para operaciones de riesgo en ambientes industriales.",
+        name: "Norseg",
+        logo: "/assets/img/categorias/epp/Norseg.jpg",
+        desc: "Implementos de protección personal para faena, obra e industria.",
     },
     {
-        name: "Singing Rock",
-        logo: "/assets/img/categorias/trabajoenaltura/SINGINGROCK.jpg",
-        desc: "Equipos para acceso por cuerda, rescate y sujeción de alto desempeño.",
+        name: "Portwest",
+        logo: "/assets/img/categorias/epp/Portwest.jpg",
+        desc: "Vestimenta laboral y seguridad ocupacional para múltiples sectores.",
     },
     {
-        name: "Yoke",
-        logo: "/assets/img/categorias/trabajoenaltura/YOKE.jpg",
-        desc: "Herrajes y puntos de anclaje de alta resistencia para uso profesional.",
+        name: "Rockbros",
+        logo: "/assets/img/categorias/epp/Rockbros.jpg",
+        desc: "Accesorios de protección y equipamiento para actividades técnicas.",
+    },
+    {
+        name: "Safeyear",
+        logo: "/assets/img/categorias/epp/Safeyear.jpg",
+        desc: "Lentes y protección visual para seguridad en campo y planta.",
+    },
+    {
+        name: "Stanley",
+        logo: "/assets/img/categorias/epp/Stanley.jpg",
+        desc: "Herramientas y complementos con enfoque en seguridad y rendimiento.",
+    },
+    {
+        name: "Steelpro Safety",
+        logo: "/assets/img/categorias/epp/Steelpro Safety.jpg",
+        desc: "Protección personal certificada para minería, construcción e industria.",
+    },
+    {
+        name: "Tyvex",
+        logo: "/assets/img/categorias/epp/Tyvex.jpg",
+        desc: "Indumentaria de protección y barrera para trabajos especiales.",
+    },
+    {
+        name: "Wurth",
+        logo: "/assets/img/categorias/epp/Wurth.jpg",
+        desc: "Productos técnicos y soluciones para seguridad industrial y mantenimiento.",
     },
 ];
 
 const whatsappNumber = "51954178081";
-const whatsappDefaultText = "Hola Latin Terra, quisiera cotizar sus productos.";
+const whatsappDefaultText = "Hola Latin Terra, quisiera cotizar productos de EPP y seguridad.";
 const getWhatsAppUrl = (text = whatsappDefaultText) =>
     `https://web.whatsapp.com/send?phone=${whatsappNumber}&text=${encodeURIComponent(text)}`;
 
-export default function Trabajosenaltura() {
+export default function EppSeguridad() {
     useEffect(() => {
         const runInit = () => {
             if (typeof window.initProductCatalogs === "function") {
@@ -108,10 +138,10 @@ export default function Trabajosenaltura() {
 
     return (
         <div className="catalog-page">
-            <Head title="Trabajos en Altura | Latin Terra" />
+            <Head title="EPP y Seguridad | Latin Terra" />
             <meta
                 name="description"
-                content="Equipos para trabajos en altura: arneses, líneas de vida, anclajes y sistemas de rescate."
+                content="Marcas de EPP y seguridad industrial: protección personal, visual, respiratoria y vestimenta de trabajo."
             />
 
             <link rel="stylesheet" href="/assets/css/nosotros.css" />
@@ -134,7 +164,7 @@ export default function Trabajosenaltura() {
                                 <Link href="/nosotros">Nosotros</Link>
                             </li>
                             <li>
-                                <a className="active" href="/trabajos-en-altura">
+                                <a className="active" href="/epp-y-seguridad">
                                     Productos
                                 </a>
                             </li>
@@ -248,7 +278,7 @@ export default function Trabajosenaltura() {
                             </Link>
                         </li>
                         <li>
-                            <a href="/trabajos-en-altura" data-close="true" className="active">
+                            <a href="/epp-y-seguridad" data-close="true" className="active">
                                 Productos
                             </a>
                         </li>
@@ -289,57 +319,65 @@ export default function Trabajosenaltura() {
                     </div>
                 </div>
             </div>
+
             <section className="catalog-hero" aria-label="Encabezado de categoría">
                 <div
                     className="catalog-hero__bg"
-                    style={{ backgroundImage: "url('/assets/img/latin-terra.jpg')" }}
+                    style={{ backgroundImage: "url('/assets/img/categorias/EPP-y-seguridad.jpg')" }}
                 />
                 <div className="catalog-hero__overlay" />
                 <div className="catalog-hero__content">
                     <div className="catalog-hero__icon" aria-hidden="true">
                         <svg viewBox="0 0 24 24" fill="none">
                             <path
-                                d="M5 16h14M7 12h10M9 8h6"
+                                d="M12 3l7 3v5c0 5-2.9 8.1-7 10-4.1-1.9-7-5-7-10V6l7-3Z"
                                 stroke="currentColor"
                                 strokeWidth="1.8"
-                                strokeLinecap="round"
+                                strokeLinejoin="round"
                             />
                             <path
-                                d="M4 18V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12"
+                                d="M9.5 12.2l1.7 1.7 3.3-3.6"
                                 stroke="currentColor"
                                 strokeWidth="1.8"
                                 strokeLinecap="round"
+                                strokeLinejoin="round"
                             />
                         </svg>
                     </div>
-                    <h1 className="catalog-hero__title">Trabajos en Altura</h1>
+                    <h1 className="catalog-hero__title">EPP y Seguridad</h1>
                     <p className="catalog-hero__subtitle">
-                        Equipos certificados para trabajo seguro en altura
+                        Marcas y soluciones para protección personal e industrial
                     </p>
                     <p className="catalog-hero__crumb">
-                        <Link href="/">INICIO</Link> / TRABAJOS EN ALTURA
+                        <Link href="/">INICIO</Link> / EPP Y SEGURIDAD
                     </p>
                 </div>
                 <div className="catalog-hero__curve" aria-hidden="true" />
             </section>
+
             <main className="catalog-main">
                 <div className="container" data-product-catalog>
                     <div className="product-search reveal">
                         <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                             <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" />
-                            <path d="M20 20l-3.2-3.2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                            <path
+                                d="M20 20l-3.2-3.2"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                            />
                         </svg>
                         <input
                             type="search"
                             className="js-product-search"
-                            placeholder="Buscar por título o nombre..."
-                            aria-label="Buscar por título o nombre"
+                            placeholder="Buscar por marca o descripción..."
+                            aria-label="Buscar por marca o descripción"
                         />
                     </div>
 
-                    <section className="product-grid" aria-label="Catálogo de trabajos en altura">
+                    <section className="product-grid" aria-label="Catálogo de EPP y seguridad">
                         {products.map((item, idx) => {
-                            const msg = `Hola Latin Terra, quisiera cotizar: ${item.name}.`;
+                            const msg = `Hola Latin Terra, quisiera cotizar productos EPP de la marca ${item.name}.`;
 
                             return (
                                 <article
@@ -361,11 +399,7 @@ export default function Trabajosenaltura() {
                                         target="_blank"
                                         rel="noreferrer"
                                     >
-                                        <img
-                                            src="/assets/img/whatsapp.svg"
-                                            alt=""
-                                            aria-hidden="true"
-                                        />
+                                        <img src="/assets/img/whatsapp.svg" alt="" aria-hidden="true" />
                                         Cotizar
                                     </a>
                                 </article>

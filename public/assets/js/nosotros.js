@@ -1,8 +1,8 @@
 // ==========================
 // CONFIG
 // ==========================
-const WHATSAPP_NUMBER = "51999999999"; // <- cambia por tu número (sin +, sin espacios)
-const WHATSAPP_TEXT = "Hola Latin Terra, deseo información sobre sus productos y cotización.";
+const WHATSAPP_NUMBER = "51954178081"; // <- cambia por tu número (sin +, sin espacios)
+const WHATSAPP_TEXT = "Hola Latin Terra, quisiera cotizar sus productos.";
 
 // Helpers
 const qs = (s, el=document) => el.querySelector(s);
@@ -10,7 +10,7 @@ const qsa = (s, el=document) => Array.from(el.querySelectorAll(s));
 
 function openWhatsApp(text){
   const msg = encodeURIComponent(text || WHATSAPP_TEXT);
-  const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`;
+  const url = `https://web.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${msg}`;
   window.open(url, "_blank", "noopener,noreferrer");
 }
 

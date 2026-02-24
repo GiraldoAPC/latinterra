@@ -1,6 +1,10 @@
-﻿import { Head, Link } from "@inertiajs/react";
+import { Head, Link } from "@inertiajs/react";
 import { useEffect } from "react";
 import PublicLayout from "@/Layouts/PublicLayout";
+
+const WHATSAPP_PHONE = "51954178081";
+const WHATSAPP_TEXT = "Hola Latin Terra, quisiera cotizar sus productos.";
+const WHATSAPP_WEB_URL = `https://web.whatsapp.com/send?phone=${WHATSAPP_PHONE}&text=${encodeURIComponent(WHATSAPP_TEXT)}`;
 
 export default function Home() {
     useEffect(() => {
@@ -36,7 +40,7 @@ export default function Home() {
                         <div className="name">LATIN TERRA</div>
                     </a>
 
-                    <nav aria-label="NavegaciÃ³n principal">
+                    <nav aria-label="Navegación principal">
                         <ul className="menu" id="menu">
                             <li>
                                 <a href="#inicio" className="active">
@@ -59,7 +63,7 @@ export default function Home() {
                                 <a href="#faq">FAQ</a>
                             </li>
                             <li>
-                                <a href="#contacto">ContÃ¡ctanos</a>
+                                <a href="#contacto">Contáctanos</a>
                             </li>
                         </ul>
                     </nav>
@@ -95,39 +99,24 @@ export default function Home() {
 
                         <a
                             className="whats"
-                            href="#"
+                            href={WHATSAPP_WEB_URL}
                             id="btnWhatsTop"
                             aria-label="WhatsApp"
+                            target="_blank"
+                            rel="noreferrer"
                         >
-                            <svg
+                            <img
+                                src="/assets/img/whatsapp.svg"
+                                alt=""
                                 className="icon"
-                                viewBox="0 0 24 24"
-                                fill="none"
                                 aria-hidden="true"
-                            >
-                                <path
-                                    d="M20 11.6A8 8 0 1 1 6.5 5.5 8 8 0 0 1 20 11.6Z"
-                                    stroke="var(--lt-green-2)"
-                                    strokeWidth="2"
-                                />
-                                <path
-                                    d="M7.2 19.9l.8-3.1"
-                                    stroke="var(--lt-green-2)"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                />
-                                <path
-                                    d="M9.3 8.8c.3-.7.6-.7 1-.7h.6c.2 0 .5 0 .7.5.3.5 1 1.7 1 1.8.1.1.1.3 0 .5-.1.2-.2.3-.3.4l-.4.4c-.1.1-.2.2-.1.4.1.2.6 1.1 1.3 1.7.9.9 1.7 1.2 2 .1l.7-.7c.2-.2.3-.2.5-.1.2.1 1.5.7 1.7.9.2.1.4.2.4.3 0 .1 0 .8-.3 1.1-.3.3-.7.7-1.5.7-.8 0-1.7-.3-2.9-.9-1.2-.6-2.2-1.5-3-2.6-.8-1.1-1.1-2-1.1-2.7 0-.7.2-1.1.4-1.5Z"
-                                    fill="var(--lt-green-2)"
-                                    opacity=".9"
-                                />
-                            </svg>
+                            />
                         </a>
 
                         <button
                             className="burger"
                             id="burger"
-                            aria-label="Abrir menÃº"
+                            aria-label="Abrir menú"
                         >
                             <span></span>
                         </button>
@@ -141,7 +130,7 @@ export default function Home() {
                     className="drawer-panel"
                     role="dialog"
                     aria-modal="true"
-                    aria-label="MenÃº"
+                    aria-label="Menú"
                 >
                     <div className="drawer-head">
                         <div className="brand" style={{ minWidth: "auto" }}>
@@ -154,7 +143,7 @@ export default function Home() {
                         <button
                             className="burger"
                             id="drawerClose"
-                            aria-label="Cerrar menÃº"
+                            aria-label="Cerrar menú"
                         >
                             <span></span>
                         </button>
@@ -193,7 +182,7 @@ export default function Home() {
                         </li>
                         <li>
                             <a href="#contacto" data-close="1">
-                                ContÃ¡ctanos
+                                Contáctanos
                             </a>
                         </li>
                     </ul>
@@ -208,9 +197,17 @@ export default function Home() {
                         </a>
                         <a
                             className="btn btn-dark"
-                            href="#"
+                            href={WHATSAPP_WEB_URL}
                             id="btnWhatsDrawer"
+                            target="_blank"
+                            rel="noreferrer"
                         >
+                            <img
+                                src="/assets/img/whatsapp.svg"
+                                alt=""
+                                className="icon"
+                                aria-hidden="true"
+                            />
                             WhatsApp
                         </a>
                     </div>
@@ -245,8 +242,8 @@ export default function Home() {
                 <div className="container hero-content">
                     <div>
                         <span className="pill reveal">
-                            Abastecimiento confiable â€¢ EPP â€¢ Herramientas â€¢
-                            ElÃ©ctricos
+                            Abastecimiento confiable • EPP • Herramientas •
+                            Eléctricos
                         </span>
 
                         <h1
@@ -263,7 +260,7 @@ export default function Home() {
                             style={{ transitionDelay: ".1s" }}
                         >
                             Abastecimiento confiable en herramientas, equipos
-                            elÃ©ctricos, EPP, trabajos en altura y mÃ¡s.
+                            eléctricos, EPP, trabajos en altura y más.
                         </p>
 
                         <div
@@ -287,7 +284,7 @@ export default function Home() {
                                 </svg>
                             </a>
                             <a className="btn btn-dark" href="#contacto">
-                                ContÃ¡ctanos
+                                Contáctanos
                                 <svg
                                     className="icon"
                                     viewBox="0 0 24 24"
@@ -317,12 +314,12 @@ export default function Home() {
                     >
                         <h3>Todo en un solo proveedor</h3>
                         <p className="mini">
-                            Cotiza rÃ¡pido por WhatsApp y recibe atenciÃ³n
+                            Cotiza rápido por WhatsApp y recibe atención
                             personalizada para tu obra, industria o comercio.
                         </p>
                         <div className="chips">
                             <span className="chip">EPP</span>
-                            <span className="chip">ElÃ©ctricos</span>
+                            <span className="chip">Eléctricos</span>
                             <span className="chip">Herramientas</span>
                             <span className="chip">Trabajos en altura</span>
                         </div>
@@ -393,13 +390,13 @@ export default function Home() {
                     <div className="section-head">
                         <div>
                             <h2 className="section-title reveal">
-                                CategorÃ­as Principales de Productos
+                                Categorías Principales de Productos
                             </h2>
                             <p
                                 className="section-sub reveal"
                                 style={{ transitionDelay: ".05s" }}
                             >
-                                CategorÃ­as destacadas. Cada una con imagen/Ã­cono
+                                Categorías destacadas. Cada una con imagen/ícono
                                 y enlace a productos.
                             </p>
                         </div>
@@ -408,14 +405,14 @@ export default function Home() {
                             href="/productos"
                             style={{ transitionDelay: ".08s" }}
                         >
-                            Ver catÃ¡logo
+                            Ver catálogo
                         </a>
                     </div>
 
                     <div className="grid">
                         {/* 1) TRABAJOS EN ALTURA */}
                         <article className="card reveal">
-                            {/* âœ… Imagen arriba */}
+                            {/* ✅ Imagen arriba */}
                             <div className="card-media">
                                 <img
                                     src="/assets/img/categorias/Trabajos-en-Altura.jpg"
@@ -438,7 +435,7 @@ export default function Home() {
                                 </span>
                             </div>
 
-                            {/* Tu Ã­cono + tÃ­tulo (igual al anterior) */}
+                            {/* Tu ícono + título (igual al anterior) */}
                             <div className="cat-head">
                                 <div className="cat-ico">
                                     <svg
@@ -466,14 +463,14 @@ export default function Home() {
                             </div>
 
                             <p>
-                                Equipos tÃ©cnicos de acceso por cuerda, escalada
-                                deportiva e industrial. Sistemas anticaÃ­das,
-                                arneses, lÃ­neas de vida, mosquetones, conectores
+                                Equipos técnicos de acceso por cuerda, escalada
+                                deportiva e industrial. Sistemas anticaídas,
+                                arneses, líneas de vida, mosquetones, conectores
                                 y kits.
                             </p>
 
                             <a className="link" href="/trabajos-en-altura">
-                                Ver productos â†’{/* (tu opciÃ³n pro) */}
+                                Ver productos →{/* (tu opción pro) */}
                             </a>
                         </article>
 
@@ -521,15 +518,15 @@ export default function Home() {
 
                             <p>
                                 Cascos, guantes, ropa de seguridad y equipos de
-                                protecciÃ³n personal.
+                                protección personal.
                             </p>
 
-                            <a className="link" href="/productos?cat=epp">
-                                Ver productos â†’
+                            <a className="link" href="/epp-y-seguridad">
+                                Ver productos →
                             </a>
                         </article>
 
-                        {/* 3) FERRETERÃA */}
+                        {/* 3) FERRETERÍA */}
                         <article
                             className="card reveal"
                             style={{ transitionDelay: ".08s" }}
@@ -537,13 +534,13 @@ export default function Home() {
                             <div className="card-media">
                                 <img
                                     src="/assets/img/categorias/Ferreteria.jpg"
-                                    alt="ArtÃ­culos de FerreterÃ­a"
+                                    alt="Artículos de Ferretería"
                                     loading="lazy"
                                 />
                             </div>
 
                             <div className="kicker">
-                                <span className="badge">FerreterÃ­a</span>
+                                <span className="badge">Ferretería</span>
                             </div>
 
                             <div className="cat-head">
@@ -568,7 +565,7 @@ export default function Home() {
                                         />
                                     </svg>
                                 </div>
-                                <h4>ArtÃ­culos de FerreterÃ­a</h4>
+                                <h4>Artículos de Ferretería</h4>
                             </div>
 
                             <p>
@@ -580,7 +577,7 @@ export default function Home() {
                                 className="link"
                                 href="/productos?cat=ferreteria"
                             >
-                                Ver productos â†’
+                                Ver productos →
                             </a>
                         </article>
 
@@ -623,31 +620,77 @@ export default function Home() {
                                 <h4>Herramientas</h4>
                             </div>
 
-                            <p>Manuales, elÃ©ctricas y especializadas.</p>
+                            <p>Manuales, eléctricas y especializadas.</p>
 
                             <a
                                 className="link"
                                 href="/productos?cat=herramientas"
                             >
-                                Ver productos â†’
+                                Ver productos →
                             </a>
                         </article>
 
-                        {/* 5) MEDICIÃ“N */}
+                        <article
+                            className="card reveal"
+                            style={{ transitionDelay: ".02s" }}
+                        >
+                            <div className="card-media">
+                                <img
+                                    src="/assets/img/categorias/electrico/Bosch.jpg"
+                                    alt="Equipo Eléctrico"
+                                    loading="lazy"
+                                />
+                            </div>
+
+                            <div className="kicker">
+                                <span className="badge">Eléctrico</span>
+                            </div>
+
+                            <div className="cat-head">
+                                <div className="cat-ico">
+                                    <svg
+                                        width="22"
+                                        height="22"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                    >
+                                        <path
+                                            d="M13 2L5 14h5l-1 8 8-12h-5l1-8Z"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                        />
+                                    </svg>
+                                </div>
+                                <h4>Equipo Eléctrico</h4>
+                            </div>
+
+                            <p>
+                                Energía, medición, diagnóstico y herramientas
+                                eléctricas para uso técnico.
+                            </p>
+
+                            <a className="link" href="/equipo-electrico">
+                                Ver productos →
+                            </a>
+                        </article>
+
+                        {/* 6) MEDICIÓN */}
                         <article
                             className="card reveal"
                             style={{ transitionDelay: ".04s" }}
                         >
                             <div className="card-media">
                                 <img
-                                    src="/assets/img/categorias/Equipos-digitales-y-de-mediciÃ³n.jpg"
-                                    alt="Equipos Digitales y de MediciÃ³n"
+                                    src="/assets/img/categorias/Equipos-digitales-y-de-medición.jpg"
+                                    alt="Equipos Digitales y de Medición"
                                     loading="lazy"
                                 />
                             </div>
 
                             <div className="kicker">
-                                <span className="badge">MediciÃ³n</span>
+                                <span className="badge">Medición</span>
                             </div>
 
                             <div className="cat-head cat-green">
@@ -671,15 +714,15 @@ export default function Home() {
                                         />
                                     </svg>
                                 </div>
-                                <h4>Equipos Digitales y de MediciÃ³n</h4>
+                                <h4>Equipos Digitales y de Medición</h4>
                             </div>
 
                             <p>
-                                Instrumentos de mediciÃ³n, control y monitoreo.
+                                Instrumentos de medición, control y monitoreo.
                             </p>
 
                             <a className="link" href="/productos?cat=medicion">
-                                Ver productos â†’
+                                Ver productos →
                             </a>
                         </article>
                     </div>
@@ -696,7 +739,7 @@ export default function Home() {
                                 className="section-sub reveal"
                                 style={{ transitionDelay: ".05s" }}
                             >
-                                Integra tus marcas favoritas. (AquÃ­ puedes poner
+                                Integra tus marcas favoritas. (Aquí puedes poner
                                 logos reales en una grilla).
                             </p>
                         </div>
@@ -711,7 +754,7 @@ export default function Home() {
                             }}
                         >
                             <h4>Marca 1</h4>
-                            <p>Logo aquÃ­</p>
+                            <p>Logo aquí</p>
                         </div>
                         <div
                             className="card reveal"
@@ -722,7 +765,7 @@ export default function Home() {
                             }}
                         >
                             <h4>Marca 2</h4>
-                            <p>Logo aquÃ­</p>
+                            <p>Logo aquí</p>
                         </div>
                         <div
                             className="card reveal"
@@ -733,7 +776,7 @@ export default function Home() {
                             }}
                         >
                             <h4>Marca 3</h4>
-                            <p>Logo aquÃ­</p>
+                            <p>Logo aquí</p>
                         </div>
                         <div
                             className="card reveal"
@@ -744,7 +787,7 @@ export default function Home() {
                             }}
                         >
                             <h4>Marca 4</h4>
-                            <p>Logo aquÃ­</p>
+                            <p>Logo aquí</p>
                         </div>
                     </div>
                 </div>
@@ -766,7 +809,7 @@ export default function Home() {
                                 className="section-sub reveal"
                                 style={{ transitionDelay: ".05s" }}
                             >
-                                CapacitaciÃ³n y asesorÃ­a (seguridad, EPP,
+                                Capacitación y asesoría (seguridad, EPP,
                                 trabajos en altura, uso de equipos).
                             </p>
                         </div>
@@ -777,13 +820,13 @@ export default function Home() {
                             <div className="kicker">
                                 <span className="badge">Seguridad</span>
                             </div>
-                            <h4>InducciÃ³n de EPP</h4>
+                            <h4>Inducción de EPP</h4>
                             <p>
-                                SelecciÃ³n correcta, inspecciÃ³n, mantenimiento y
+                                Selección correcta, inspección, mantenimiento y
                                 normas de seguridad.
                             </p>
                             <a className="link" href="#contacto">
-                                Pedir informaciÃ³n â†’
+                                Pedir información →
                             </a>
                         </article>
 
@@ -796,11 +839,11 @@ export default function Home() {
                             </div>
                             <h4>Trabajos en Altura</h4>
                             <p>
-                                ArnÃ©s, anclajes, lÃ­neas de vida y prevenciÃ³n de
-                                caÃ­das (teorÃ­a + prÃ¡ctica).
+                                Arnés, anclajes, líneas de vida y prevención de
+                                caídas (teoría + práctica).
                             </p>
                             <a className="link" href="#contacto">
-                                Solicitar agenda â†’
+                                Solicitar agenda →
                             </a>
                         </article>
 
@@ -809,15 +852,15 @@ export default function Home() {
                             style={{ transitionDelay: ".1s" }}
                         >
                             <div className="kicker">
-                                <span className="badge">ElÃ©ctrico</span>
+                                <span className="badge">Eléctrico</span>
                             </div>
-                            <h4>Seguridad ElÃ©ctrica</h4>
+                            <h4>Seguridad Eléctrica</h4>
                             <p>
-                                Procedimientos, riesgos, seÃ±alizaciÃ³n,
-                                bloqueo/etiquetado (segÃºn necesidad).
+                                Procedimientos, riesgos, señalización,
+                                bloqueo/etiquetado (según necesidad).
                             </p>
                             <a className="link" href="#contacto">
-                                Consultar â†’
+                                Consultar →
                             </a>
                         </article>
                     </div>
@@ -836,7 +879,7 @@ export default function Home() {
                                 className="section-sub reveal"
                                 style={{ transitionDelay: ".05s" }}
                             >
-                                Respuestas rÃ¡pidas para cotizaciones, envÃ­os y
+                                Respuestas rápidas para cotizaciones, envíos y
                                 disponibilidad.
                             </p>
                         </div>
@@ -845,10 +888,10 @@ export default function Home() {
                     <div className="faq">
                         <details className="reveal">
                             <summary>
-                                Â¿CÃ³mo cotizo por WhatsApp? <span>+</span>
+                                ¿Cómo cotizo por WhatsApp? <span>+</span>
                             </summary>
                             <p>
-                                EnvÃ­anos tu lista o foto de requerimientos. Te
+                                Envíanos tu lista o foto de requerimientos. Te
                                 respondemos con precios y disponibilidad.
                             </p>
                         </details>
@@ -858,10 +901,10 @@ export default function Home() {
                             style={{ transitionDelay: ".04s" }}
                         >
                             <summary>
-                                Â¿Hacen envÃ­os y entregas? <span>+</span>
+                                ¿Hacen envíos y entregas? <span>+</span>
                             </summary>
                             <p>
-                                SÃ­. Coordinamos entrega segÃºn zona, volumen y
+                                Sí. Coordinamos entrega según zona, volumen y
                                 urgencia.
                             </p>
                         </details>
@@ -871,10 +914,10 @@ export default function Home() {
                             style={{ transitionDelay: ".08s" }}
                         >
                             <summary>
-                                Â¿Venden por volumen a empresas? <span>+</span>
+                                ¿Venden por volumen a empresas? <span>+</span>
                             </summary>
                             <p>
-                                SÃ­. Armamos propuestas para obras, industria y
+                                Sí. Armamos propuestas para obras, industria y
                                 compras recurrentes.
                             </p>
                         </details>
@@ -894,13 +937,13 @@ export default function Home() {
                     <div className="section-head">
                         <div>
                             <h2 className="section-title reveal">
-                                ContÃ¡ctanos
+                                Contáctanos
                             </h2>
                             <p
                                 className="section-sub reveal"
                                 style={{ transitionDelay: ".05s" }}
                             >
-                                DÃ©janos tu requerimiento o escrÃ­benos directo
+                                Déjanos tu requerimiento o escríbenos directo
                                 por WhatsApp.
                             </p>
                         </div>
@@ -919,7 +962,7 @@ export default function Home() {
                                     />
                                 </div>
                                 <div>
-                                    <label htmlFor="phone">TelÃ©fono</label>
+                                    <label htmlFor="phone">Teléfono</label>
                                     <input
                                         id="phone"
                                         name="phone"
@@ -943,7 +986,7 @@ export default function Home() {
                                     <input
                                         id="topic"
                                         name="topic"
-                                        placeholder="CotizaciÃ³n / CatÃ¡logo / Curso"
+                                        placeholder="Cotización / Catálogo / Curso"
                                     />
                                 </div>
                             </div>
@@ -990,7 +1033,7 @@ export default function Home() {
                                     fontSize: ".95rem",
                                 }}
                             >
-                                Al enviar, se abrirÃ¡ WhatsApp con el texto listo
+                                Al enviar, se abrirá WhatsApp con el texto listo
                                 para mandar.
                             </p>
                         </form>
@@ -1002,15 +1045,15 @@ export default function Home() {
                             <div className="info-item">
                                 <div style={{ fontSize: "1.25rem" }}></div>
                                 <div>
-                                    <b>UbicaciÃ³n</b>
-                                    <span>Huaraz, Ãncash</span>
+                                    <b>Ubicación</b>
+                                    <span>Huaraz, Áncash</span>
                                 </div>
                             </div>
                             <div className="info-item">
                                 <div style={{ fontSize: "1.25rem" }}></div>
                                 <div>
                                     <b>Horario</b>
-                                    <span>Lunâ€“SÃ¡b: 8:00 a.m. â€“ 6:00 p.m.</span>
+                                    <span>Lun–Sáb: 8:00 a.m. – 6:00 p.m.</span>
                                 </div>
                             </div>
                             <div className="info-item">
@@ -1026,7 +1069,7 @@ export default function Home() {
                             >
                                 <div style={{ fontSize: "1.25rem" }}></div>
                                 <div>
-                                    <b>AtenciÃ³n rÃ¡pida</b>
+                                    <b>Atención rápida</b>
                                     <span>
                                         Respuesta por WhatsApp y seguimiento a
                                         cotizaciones.
@@ -1044,9 +1087,17 @@ export default function Home() {
                             >
                                 <a
                                     className="btn btn-primary"
-                                    href="#"
+                                    href={WHATSAPP_WEB_URL}
                                     id="btnWhatsContact"
+                                    target="_blank"
+                                    rel="noreferrer"
                                 >
+                                    <img
+                                        src="/assets/img/whatsapp.svg"
+                                        alt=""
+                                        className="icon"
+                                        aria-hidden="true"
+                                    />
                                     WhatsApp
                                 </a>
                                 <a className="btn btn-dark" href="#inicio">
@@ -1081,36 +1132,27 @@ export default function Home() {
                         <b>LATIN TERRA</b>
                     </div>
                     <div style={{ opacity: 0.9 }}>
-                        Â© <span id="year"></span> Latin Terra. Todos los
+                        © <span id="year"></span> Latin Terra. Todos los
                         derechos reservados.
                     </div>
                 </div>
             </footer>
 
             {/* WhatsApp flotante */}
-            <a className="wa-float" id="waFloat" href="#" aria-label="WhatsApp">
-                <svg
+            <a
+                className="wa-float"
+                id="waFloat"
+                href={WHATSAPP_WEB_URL}
+                aria-label="WhatsApp"
+                target="_blank"
+                rel="noreferrer"
+            >
+                <img
+                    src="/assets/img/whatsapp.svg"
+                    alt=""
                     className="icon"
-                    viewBox="0 0 24 24"
-                    fill="none"
                     aria-hidden="true"
-                >
-                    <path
-                        d="M20 11.6A8 8 0 1 1 6.5 5.5 8 8 0 0 1 20 11.6Z"
-                        fill="white"
-                        opacity=".25"
-                    />
-                    <path
-                        d="M7.2 19.9l.8-3.1"
-                        stroke="white"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                    />
-                    <path
-                        d="M9.3 8.8c.3-.7.6-.7 1-.7h.6c.2 0 .5 0 .7.5.3.5 1 1.7 1 1.8.1.1.1.3 0 .5-.1.2-.2.3-.3.4l-.4.4c-.1.1-.2.2-.1.4.1.2.6 1.1 1.3 1.7.9.9 1.7 1.2 2 .1l.7-.7c.2-.2.3-.2.5-.1.2.1 1.5.7 1.7.9.2.1.4.2.4.3 0 .1 0 .8-.3 1.1-.3.3-.7.7-1.5.7-.8 0-1.7-.3-2.9-.9-1.2-.6-2.2-1.5-3-2.6-.8-1.1-1.1-2-1.1-2.7 0-.7.2-1.1.4-1.5Z"
-                        fill="white"
-                    />
-                </svg>
+                />
                 WhatsApp
             </a>
         </PublicLayout>

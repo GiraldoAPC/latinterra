@@ -257,9 +257,10 @@
     line-height: 1;
 }
 
-.product-quote-btn svg {
-    width: 14px;
-    height: 14px;
+.product-quote-btn svg,
+.product-quote-btn img {
+    width: 18px;
+    height: 18px;
 }
 
 .catalog-page .site-footer {

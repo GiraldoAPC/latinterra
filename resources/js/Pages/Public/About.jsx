@@ -1,5 +1,9 @@
 import { Head, Link } from "@inertiajs/react";
 
+const WHATSAPP_PHONE = "51954178081";
+const WHATSAPP_TEXT = "Hola Latin Terra, quisiera cotizar sus productos.";
+const WHATSAPP_WEB_URL = `https://web.whatsapp.com/send?phone=${WHATSAPP_PHONE}&text=${encodeURIComponent(WHATSAPP_TEXT)}`;
+
 export default function About() {
     return (
         <>
@@ -212,8 +216,10 @@ export default function About() {
                         </a>
                         <a
                             className="btn btn-dark"
-                            href="#"
+                            href={WHATSAPP_WEB_URL}
                             id="btnWhatsDrawer"
+                            target="_blank"
+                            rel="noreferrer"
                         >
                             WhatsApp
                         </a>
@@ -781,7 +787,14 @@ export default function About() {
             </footer>
 
             {/* WhatsApp flotante */}
-            <a className="wa-float" id="waFloat" href="#" aria-label="WhatsApp">
+            <a
+                className="wa-float"
+                id="waFloat"
+                href={WHATSAPP_WEB_URL}
+                aria-label="WhatsApp"
+                target="_blank"
+                rel="noreferrer"
+            >
                 <img
                     src="/assets/img/whatsapp.svg"
                     alt=""

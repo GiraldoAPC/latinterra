@@ -43,6 +43,18 @@ Route::get('/trabajos-en-altura', function () {
 
 Route::redirect('/trabajosenaltura', '/trabajos-en-altura', 301);
 
+Route::get('/epp-y-seguridad', function () {
+    return Inertia::render('Public/EppSeguridad');
+})->name('eppseguridad');
+
+Route::redirect('/eppyseguridad', '/epp-y-seguridad', 301);
+
+Route::get('/equipo-electrico', function () {
+    return Inertia::render('Public/EquipoElectrico');
+})->name('equipoelectrico');
+
+Route::redirect('/equipos-electricos', '/equipo-electrico', 301);
+
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
