@@ -14,7 +14,7 @@ const qsa = (s, el = document) => Array.from(el.querySelectorAll(s));
 
 function openWhatsApp(text) {
     const msg = encodeURIComponent(text || WHATSAPP_DEFAULT_TEXT);
-    const url = `https://web.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${msg}`;
+    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`;
     window.open(url, "_blank", "noopener,noreferrer");
 }
 

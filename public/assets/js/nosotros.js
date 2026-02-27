@@ -10,12 +10,13 @@ const qsa = (s, el=document) => Array.from(el.querySelectorAll(s));
 
 function openWhatsApp(text){
   const msg = encodeURIComponent(text || WHATSAPP_TEXT);
-  const url = `https://web.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${msg}`;
+  const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`;
   window.open(url, "_blank", "noopener,noreferrer");
 }
 
 // Year
-qs("#year").textContent = new Date().getFullYear();
+const yearEl = qs("#year");
+if (yearEl) yearEl.textContent = new Date().getFullYear();
 
 // WhatsApp buttons
 qs("#btnWhatsTop")?.addEventListener("click", (e) => {

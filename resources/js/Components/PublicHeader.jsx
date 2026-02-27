@@ -1,4 +1,5 @@
 import { Link } from "@inertiajs/react";
+import { useEffect, useState } from "react";
 
 function faIcon(className) {
     return <i className={className} aria-hidden="true" />;
@@ -7,8 +8,10 @@ function faIcon(className) {
 export default function PublicHeader({
     current = "home",
     productHref,
-    whatsappHref = "#",
 }) {
+    const [menuOpen, setMenuOpen] = useState(false);
+    const facebookUrl = "https://www.facebook.com/share/1BnVinCAXH/";
+    const instagramUrl = "https://www.instagram.com/";
     const isHome = current === "home";
     const anchor = (id) => (isHome ? `#${id}` : `/#${id}`);
     const productsUrl = productHref ?? anchor("productos");
@@ -27,6 +30,22 @@ export default function PublicHeader({
     const isActive = (key) => (current === key ? "active" : "");
     const isProductItemActive = (href) => current === "products" && currentProductHref === href;
 
+    useEffect(() => {
+        document.body.classList.toggle("menu-open", menuOpen);
+
+        const handleEscape = (event) => {
+            if (event.key === "Escape") {
+                setMenuOpen(false);
+            }
+        };
+
+        window.addEventListener("keydown", handleEscape);
+        return () => {
+            document.body.classList.remove("menu-open");
+            window.removeEventListener("keydown", handleEscape);
+        };
+    }, [menuOpen]);
+
     return (
         <>
             <header className="site-header">
@@ -36,7 +55,7 @@ export default function PublicHeader({
                         <div className="name">LATIN TERRA</div>
                     </a>
 
-                    <nav aria-label="Navegación principal">
+                    <nav aria-label="Navegacion principal">
                         <ul className="menu" id="menu">
                             <li>
                                 <a href={anchor("inicio")} className={isActive("home")}>
@@ -83,56 +102,69 @@ export default function PublicHeader({
                             </li>
                             <li>
                                 <Link href={contactUrl} className={isActive("contact")}>
-                                    Contáctanos
+                                    Contactanos
                                 </Link>
                             </li>
                         </ul>
                     </nav>
 
                     <div className="nav-cta auth-cta auth-cta--pro">
-                        <Link
-                            className="icon-btn icon-btn--ghost icon-btn--login"
-                            href="/login"
-                            aria-label="Ingresar"
-                            data-tip="Ingresar"
+                        <a
+                            className="icon-btn icon-btn--ghost"
+                            href={facebookUrl}
+                            aria-label="Facebook"
+                            data-tip="Facebook"
+                            target="_blank"
+                            rel="noreferrer"
                         >
-                            {faIcon("fa-solid fa-arrow-right-to-bracket")}
-                        </Link>
-                        <Link
-                            className="icon-btn icon-btn--primary"
-                            href="/register"
-                            aria-label="Registrarse"
-                            data-tip="Registrarse"
+                            {faIcon("fa-brands fa-facebook-f")}
+                        </a>
+                        <a
+                            className="icon-btn icon-btn--ghost"
+                            href={instagramUrl}
+                            aria-label="Instagram"
+                            data-tip="Instagram"
+                            target="_blank"
+                            rel="noreferrer"
                         >
-                            {faIcon("fa-solid fa-user-plus")}
-                        </Link>
-                        <button className="burger" id="burger" aria-label="Abrir menú">
+                            {faIcon("fa-brands fa-instagram")}
+                        </a>
+                        <button className="burger" id="burger" aria-label="Abrir menu" onClick={() => setMenuOpen((prev) => !prev)}>
                             <span />
                         </button>
                     </div>
                 </div>
             </header>
 
-            <div className="drawer" id="drawer" aria-hidden="true">
-                <div className="drawer-panel" role="dialog" aria-modal="true" aria-label="Menú">
+            <div
+                className="drawer"
+                id="drawer"
+                aria-hidden={menuOpen ? "false" : "true"}
+                onClick={(event) => {
+                    if (event.target === event.currentTarget) {
+                        setMenuOpen(false);
+                    }
+                }}
+            >
+                <div className="drawer-panel" role="dialog" aria-modal="true" aria-label="Menu">
                     <div className="drawer-head">
                         <div className="brand" style={{ minWidth: "auto" }}>
                             <img src="/assets/img/logo.png" alt="Latin Terra Logo" />
                             <div className="name">LATIN TERRA</div>
                         </div>
-                        <button className="burger" id="drawerClose" aria-label="Cerrar menú">
+                        <button className="burger" id="drawerClose" aria-label="Cerrar menu" onClick={() => setMenuOpen(false)}>
                             <span />
                         </button>
                     </div>
 
                     <ul>
                         <li>
-                            <a href={anchor("inicio")} data-close="true" className={isActive("home")}>
+                            <a href={anchor("inicio")} data-close="true" className={isActive("home")} onClick={() => setMenuOpen(false)}>
                                 Inicio
                             </a>
                         </li>
                         <li>
-                            <Link href="/nosotros" data-close="true" className={isActive("about")}>
+                            <Link href="/nosotros" data-close="true" className={isActive("about")} onClick={() => setMenuOpen(false)}>
                                 Nosotros
                             </Link>
                         </li>
@@ -151,7 +183,7 @@ export default function PublicHeader({
                                 </summary>
 
                                 <div className="drawer-products__actions">
-                                    <a href={productsUrl} data-close="true" className="drawer-products__all">
+                                    <a href={productsUrl} data-close="true" className="drawer-products__all" onClick={() => setMenuOpen(false)}>
                                         Ver seccion productos
                                     </a>
 
@@ -162,6 +194,7 @@ export default function PublicHeader({
                                                 href={item.href}
                                                 data-close="true"
                                                 className={isProductItemActive(item.href) ? "active" : ""}
+                                                onClick={() => setMenuOpen(false)}
                                             >
                                                 <span className="drawer-products__item-icon" aria-hidden="true">
                                                     {faIcon(item.icon)}
@@ -174,35 +207,30 @@ export default function PublicHeader({
                             </details>
                         </li>
                         <li>
-                            <Link href="/marcas" data-close="true" className={isActive("brands")}>
+                            <Link href="/marcas" data-close="true" className={isActive("brands")} onClick={() => setMenuOpen(false)}>
                                 Marcas
                             </Link>
                         </li>
                         <li>
-                            <a href={anchor("faq")} data-close="true">
+                            <a href={anchor("faq")} data-close="true" onClick={() => setMenuOpen(false)}>
                                 FAQ
                             </a>
                         </li>
                         <li>
-                            <Link href={contactUrl} data-close="true" className={isActive("contact")}>
-                                Contáctanos
+                            <Link href={contactUrl} data-close="true" className={isActive("contact")} onClick={() => setMenuOpen(false)}>
+                                Contactanos
                             </Link>
                         </li>
                     </ul>
 
                     <div className="drawer-cta">
-                        <Link className="btn btn-primary" href={contactUrl} data-close="true">
-                            Cotizar Ahora
-                        </Link>
-                        <a
-                            className="btn btn-dark"
-                            href={whatsappHref}
-                            id="btnWhatsDrawer"
-                            target="_blank"
-                            rel="noreferrer"
-                        >
-                            <img src="/assets/img/whatsapp.svg" alt="" className="icon" aria-hidden="true" />
-                            WhatsApp
+                        <a className="drawer-social" href={facebookUrl} target="_blank" rel="noreferrer">
+                            <span className="drawer-social__icon" aria-hidden="true">{faIcon("fa-brands fa-facebook-f")}</span>
+                            <span>Facebook</span>
+                        </a>
+                        <a className="drawer-social" href={instagramUrl} target="_blank" rel="noreferrer">
+                            <span className="drawer-social__icon" aria-hidden="true">{faIcon("fa-brands fa-instagram")}</span>
+                            <span>Instagram</span>
                         </a>
                     </div>
                 </div>

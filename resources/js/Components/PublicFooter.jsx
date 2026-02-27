@@ -14,7 +14,7 @@ export default function PublicFooter() {
                     <div className="footer-pro-contact">
                         <h4>Contáctanos</h4>
                         <div className="footer-pro-contact-list">
-                            <a href="https://web.whatsapp.com/send?phone=51954178081" target="_blank" rel="noreferrer">
+                            <a href="https://wa.me/51954178081" target="_blank" rel="noreferrer">
                                 <i className="fa-brands fa-whatsapp" aria-hidden="true" />
                                 +51 954 178 081
                             </a>
@@ -36,7 +36,7 @@ export default function PublicFooter() {
                     <div className="footer-pro-social">
                         <h4>Síguenos</h4>
                         <div className="footer-pro-social-links">
-                            <a href="https://www.facebook.com/" target="_blank" rel="noreferrer" aria-label="Facebook">
+                            <a href="https://www.facebook.com/share/1BnVinCAXH/" target="_blank" rel="noreferrer" aria-label="Facebook">
                                 <i className="fa-brands fa-facebook-f" aria-hidden="true" />
                             </a>
                             <a href="https://www.instagram.com/" target="_blank" rel="noreferrer" aria-label="Instagram">

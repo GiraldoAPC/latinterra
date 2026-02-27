@@ -6,29 +6,21 @@ import PublicFooter from "@/Components/PublicFooter";
 
 const WHATSAPP_PHONE = "51954178081";
 const WHATSAPP_BASE_TEXT = "Hola Latin Terra, deseo una cotizacion.";
-const WHATSAPP_WEB_URL = `https://web.whatsapp.com/send?phone=${WHATSAPP_PHONE}&text=${encodeURIComponent(WHATSAPP_BASE_TEXT)}`;
-const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY || "";
-
-function buildCopyText(formData) {
-    const get = (key) => (formData.get(key) || "").toString().trim();
-
-    return `Hola Latin Terra, deseo una cotizacion.
-- Nombre: ${get("name") || "-"}
-- Telefono: ${get("phone") || "-"}
-- Correo: ${get("email") || "-"}
-- Segmento: ${get("segment") || "-"}
-- Categoria: ${get("topic") || "-"}
-- Empresa: ${get("company") || "-"}
-- Mensaje: ${get("message") || "-"}`;
-}
+const WHATSAPP_WEB_URL = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(WHATSAPP_BASE_TEXT)}`;
+const RECAPTCHA_SITE_KEY = "6LfZDHosAAAAAPEGIEgAcW-DwG-HB5eIv0AJ7A_q";
 
 async function getRecaptchaToken() {
     if (!RECAPTCHA_SITE_KEY) return "";
-    if (!window.grecaptcha || !window.grecaptcha.execute) return "";
+    if (!window.grecaptcha?.enterprise?.execute) return "";
 
     try {
-        return await window.grecaptcha.execute(RECAPTCHA_SITE_KEY, {
-            action: "contact_form_submit",
+        return await new Promise((resolve) => {
+            window.grecaptcha.enterprise.ready(async () => {
+                const token = await window.grecaptcha.enterprise.execute(RECAPTCHA_SITE_KEY, {
+                    action: "CONTACTO",
+                });
+                resolve(token || "");
+            });
         });
     } catch {
         return "";
@@ -36,9 +28,6 @@ async function getRecaptchaToken() {
 }
 
 export default function Contacto() {
-    const [hint, setHint] = useState(
-        "Tu mensaje se enviara al correo ventas@latin-terra.com."
-    );
     const [isSending, setIsSending] = useState(false);
     const [errors, setErrors] = useState({});
     const [successMessage, setSuccessMessage] = useState("");
@@ -56,7 +45,6 @@ export default function Contacto() {
         setIsSending(true);
         setErrors({});
         setSuccessMessage("");
-        setHint("Enviando mensaje al correo de ventas...");
 
         const form = e.currentTarget;
         const formData = new FormData(form);
@@ -82,37 +70,15 @@ export default function Contacto() {
             });
 
             setSuccessMessage(data?.message || "Mensaje enviado correctamente.");
-            setHint("Tu mensaje fue enviado a ventas@latin-terra.com.");
             showToast(data?.message || "Mensaje enviado correctamente.", "success");
             form.reset();
         } catch (error) {
             const backendErrors = error?.response?.data?.errors || {};
             setErrors(backendErrors);
-            setHint("No se pudo enviar. Revisa los campos e intenta nuevamente.");
             showToast("No se pudo enviar el formulario.", "error");
         } finally {
             setIsSending(false);
         }
-    };
-
-    const handleCopy = async () => {
-        const form = document.getElementById("contactFormPage");
-        if (!form) return;
-
-        const text = buildCopyText(new FormData(form));
-
-        try {
-            await navigator.clipboard.writeText(text);
-            setHint("Mensaje copiado. Puedes pegarlo en WhatsApp o correo.");
-            showToast("Mensaje copiado al portapapeles.", "success");
-        } catch {
-            setHint("No se pudo copiar. Intenta copiar manualmente.");
-            showToast("No se pudo copiar el mensaje.", "error");
-        }
-
-        window.setTimeout(() => {
-            setHint("Tu mensaje se enviara al correo ventas@latin-terra.com.");
-        }, 2600);
     };
 
     const fieldError = (name) => errors?.[name]?.[0];
@@ -127,9 +93,6 @@ export default function Contacto() {
             <link rel="stylesheet" href="/assets/css/nosotros.css" />
             <link rel="stylesheet" href="/assets/css/Productos.css" />
             <script defer src="/assets/js/nosotros.js"></script>
-            {RECAPTCHA_SITE_KEY ? (
-                <script src={`https://www.google.com/recaptcha/api.js?render=${RECAPTCHA_SITE_KEY}`} async defer />
-            ) : null}
 
             <div className="lt-public">
                 <PublicHeader current="contact" whatsappHref={WHATSAPP_WEB_URL} />
@@ -165,10 +128,6 @@ export default function Contacto() {
                                 <div>
                                     <span className="contact-page-lt__kicker">CONTACTO COMERCIAL</span>
                                     <h2>Solicita informacion o cotizacion</h2>
-                                    <p>
-                                        Formulario de contacto corporativo con envio al correo de
-                                        ventas y proteccion reCAPTCHA (cuando configures tus llaves).
-                                    </p>
                                 </div>
 
                                 <div className="contact-page-lt__intro-card">
@@ -198,10 +157,6 @@ export default function Contacto() {
                                 >
                                     <div className="contact-page-lt__form-head">
                                         <h3>Formulario de cotizacion</h3>
-                                        <p>
-                                            El formulario envia el mensaje por correo a
-                                            <b> ventas@latin-terra.com</b>.
-                                        </p>
                                     </div>
 
                                     <div className="contact-page-lt__row">
@@ -271,12 +226,6 @@ export default function Contacto() {
                                         {fieldError("message") ? <small className="contact-page-lt__error">{fieldError("message")}</small> : null}
                                     </div>
 
-                                    <div className="contact-page-lt__recaptcha">
-                                        <span className={`dot ${RECAPTCHA_SITE_KEY ? "is-ready" : ""}`} />
-                                        {RECAPTCHA_SITE_KEY
-                                            ? "reCAPTCHA listo. Falta configurar la llave secreta en backend para validacion completa."
-                                            : "Pendiente configurar reCAPTCHA: agrega VITE_RECAPTCHA_SITE_KEY y RECAPTCHA_SECRET_KEY."}
-                                    </div>
                                     {fieldError("recaptcha_token") ? (
                                         <small className="contact-page-lt__error">{fieldError("recaptcha_token")}</small>
                                     ) : null}
@@ -285,15 +234,11 @@ export default function Contacto() {
                                         <button type="submit" className="btn btn-primary" disabled={isSending}>
                                             {isSending ? "Enviando..." : "Enviar al correo"}
                                         </button>
-                                        <button type="button" className="btn btn-dark" onClick={handleCopy} disabled={isSending}>
-                                            Copiar mensaje
-                                        </button>
                                     </div>
 
                                     {successMessage ? (
                                         <div className="contact-page-lt__success">{successMessage}</div>
                                     ) : null}
-                                    <p className="contact-page-lt__hint">{hint}</p>
                                 </form>
 
                                 <aside className="contact-page-lt__side reveal" style={{ transitionDelay: ".06s" }}>
@@ -347,7 +292,6 @@ export default function Contacto() {
                             <div>
                                 <span className="contact-page-lt__kicker">UBICACION</span>
                                 <h3>Mapa referencial</h3>
-                                <p>Antes del footer y a todo el ancho de la seccion, como pediste.</p>
                             </div>
                             <a
                                 className="btn btn-dark"

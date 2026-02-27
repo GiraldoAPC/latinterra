@@ -4,7 +4,7 @@ import PublicFooter from "@/Components/PublicFooter";
 
 const WHATSAPP_PHONE = "51954178081";
 const WHATSAPP_TEXT = "Hola Latin Terra, quisiera cotizar sus productos.";
-const WHATSAPP_WEB_URL = `https://web.whatsapp.com/send?phone=${WHATSAPP_PHONE}&text=${encodeURIComponent(WHATSAPP_TEXT)}`;
+const WHATSAPP_WEB_URL = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(WHATSAPP_TEXT)}`;
 
 export default function About() {
     return (

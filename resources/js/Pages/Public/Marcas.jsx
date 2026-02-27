@@ -6,7 +6,7 @@ import brandsCatalogRaw from "@/data/brandsCatalog.json";
 
 const WHATSAPP_PHONE = "51954178081";
 const WHATSAPP_TEXT = "Hola Latin Terra, quisiera informacion de marcas y catalogos.";
-const WHATSAPP_WEB_URL = `https://web.whatsapp.com/send?phone=${WHATSAPP_PHONE}&text=${encodeURIComponent(WHATSAPP_TEXT)}`;
+const WHATSAPP_WEB_URL = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(WHATSAPP_TEXT)}`;
 
 const CATEGORY_COLORS = {
     "Acceso por Cuerdas": "is-rope",

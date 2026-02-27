@@ -6,7 +6,7 @@ import PublicFooter from "@/Components/PublicFooter";
 
 const WHATSAPP_PHONE = "51954178081";
 const WHATSAPP_TEXT = "Hola Latin Terra, quisiera cotizar sus productos.";
-const WHATSAPP_WEB_URL = `https://web.whatsapp.com/send?phone=${WHATSAPP_PHONE}&text=${encodeURIComponent(WHATSAPP_TEXT)}`;
+const WHATSAPP_WEB_URL = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(WHATSAPP_TEXT)}`;
 
 export default function Home() {
     useEffect(() => {
@@ -456,7 +456,7 @@ export default function Home() {
                         >
                             <div className="card-media">
                                 <img
-                                    src="/assets/img/categorias/electrico/Bosch.jpg"
+                                    src="/assets/img/encabezado/equipo-electrico.jpg"
                                     alt="Equipo Eléctrico"
                                     loading="lazy"
                                 />
@@ -503,7 +503,7 @@ export default function Home() {
                         >
                             <div className="card-media">
                                 <img
-                                    src="/assets/img/categorias/reparaciondepalas/Comind.jpg"
+                                    src="/assets/img/encabezado/reparacion-de-palas.jpg"
                                     alt="Reparación de Palas"
                                     loading="lazy"
                                 />

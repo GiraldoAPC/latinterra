@@ -15,7 +15,7 @@ const products = [
 const whatsappNumber = "51954178081";
 const whatsappDefaultText = "Hola Latin Terra, quisiera cotizar productos para reparacion de palas.";
 const getWhatsAppUrl = (text = whatsappDefaultText) =>
-    `https://web.whatsapp.com/send?phone=${whatsappNumber}&text=${encodeURIComponent(text)}`;
+    `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(text)}`;
 
 export default function ReparacionPalas() {
     useEffect(() => {
