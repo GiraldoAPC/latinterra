@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
+use App\Http\Controllers\PublicContactController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -17,18 +17,7 @@ use Inertia\Inertia;
 */
 
 Route::get('/', function () {
-    sleep(1);
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
-
-Route::get('/', function () {
     return Inertia::render('Public/Home');
-    sleep(1);
 })->name('home');
 
 
@@ -37,11 +26,22 @@ Route::get('/nosotros', function () {
         return Inertia::render('Public/About');
 })->name('about');
 
-Route::get('/trabajos-en-altura', function () {
-    return Inertia::render('Public/Trabajosenaltura');
-})->name('trabajosenaltura');
+Route::get('/contacto', function () {
+    return Inertia::render('Public/Contacto');
+})->name('contacto');
+Route::post('/contacto/enviar', [PublicContactController::class, 'send'])->name('contacto.send');
 
-Route::redirect('/trabajosenaltura', '/trabajos-en-altura', 301);
+Route::get('/marcas', function () {
+    return Inertia::render('Public/Marcas');
+})->name('marcas');
+
+Route::get('/acceso-por-cuerdas', function () {
+    return Inertia::render('Public/Trabajosenaltura');
+})->name('accesoporcuerdas');
+
+Route::redirect('/trabajos-en-altura', '/acceso-por-cuerdas', 301);
+
+Route::redirect('/trabajosenaltura', '/acceso-por-cuerdas', 301);
 
 Route::get('/epp-y-seguridad', function () {
     return Inertia::render('Public/EppSeguridad');
@@ -54,6 +54,18 @@ Route::get('/equipo-electrico', function () {
 })->name('equipoelectrico');
 
 Route::redirect('/equipos-electricos', '/equipo-electrico', 301);
+
+Route::get('/herramientas', function () {
+    return Inertia::render('Public/Herramientas');
+})->name('herramientas.catalogo');
+
+Route::get('/articulos-de-ferreteria', function () {
+    return Inertia::render('Public/ArticulosFerreteria');
+})->name('ferreteria.catalogo');
+
+Route::get('/reparacion-de-palas', function () {
+    return Inertia::render('Public/ReparacionPalas');
+})->name('reparacionpalas.catalogo');
 
 
 Route::get('/dashboard', function () {

@@ -31,4 +31,13 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'contact' => [
+        'to' => env('CONTACT_FORM_TO_EMAIL', 'ventas@latin-terra.com'),
+    ],
+
+    'recaptcha' => [
+        'secret' => env('RECAPTCHA_SECRET_KEY'),
+        'min_score' => env('RECAPTCHA_MIN_SCORE', 0.5),
+    ],
+
 ];

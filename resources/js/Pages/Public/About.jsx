@@ -1,4 +1,6 @@
 import { Head, Link } from "@inertiajs/react";
+import PublicHeader from "@/Components/PublicHeader";
+import PublicFooter from "@/Components/PublicFooter";
 
 const WHATSAPP_PHONE = "51954178081";
 const WHATSAPP_TEXT = "Hola Latin Terra, quisiera cotizar sus productos.";
@@ -19,215 +21,11 @@ export default function About() {
             {/* JS SOLO de esta página */}
             <script defer src="/assets/js/nosotros.js"></script>
 
+            <div className="lt-public">
             {/* ============ HEADER (menú) ============ */}
-            <header className="site-header">
-                <div className="container nav">
-                    <Link
-                        className="brand"
-                        href="/"
-                        aria-label="Latin Terra - Inicio"
-                    >
-                        <img
-                            src="/assets/img/logo.png"
-                            alt="Latin Terra Logo"
-                        />
-                        <div className="name">LATIN TERRA</div>
-                    </Link>
+            <PublicHeader current="about" whatsappHref={WHATSAPP_WEB_URL} />
 
-                    <nav aria-label="Navegación principal">
-                        <ul className="menu" id="menu">
-                            <li>
-                                <Link href="/">Inicio</Link>
-                            </li>
-                            <li>
-                                <Link className="active" href="/nosotros">
-                                    Nosotros
-                                </Link>
-                            </li>
-                            <li>
-                                <a href="/#productos">Productos</a>
-                            </li>
-                            <li>
-                                <a href="/#marcas">Marcas</a>
-                            </li>
-                            <li>
-                                <a href="/#cursos">Cursos</a>
-                            </li>
-                            <li>
-                                <a href="/#faq">FAQ</a>
-                            </li>
-                            <li>
-                                <a href="/#contacto">Contáctanos</a>
-                            </li>
-                        </ul>
-                    </nav>
-
-                    <div className="nav-cta auth-cta">
-                        {/* LOGIN */}
-                        <Link
-                            className="icon-btn icon-btn--ghost"
-                            href="/login"
-                            aria-label="Ingresar"
-                            data-tip="Ingresar"
-                        >
-                            <svg viewBox="0 0 24 24" aria-hidden="true">
-                                <path
-                                    d="M10 17l5-5-5-5"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                />
-                                <path
-                                    d="M15 12H3"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                />
-                                <path
-                                    d="M21 4v16"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    opacity=".55"
-                                />
-                            </svg>
-                        </Link>
-
-                        {/* REGISTER */}
-                        <Link
-                            className="icon-btn icon-btn--primary"
-                            href="/register"
-                            aria-label="Registrarse"
-                            data-tip="Registrarse"
-                        >
-                            <svg viewBox="0 0 24 24" aria-hidden="true">
-                                <path
-                                    d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Z"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                />
-                                <path
-                                    d="M4 20a8 8 0 0 1 16 0"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                />
-                                <path
-                                    d="M19 8v6M16 11h6"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                />
-                            </svg>
-                        </Link>
-
-                        <button
-                            className="burger"
-                            id="burger"
-                            aria-label="Abrir menú"
-                        >
-                            <span />
-                        </button>
-                    </div>
-                </div>
-            </header>
-
-            {/* ============ DRAWER MOBILE ============ */}
-            <div className="drawer" id="drawer" aria-hidden="true">
-                <div
-                    className="drawer-panel"
-                    role="dialog"
-                    aria-modal="true"
-                    aria-label="Menú"
-                >
-                    <div className="drawer-head">
-                        <div className="brand" style={{ minWidth: "auto" }}>
-                            <img
-                                src="/assets/img/logo.png"
-                                alt="Latin Terra Logo"
-                            />
-                            <div className="name">LATIN TERRA</div>
-                        </div>
-                        <button
-                            className="burger"
-                            id="drawerClose"
-                            aria-label="Cerrar menú"
-                        >
-                            <span />
-                        </button>
-                    </div>
-
-                    <ul>
-                        <li>
-                            <Link href="/" data-close="true">
-                                Inicio
-                            </Link>
-                        </li>
-                        <li>
-                            <Link
-                                href="/nosotros"
-                                data-close="true"
-                                className="active"
-                            >
-                                Nosotros
-                            </Link>
-                        </li>
-                        <li>
-                            <a href="/#productos" data-close="true">
-                                Productos
-                            </a>
-                        </li>
-                        <li>
-                            <a href="/#marcas" data-close="true">
-                                Marcas
-                            </a>
-                        </li>
-                        <li>
-                            <a href="/#cursos" data-close="true">
-                                Cursos
-                            </a>
-                        </li>
-                        <li>
-                            <a href="/#faq" data-close="true">
-                                FAQ
-                            </a>
-                        </li>
-                        <li>
-                            <a href="/#contacto" data-close="true">
-                                Contáctanos
-                            </a>
-                        </li>
-                    </ul>
-
-                    <div className="drawer-cta">
-                        <a
-                            className="btn btn-primary"
-                            href="/#contacto"
-                            data-close="true"
-                        >
-                            Cotizar Ahora
-                        </a>
-                        <a
-                            className="btn btn-dark"
-                            href={WHATSAPP_WEB_URL}
-                            id="btnWhatsDrawer"
-                            target="_blank"
-                            rel="noreferrer"
-                        >
-                            WhatsApp
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            {/* ============ BANNER / ENCABEZADO ============ */}
+            
             <section className="page-hero" aria-label="Encabezado Nosotros">
                 <div
                     className="page-hero__bg"
@@ -766,25 +564,7 @@ export default function About() {
             </main>
 
             {/* ============ FOOTER ============ */}
-            <footer className="site-footer">
-                <div className="container footer-inner">
-                    <div className="footer-brand">
-                        <img src="/assets/img/logo.png" alt="Latin Terra" />
-                        <div>
-                            <b>LATIN TERRA</b>
-                            <div className="small">
-                                Productos industriales, comerciales y de
-                                seguridad
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="footer-copy">
-                        © <span id="year" /> Latin Terra. Todos los derechos
-                        reservados.
-                    </div>
-                </div>
-            </footer>
+            <PublicFooter />
 
             {/* WhatsApp flotante */}
             <a
@@ -804,6 +584,7 @@ export default function About() {
                 <span className="wa-dot" />
                 WhatsApp
             </a>
+            </div>
         </>
     );
 }

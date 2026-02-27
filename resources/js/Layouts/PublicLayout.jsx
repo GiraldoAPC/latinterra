@@ -53,7 +53,7 @@ export default function PublicLayout({ title = "Latin Terra", children }) {
     <>
       <Head title={title} />
       <GlobalLoader show={show} />
-      <div className="min-h-screen bg-white text-slate-900">{children}</div>
+      <div className="lt-public min-h-screen flex flex-col bg-[#f4f7fb] text-slate-900">{children}</div>
     </>
   );
 }

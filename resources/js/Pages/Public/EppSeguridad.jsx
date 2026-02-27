@@ -1,5 +1,7 @@
 import { Head, Link } from "@inertiajs/react";
 import { useEffect } from "react";
+import PublicHeader from "@/Components/PublicHeader";
+import PublicFooter from "@/Components/PublicFooter";
 
 const products = [
     {
@@ -137,7 +139,7 @@ export default function EppSeguridad() {
     }, []);
 
     return (
-        <div className="catalog-page">
+        <div className="catalog-page lt-public">
             <Head title="EPP y Seguridad | Latin Terra" />
             <meta
                 name="description"
@@ -148,182 +150,14 @@ export default function EppSeguridad() {
             <link rel="stylesheet" href="/assets/css/Productos.css" />
             <script defer src="/assets/js/nosotros.js"></script>
 
-            <header className="site-header">
-                <div className="container nav">
-                    <Link className="brand" href="/" aria-label="Latin Terra - Inicio">
-                        <img src="/assets/img/logo.png" alt="Latin Terra Logo" />
-                        <div className="name">LATIN TERRA</div>
-                    </Link>
+            <PublicHeader current="products" productHref="/epp-y-seguridad" whatsappHref={getWhatsAppUrl()} />
 
-                    <nav aria-label="Navegación principal">
-                        <ul className="menu" id="menu">
-                            <li>
-                                <Link href="/">Inicio</Link>
-                            </li>
-                            <li>
-                                <Link href="/nosotros">Nosotros</Link>
-                            </li>
-                            <li>
-                                <a className="active" href="/epp-y-seguridad">
-                                    Productos
-                                </a>
-                            </li>
-                            <li>
-                                <a href="/#marcas">Marcas</a>
-                            </li>
-                            <li>
-                                <a href="/#cursos">Cursos</a>
-                            </li>
-                            <li>
-                                <a href="/#faq">FAQ</a>
-                            </li>
-                            <li>
-                                <a href="/#contacto">Contáctanos</a>
-                            </li>
-                        </ul>
-                    </nav>
-
-                    <div className="nav-cta auth-cta">
-                        <Link
-                            className="icon-btn icon-btn--ghost"
-                            href="/login"
-                            aria-label="Ingresar"
-                            data-tip="Ingresar"
-                        >
-                            <svg viewBox="0 0 24 24" aria-hidden="true">
-                                <path
-                                    d="M10 17l5-5-5-5"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                />
-                                <path
-                                    d="M15 12H3"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                />
-                                <path
-                                    d="M21 4v16"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    opacity=".55"
-                                />
-                            </svg>
-                        </Link>
-
-                        <Link
-                            className="icon-btn icon-btn--primary"
-                            href="/register"
-                            aria-label="Registrarse"
-                            data-tip="Registrarse"
-                        >
-                            <svg viewBox="0 0 24 24" aria-hidden="true">
-                                <path
-                                    d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Z"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                />
-                                <path
-                                    d="M4 20a8 8 0 0 1 16 0"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                />
-                                <path
-                                    d="M19 8v6M16 11h6"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                />
-                            </svg>
-                        </Link>
-
-                        <button className="burger" id="burger" aria-label="Abrir menú">
-                            <span />
-                        </button>
-                    </div>
-                </div>
-            </header>
-
-            <div className="drawer" id="drawer" aria-hidden="true">
-                <div className="drawer-panel" role="dialog" aria-modal="true" aria-label="Menú">
-                    <div className="drawer-head">
-                        <div className="brand" style={{ minWidth: "auto" }}>
-                            <img src="/assets/img/logo.png" alt="Latin Terra Logo" />
-                            <div className="name">LATIN TERRA</div>
-                        </div>
-                        <button className="burger" id="drawerClose" aria-label="Cerrar menú">
-                            <span />
-                        </button>
-                    </div>
-
-                    <ul>
-                        <li>
-                            <Link href="/" data-close="true">
-                                Inicio
-                            </Link>
-                        </li>
-                        <li>
-                            <Link href="/nosotros" data-close="true">
-                                Nosotros
-                            </Link>
-                        </li>
-                        <li>
-                            <a href="/epp-y-seguridad" data-close="true" className="active">
-                                Productos
-                            </a>
-                        </li>
-                        <li>
-                            <a href="/#marcas" data-close="true">
-                                Marcas
-                            </a>
-                        </li>
-                        <li>
-                            <a href="/#cursos" data-close="true">
-                                Cursos
-                            </a>
-                        </li>
-                        <li>
-                            <a href="/#faq" data-close="true">
-                                FAQ
-                            </a>
-                        </li>
-                        <li>
-                            <a href="/#contacto" data-close="true">
-                                Contáctanos
-                            </a>
-                        </li>
-                    </ul>
-
-                    <div className="drawer-cta">
-                        <a className="btn btn-primary" href="/#contacto" data-close="true">
-                            Cotizar Ahora
-                        </a>
-                        <a
-                            className="btn btn-dark"
-                            href={getWhatsAppUrl()}
-                            target="_blank"
-                            rel="noreferrer"
-                        >
-                            WhatsApp
-                        </a>
-                    </div>
-                </div>
-            </div>
+            
 
             <section className="catalog-hero" aria-label="Encabezado de categoría">
                 <div
                     className="catalog-hero__bg"
-                    style={{ backgroundImage: "url('/assets/img/categorias/EPP-y-seguridad.jpg')" }}
+                    style={{ backgroundImage: "url('/assets/img/encabezado/epp-y-seguridad.jpg')" }}
                 />
                 <div className="catalog-hero__overlay" />
                 <div className="catalog-hero__content">
@@ -413,21 +247,7 @@ export default function EppSeguridad() {
                 </div>
             </main>
 
-            <footer className="site-footer">
-                <div className="container footer-inner">
-                    <div className="footer-brand">
-                        <img src="/assets/img/logo.png" alt="Latin Terra" />
-                        <div>
-                            <b>LATIN TERRA</b>
-                            <div className="small">Productos industriales, comerciales y de seguridad</div>
-                        </div>
-                    </div>
-
-                    <div className="footer-copy">
-                        © <span id="year" /> Latin Terra. Todos los derechos reservados.
-                    </div>
-                </div>
-            </footer>
+            <PublicFooter />
 
             <a
                 className="wa-float"

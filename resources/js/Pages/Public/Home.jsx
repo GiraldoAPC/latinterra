@@ -1,6 +1,8 @@
 import { Head, Link } from "@inertiajs/react";
 import { useEffect } from "react";
 import PublicLayout from "@/Layouts/PublicLayout";
+import PublicHeader from "@/Components/PublicHeader";
+import PublicFooter from "@/Components/PublicFooter";
 
 const WHATSAPP_PHONE = "51954178081";
 const WHATSAPP_TEXT = "Hola Latin Terra, quisiera cotizar sus productos.";
@@ -25,216 +27,35 @@ export default function Home() {
             <Head title="Inicio" />
             <link rel="stylesheet" href="/assets/css/home.css" />
 
-            {/* ====== HEADER ====== */}
-            <header>
-                <div className="container nav">
-                    <a
-                        className="brand"
-                        href="#inicio"
-                        aria-label="Latin Terra - Inicio"
-                    >
-                        <img
-                            src="/assets/img/logo.png"
-                            alt="Latin Terra Logo"
-                        />
-                        <div className="name">LATIN TERRA</div>
-                    </a>
-
-                    <nav aria-label="Navegación principal">
-                        <ul className="menu" id="menu">
-                            <li>
-                                <a href="#inicio" className="active">
-                                    Inicio
-                                </a>
-                            </li>
-                            <li>
-                                <Link href="/nosotros">Nosotros</Link>
-                            </li>
-                            <li>
-                                <a href="#productos">Productos</a>
-                            </li>
-                            <li>
-                                <a href="#marcas">Marcas</a>
-                            </li>
-                            <li>
-                                <a href="#cursos">Cursos</a>
-                            </li>
-                            <li>
-                                <a href="#faq">FAQ</a>
-                            </li>
-                            <li>
-                                <a href="#contacto">Contáctanos</a>
-                            </li>
-                        </ul>
-                    </nav>
-
-                    <div className="nav-cta">
-                        <a
-                            className="btn btn-primary"
-                            href="#contacto"
-                            id="btnCotizar"
-                        >
-                            Cotizar Ahora
-                            <svg
-                                className="icon"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                aria-hidden="true"
-                            >
-                                <path
-                                    d="M14 5l7 7-7 7"
-                                    stroke="white"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                />
-                                <path
-                                    d="M21 12H3"
-                                    stroke="white"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                />
-                            </svg>
-                        </a>
-
-                        <a
-                            className="whats"
-                            href={WHATSAPP_WEB_URL}
-                            id="btnWhatsTop"
-                            aria-label="WhatsApp"
-                            target="_blank"
-                            rel="noreferrer"
-                        >
-                            <img
-                                src="/assets/img/whatsapp.svg"
-                                alt=""
-                                className="icon"
-                                aria-hidden="true"
-                            />
-                        </a>
-
-                        <button
-                            className="burger"
-                            id="burger"
-                            aria-label="Abrir menú"
-                        >
-                            <span></span>
-                        </button>
-                    </div>
-                </div>
-            </header>
-
-            {/* ====== MOBILE DRAWER ====== */}
-            <div className="drawer" id="drawer" aria-hidden="true">
-                <div
-                    className="drawer-panel"
-                    role="dialog"
-                    aria-modal="true"
-                    aria-label="Menú"
-                >
-                    <div className="drawer-head">
-                        <div className="brand" style={{ minWidth: "auto" }}>
-                            <img
-                                src="/assets/img/logo.png"
-                                alt="Latin Terra Logo"
-                            />
-                            <div className="name">LATIN TERRA</div>
-                        </div>
-                        <button
-                            className="burger"
-                            id="drawerClose"
-                            aria-label="Cerrar menú"
-                        >
-                            <span></span>
-                        </button>
-                    </div>
-
-                    <ul>
-                        <li>
-                            <a href="#inicio" data-close="1">
-                                Inicio
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#nosotros" data-close="1">
-                                Nosotros
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#productos" data-close="1">
-                                Productos
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#marcas" data-close="1">
-                                Marcas
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#cursos" data-close="1">
-                                Cursos
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#faq" data-close="1">
-                                FAQ
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#contacto" data-close="1">
-                                Contáctanos
-                            </a>
-                        </li>
-                    </ul>
-
-                    <div className="drawer-cta">
-                        <a
-                            className="btn btn-primary"
-                            href="#contacto"
-                            data-close="1"
-                        >
-                            Cotizar Ahora
-                        </a>
-                        <a
-                            className="btn btn-dark"
-                            href={WHATSAPP_WEB_URL}
-                            id="btnWhatsDrawer"
-                            target="_blank"
-                            rel="noreferrer"
-                        >
-                            <img
-                                src="/assets/img/whatsapp.svg"
-                                alt=""
-                                className="icon"
-                                aria-hidden="true"
-                            />
-                            WhatsApp
-                        </a>
-                    </div>
-                </div>
-            </div>
-
+            <PublicHeader current="home" whatsappHref={WHATSAPP_WEB_URL} />
             {/* ====== HERO / SLIDER ====== */}
             <main id="inicio" className="hero">
                 <div className="slides" id="slides">
                     <div
                         className="slide active"
                         style={{
-                            backgroundImage: "url(/assets/img/latin-terra.jpg)",
+                            backgroundImage: "url(/assets/img/slider/slider1.jpg)",
                         }}
                     />
                     <div
                         className="slide"
                         style={{
                             backgroundImage:
-                                "url(/assets/img/latin-terra2.jpg)",
+                                "url(/assets/img/slider/slider2.jpg)",
                         }}
                     />
                     <div
                         className="slide"
                         style={{
                             backgroundImage:
-                                "url(/assets/img/latin-terra3.jpg)",
+                                "url(/assets/img/slider/slider3.jpg)",
+                        }}
+                    />
+                    <div
+                        className="slide"
+                        style={{
+                            backgroundImage:
+                                "url(/assets/img/slider/slider4.jpg)",
                         }}
                     />
                 </div>
@@ -283,7 +104,7 @@ export default function Home() {
                                     />
                                 </svg>
                             </a>
-                            <a className="btn btn-dark" href="#contacto">
+                            <a className="btn btn-dark" href="/contacto">
                                 Contáctanos
                                 <svg
                                     className="icon"
@@ -331,7 +152,7 @@ export default function Home() {
                                 flexWrap: "wrap",
                             }}
                         >
-                            <a className="btn btn-ghost" href="#marcas">
+                            <a className="btn btn-ghost" href="/marcas">
                                 Ver marcas
                             </a>
                             <a className="btn btn-ghost" href="#cursos">
@@ -402,7 +223,7 @@ export default function Home() {
                         </div>
                         <a
                             className="btn btn-primary reveal"
-                            href="/productos"
+                            href="/marcas"
                             style={{ transitionDelay: ".08s" }}
                         >
                             Ver catálogo
@@ -410,19 +231,19 @@ export default function Home() {
                     </div>
 
                     <div className="grid">
-                        {/* 1) TRABAJOS EN ALTURA */}
+                        {/* 1) ACCESO POR CUERDAS */}
                         <article className="card reveal">
-                            {/* ✅ Imagen arriba */}
+                            {/* 1º. Imagen arriba */}
                             <div className="card-media">
                                 <img
                                     src="/assets/img/categorias/Trabajos-en-Altura.jpg"
-                                    alt="Trabajos en Altura"
+                                    alt="Acceso por Cuerdas"
                                     loading="lazy"
                                 />
                             </div>
 
                             <div className="kicker">
-                                <span className="badge">Altura</span>
+                                <span className="badge">Cuerdas</span>
                                 <span
                                     className="badge"
                                     style={{
@@ -459,17 +280,16 @@ export default function Home() {
                                         />
                                     </svg>
                                 </div>
-                                <h4>Trabajos en Altura</h4>
+                                <h4>Acceso por Cuerdas</h4>
                             </div>
 
                             <p>
-                                Equipos técnicos de acceso por cuerda, escalada
-                                deportiva e industrial. Sistemas anticaídas,
-                                arneses, líneas de vida, mosquetones, conectores
-                                y kits.
+                                Equipos y accesorios para trabajo vertical,
+                                rescate, anclajes y sistemas de seguridad para
+                                acceso por cuerdas.
                             </p>
 
-                            <a className="link" href="/trabajos-en-altura">
+                            <a className="link" href="/acceso-por-cuerdas">
                                 Ver productos →{/* (tu opción pro) */}
                             </a>
                         </article>
@@ -526,7 +346,7 @@ export default function Home() {
                             </a>
                         </article>
 
-                        {/* 3) FERRETERÍA */}
+                        {/* 3) ARTÍCULOS DE FERRETERÍA */}
                         <article
                             className="card reveal"
                             style={{ transitionDelay: ".08s" }}
@@ -575,7 +395,7 @@ export default function Home() {
 
                             <a
                                 className="link"
-                                href="/productos?cat=ferreteria"
+                                href="/articulos-de-ferreteria"
                             >
                                 Ver productos →
                             </a>
@@ -624,7 +444,7 @@ export default function Home() {
 
                             <a
                                 className="link"
-                                href="/productos?cat=herramientas"
+                                href="/herramientas"
                             >
                                 Ver productos →
                             </a>
@@ -676,21 +496,21 @@ export default function Home() {
                             </a>
                         </article>
 
-                        {/* 6) MEDICIÓN */}
+                        {/* 6) REPARACIÓN DE PALAS */}
                         <article
                             className="card reveal"
                             style={{ transitionDelay: ".04s" }}
                         >
                             <div className="card-media">
                                 <img
-                                    src="/assets/img/categorias/Equipos-digitales-y-de-medición.jpg"
-                                    alt="Equipos Digitales y de Medición"
+                                    src="/assets/img/categorias/reparaciondepalas/Comind.jpg"
+                                    alt="Reparación de Palas"
                                     loading="lazy"
                                 />
                             </div>
 
                             <div className="kicker">
-                                <span className="badge">Medición</span>
+                                <span className="badge">Palas</span>
                             </div>
 
                             <div className="cat-head cat-green">
@@ -714,14 +534,15 @@ export default function Home() {
                                         />
                                     </svg>
                                 </div>
-                                <h4>Equipos Digitales y de Medición</h4>
+                                <h4>Reparación de Palas</h4>
                             </div>
 
                             <p>
-                                Instrumentos de medición, control y monitoreo.
+                                Marcas y soluciones para reparación,
+                                mantenimiento y soporte técnico de palas.
                             </p>
 
-                            <a className="link" href="/productos?cat=medicion">
+                            <a className="link" href="/reparacion-de-palas">
                                 Ver productos →
                             </a>
                         </article>
@@ -825,7 +646,7 @@ export default function Home() {
                                 Selección correcta, inspección, mantenimiento y
                                 normas de seguridad.
                             </p>
-                            <a className="link" href="#contacto">
+                            <a className="link" href="/contacto">
                                 Pedir información →
                             </a>
                         </article>
@@ -842,7 +663,7 @@ export default function Home() {
                                 Arnés, anclajes, líneas de vida y prevención de
                                 caídas (teoría + práctica).
                             </p>
-                            <a className="link" href="#contacto">
+                            <a className="link" href="/contacto">
                                 Solicitar agenda →
                             </a>
                         </article>
@@ -859,7 +680,7 @@ export default function Home() {
                                 Procedimientos, riesgos, señalización,
                                 bloqueo/etiquetado (según necesidad).
                             </p>
-                            <a className="link" href="#contacto">
+                            <a className="link" href="/contacto">
                                 Consultar →
                             </a>
                         </article>
@@ -925,219 +746,8 @@ export default function Home() {
                 </div>
             </section>
 
-            {/* ====== CONTACTO ====== */}
-            <section
-                id="contacto"
-                style={{
-                    background:
-                        "linear-gradient(180deg, #f6f7fb 0%, #ffffff 100%)",
-                }}
-            >
-                <div className="container">
-                    <div className="section-head">
-                        <div>
-                            <h2 className="section-title reveal">
-                                Contáctanos
-                            </h2>
-                            <p
-                                className="section-sub reveal"
-                                style={{ transitionDelay: ".05s" }}
-                            >
-                                Déjanos tu requerimiento o escríbenos directo
-                                por WhatsApp.
-                            </p>
-                        </div>
-                    </div>
 
-                    <div className="contact">
-                        <form className="form reveal" id="contactForm">
-                            <div className="row">
-                                <div>
-                                    <label htmlFor="name">Nombres</label>
-                                    <input
-                                        id="name"
-                                        name="name"
-                                        placeholder="Tu nombre"
-                                        required
-                                    />
-                                </div>
-                                <div>
-                                    <label htmlFor="phone">Teléfono</label>
-                                    <input
-                                        id="phone"
-                                        name="phone"
-                                        placeholder="+51 999 999 999"
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="row" style={{ marginTop: 12 }}>
-                                <div>
-                                    <label htmlFor="email">Correo</label>
-                                    <input
-                                        id="email"
-                                        name="email"
-                                        type="email"
-                                        placeholder="correo@ejemplo.com"
-                                    />
-                                </div>
-                                <div>
-                                    <label htmlFor="topic">Tema</label>
-                                    <input
-                                        id="topic"
-                                        name="topic"
-                                        placeholder="Cotización / Catálogo / Curso"
-                                    />
-                                </div>
-                            </div>
-
-                            <div style={{ marginTop: 12 }}>
-                                <label htmlFor="message">Mensaje</label>
-                                <textarea
-                                    id="message"
-                                    name="message"
-                                    placeholder="Escribe tu lista o requerimiento..."
-                                    required
-                                ></textarea>
-                            </div>
-
-                            <div
-                                style={{
-                                    display: "flex",
-                                    gap: 10,
-                                    flexWrap: "wrap",
-                                    marginTop: 14,
-                                }}
-                            >
-                                <button
-                                    className="btn btn-primary"
-                                    type="submit"
-                                >
-                                    Enviar a WhatsApp
-                                </button>
-                                <button
-                                    className="btn btn-dark"
-                                    type="button"
-                                    id="btnCopy"
-                                >
-                                    Copiar mensaje
-                                </button>
-                            </div>
-
-                            <p
-                                id="formHint"
-                                style={{
-                                    margin: "12px 0 0",
-                                    color: "var(--muted)",
-                                    lineHeight: 1.6,
-                                    fontSize: ".95rem",
-                                }}
-                            >
-                                Al enviar, se abrirá WhatsApp con el texto listo
-                                para mandar.
-                            </p>
-                        </form>
-
-                        <aside
-                            className="contact-info reveal"
-                            style={{ transitionDelay: ".06s" }}
-                        >
-                            <div className="info-item">
-                                <div style={{ fontSize: "1.25rem" }}></div>
-                                <div>
-                                    <b>Ubicación</b>
-                                    <span>Huaraz, Áncash</span>
-                                </div>
-                            </div>
-                            <div className="info-item">
-                                <div style={{ fontSize: "1.25rem" }}></div>
-                                <div>
-                                    <b>Horario</b>
-                                    <span>Lun–Sáb: 8:00 a.m. – 6:00 p.m.</span>
-                                </div>
-                            </div>
-                            <div className="info-item">
-                                <div style={{ fontSize: "1.25rem" }}></div>
-                                <div>
-                                    <b>Ventas</b>
-                                    <span>+51 954 178 081</span>
-                                </div>
-                            </div>
-                            <div
-                                className="info-item"
-                                style={{ marginBottom: 0 }}
-                            >
-                                <div style={{ fontSize: "1.25rem" }}></div>
-                                <div>
-                                    <b>Atención rápida</b>
-                                    <span>
-                                        Respuesta por WhatsApp y seguimiento a
-                                        cotizaciones.
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div
-                                style={{
-                                    marginTop: 14,
-                                    display: "flex",
-                                    gap: 10,
-                                    flexWrap: "wrap",
-                                }}
-                            >
-                                <a
-                                    className="btn btn-primary"
-                                    href={WHATSAPP_WEB_URL}
-                                    id="btnWhatsContact"
-                                    target="_blank"
-                                    rel="noreferrer"
-                                >
-                                    <img
-                                        src="/assets/img/whatsapp.svg"
-                                        alt=""
-                                        className="icon"
-                                        aria-hidden="true"
-                                    />
-                                    WhatsApp
-                                </a>
-                                <a className="btn btn-dark" href="#inicio">
-                                    Volver arriba
-                                </a>
-                            </div>
-                        </aside>
-                    </div>
-                </div>
-            </section>
-
-            <footer>
-                <div className="container fgrid">
-                    <div
-                        style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 10,
-                        }}
-                    >
-                        <img
-                            src="/assets/img/logo.png"
-                            alt="Latin Terra"
-                            style={{
-                                width: 36,
-                                height: 36,
-                                borderRadius: 12,
-                                background: "#fff",
-                                padding: 4,
-                            }}
-                        />
-                        <b>LATIN TERRA</b>
-                    </div>
-                    <div style={{ opacity: 0.9 }}>
-                        © <span id="year"></span> Latin Terra. Todos los
-                        derechos reservados.
-                    </div>
-                </div>
-            </footer>
-
+            <PublicFooter />
             {/* WhatsApp flotante */}
             <a
                 className="wa-float"

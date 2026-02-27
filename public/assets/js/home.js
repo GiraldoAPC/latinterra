@@ -21,7 +21,8 @@ function openWhatsApp(text) {
 // ==========================
 // Footer year
 // ==========================
-qs("#year").textContent = new Date().getFullYear();
+const yearEl = qs("#year");
+if (yearEl) yearEl.textContent = new Date().getFullYear();
 
 // ==========================
 // Mobile menu
@@ -131,6 +132,7 @@ let timer = null;
 const AUTOPLAY_MS = 5500;
 
 function renderDots() {
+    if (!dotsWrap || !slides.length) return;
     dotsWrap.innerHTML = "";
     slides.forEach((_, i) => {
         const b = document.createElement("button");
@@ -142,6 +144,7 @@ function renderDots() {
 }
 
 function goTo(nextIndex, userAction = false) {
+    if (!slides.length) return;
     slides[idx].classList.remove("active");
     idx = (nextIndex + slides.length) % slides.length;
     slides[idx].classList.add("active");
@@ -156,6 +159,7 @@ btnNext?.addEventListener("click", () => next(true));
 btnPrev?.addEventListener("click", () => prev(true));
 
 function startAutoplay() {
+    if (!slides.length) return;
     stopAutoplay();
     timer = setInterval(() => next(false), AUTOPLAY_MS);
 }

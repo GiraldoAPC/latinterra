@@ -4,28 +4,19 @@ import PublicHeader from "@/Components/PublicHeader";
 import PublicFooter from "@/Components/PublicFooter";
 
 const products = [
-    { name: "Aguerri", logo: "/assets/img/categorias/accesoporcuerdas/aguerri.jpg", desc: "Equipos y accesorios para acceso por cuerdas y seguridad en altura." },
-    { name: "Avanti", logo: "/assets/img/categorias/accesoporcuerdas/avanti.jpg", desc: "Soluciones para trabajo vertical y operaciones de acceso por cuerdas." },
-    { name: "Beal", logo: "/assets/img/categorias/accesoporcuerdas/beal.jpg", desc: "Cuerdas y equipos tecnicos para rescate y acceso por cuerdas." },
-    { name: "Climbing Technologies", logo: "/assets/img/categorias/accesoporcuerdas/climingteclogies.jpg", desc: "Equipamiento certificado para progresion y proteccion en altura." },
-    { name: "Edelweis", logo: "/assets/img/categorias/accesoporcuerdas/ELEWESI.jpg", desc: "Componentes de anclaje y sujecion para maniobras seguras." },
-    { name: "Fenix", logo: "/assets/img/categorias/accesoporcuerdas/fenix.jpg", desc: "Iluminacion y accesorios para trabajos tecnicos en campo." },
-    { name: "Forclaz", logo: "/assets/img/categorias/accesoporcuerdas/forclaz.jpg", desc: "Accesorios tecnicos para actividades de altura y exigencia." },
-    { name: "Irudek", logo: "/assets/img/categorias/accesoporcuerdas/irudek.jpg", desc: "Sistemas anticaidas y lineas de vida para trabajo vertical." },
-    { name: "Juragjanka", logo: "/assets/img/categorias/accesoporcuerdas/juragjanka.jpg", desc: "Accesorios para seguridad industrial y trabajo en altura." },
-    { name: "Kaya", logo: "/assets/img/categorias/accesoporcuerdas/kaya.jpg", desc: "Equipos para rescate, evacuacion y acceso por cuerdas." },
-    { name: "Petzel", logo: "/assets/img/categorias/accesoporcuerdas/petzel.jpg", desc: "Sistemas de proteccion, iluminacion y progresion para altura." },
-    { name: "Safeface", logo: "/assets/img/categorias/accesoporcuerdas/safeface.jpg", desc: "Proteccion personal complementaria para operaciones de riesgo." },
-    { name: "Singing Rock", logo: "/assets/img/categorias/accesoporcuerdas/SINGINGROCK.jpg", desc: "Equipos para acceso por cuerda, rescate y anclajes." },
-    { name: "Yoke", logo: "/assets/img/categorias/accesoporcuerdas/YOKE.jpg", desc: "Herrajes y puntos de anclaje de alta resistencia." },
+    { name: "Bahco", logo: "/assets/img/categorias/herramientas/Bahco.jpg", desc: "Herramientas manuales profesionales para uso industrial y tecnico." },
+    { name: "Olfa", logo: "/assets/img/categorias/herramientas/Olfa.jpg", desc: "Corte profesional y herramientas de precision para uso tecnico." },
+    { name: "Pretul", logo: "/assets/img/categorias/herramientas/Pretul.jpg", desc: "Herramienta utilitaria para trabajo diario, obra y servicio tecnico." },
+    { name: "Toughbuilt", logo: "/assets/img/categorias/herramientas/Toughbuilt.jpg", desc: "Herramientas y accesorios robustos para obra y trabajo de campo." },
+    { name: "Truper", logo: "/assets/img/categorias/herramientas/Truper.jpg", desc: "Herramientas y complementos para instalacion, construccion y taller." },
 ];
 
 const whatsappNumber = "51954178081";
-const whatsappDefaultText = "Hola Latin Terra, quisiera cotizar productos de acceso por cuerdas.";
+const whatsappDefaultText = "Hola Latin Terra, quisiera cotizar herramientas.";
 const getWhatsAppUrl = (text = whatsappDefaultText) =>
     `https://web.whatsapp.com/send?phone=${whatsappNumber}&text=${encodeURIComponent(text)}`;
 
-export default function Trabajosenaltura() {
+export default function Herramientas() {
     useEffect(() => {
         const runInit = () => {
             if (typeof window.initProductCatalogs === "function") {
@@ -54,37 +45,36 @@ export default function Trabajosenaltura() {
 
     return (
         <div className="catalog-page lt-public">
-            <Head title="Acceso por Cuerdas | Latin Terra" />
+            <Head title="Herramientas | Latin Terra" />
             <meta
                 name="description"
-                content="Catalogo de marcas para acceso por cuerdas, rescate y trabajo vertical."
+                content="Catalogo de marcas de herramientas para mantenimiento, taller e industria."
             />
 
             <link rel="stylesheet" href="/assets/css/nosotros.css" />
             <link rel="stylesheet" href="/assets/css/Productos.css" />
             <script defer src="/assets/js/nosotros.js"></script>
 
-            <PublicHeader current="products" productHref="/acceso-por-cuerdas" whatsappHref={getWhatsAppUrl()} />
+            <PublicHeader current="products" productHref="/herramientas" whatsappHref={getWhatsAppUrl()} />
+
+            
 
             <section className="catalog-hero" aria-label="Encabezado de categoria">
-                <div
-                    className="catalog-hero__bg"
-                    style={{ backgroundImage: "url('/assets/img/encabezado/acceso-por-cuerdas.jpg')" }}
-                />
+                <div className="catalog-hero__bg" style={{ backgroundImage: "url('/assets/img/categorias/Herramientas.jpg')" }} />
                 <div className="catalog-hero__overlay" />
                 <div className="catalog-hero__content">
                     <div className="catalog-hero__icon" aria-hidden="true">
                         <svg viewBox="0 0 24 24" fill="none">
-                            <path d="M12 2l8 4v6c0 5-3.5 9.5-8 10-4.5-.5-8-5-8-10V6l8-4Z" stroke="currentColor" strokeWidth="1.8" />
-                            <path d="M9 12l2 2 4-5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                            <path d="M14 7l3 3-8 8H6v-3l8-8Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+                            <path d="M13 8l3 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
                         </svg>
                     </div>
-                    <h1 className="catalog-hero__title">Acceso por Cuerdas</h1>
+                    <h1 className="catalog-hero__title">Herramientas</h1>
                     <p className="catalog-hero__subtitle">
-                        Marcas para trabajo vertical, rescate y sistemas de seguridad en altura
+                        Marcas para herramientas, precision y mantenimiento tecnico
                     </p>
                     <p className="catalog-hero__crumb">
-                        <Link href="/">INICIO</Link> / ACCESO POR CUERDAS
+                        <Link href="/">INICIO</Link> / HERRAMIENTAS
                     </p>
                 </div>
                 <div className="catalog-hero__curve" aria-hidden="true" />
@@ -105,9 +95,9 @@ export default function Trabajosenaltura() {
                         />
                     </div>
 
-                    <section className="product-grid" aria-label="Catalogo de acceso por cuerdas">
+                    <section className="product-grid" aria-label="Catalogo de herramientas">
                         {products.map((item, idx) => {
-                            const msg = `Hola Latin Terra, quisiera cotizar productos de acceso por cuerdas de la marca ${item.name}.`;
+                            const msg = `Hola Latin Terra, quisiera cotizar herramientas de la marca ${item.name}.`;
 
                             return (
                                 <article
@@ -119,10 +109,8 @@ export default function Trabajosenaltura() {
                                     <div className="product-logo">
                                         <img src={item.logo} alt={`Logo ${item.name}`} loading="lazy" />
                                     </div>
-
                                     <h3>{item.name}</h3>
                                     <p>{item.desc}</p>
-
                                     <a className="btn btn-primary product-quote-btn" href={getWhatsAppUrl(msg)} target="_blank" rel="noreferrer">
                                         <img src="/assets/img/whatsapp.svg" alt="" aria-hidden="true" />
                                         Cotizar

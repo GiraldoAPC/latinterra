@@ -1,0 +1,790 @@
+﻿[
+    {
+        "name":  "Opalux",
+        "logo":  "/assets/img/categorias/electrico/Opalux.jpg",
+        "categories":  [
+                           "Equipo Electrico"
+                       ],
+        "links":  [
+                      "/equipo-electrico"
+                  ]
+    },
+    {
+        "name":  "Makita",
+        "logo":  "/assets/img/categorias/electrico/Makita.jpg",
+        "categories":  [
+                           "Equipo Electrico"
+                       ],
+        "links":  [
+                      "/equipo-electrico"
+                  ]
+    },
+    {
+        "name":  "AZ Instrument",
+        "logo":  "/assets/img/categorias/articulosdeferreteria/AZ Instrument.jpg",
+        "categories":  [
+                           "Articulos de Ferreteria"
+                       ],
+        "links":  [
+                      "/articulos-de-ferreteria"
+                  ]
+    },
+    {
+        "name":  "Facom",
+        "logo":  "/assets/img/categorias/articulosdeferreteria/Facom.jpg",
+        "categories":  [
+                           "Articulos de Ferreteria"
+                       ],
+        "links":  [
+                      "/articulos-de-ferreteria"
+                  ]
+    },
+    {
+        "name":  "Ecoflow",
+        "logo":  "/assets/img/categorias/electrico/Ecofolow.jpg",
+        "categories":  [
+                           "Equipo Electrico"
+                       ],
+        "links":  [
+                      "/equipo-electrico"
+                  ]
+    },
+    {
+        "name":  "Eternety Safety",
+        "logo":  "/assets/img/categorias/epp/Eternety Safety.jpg",
+        "categories":  [
+                           "EPP y Seguridad"
+                       ],
+        "links":  [
+                      "/epp-y-seguridad"
+                  ]
+    },
+    {
+        "name":  "Lutron",
+        "logo":  "/assets/img/categorias/electrico/Lutron.jpg",
+        "categories":  [
+                           "Equipo Electrico"
+                       ],
+        "links":  [
+                      "/equipo-electrico"
+                  ]
+    },
+    {
+        "name":  "Full Risk",
+        "logo":  "/assets/img/categorias/epp/Full Risk.jpg",
+        "categories":  [
+                           "EPP y Seguridad"
+                       ],
+        "links":  [
+                      "/epp-y-seguridad"
+                  ]
+    },
+    {
+        "name":  "Smart Sensor",
+        "logo":  "/assets/img/categorias/electrico/Smart Sensor.jpg",
+        "categories":  [
+                           "Equipo Electrico"
+                       ],
+        "links":  [
+                      "/equipo-electrico"
+                  ]
+    },
+    {
+        "name":  "Yoke",
+        "logo":  "/assets/img/categorias/accesoporcuerdas/YOKE.jpg",
+        "categories":  [
+                           "Acceso por Cuerdas"
+                       ],
+        "links":  [
+                      "/acceso-por-cuerdas"
+                  ]
+    },
+    {
+        "name":  "Singing Rock",
+        "logo":  "/assets/img/categorias/accesoporcuerdas/SINGINGROCK.jpg",
+        "categories":  [
+                           "Acceso por Cuerdas"
+                       ],
+        "links":  [
+                      "/acceso-por-cuerdas"
+                  ]
+    },
+    {
+        "name":  "HW - Hard Word",
+        "logo":  "/assets/img/categorias/epp/HW - Hard Word.jpg",
+        "categories":  [
+                           "EPP y Seguridad"
+                       ],
+        "links":  [
+                      "/epp-y-seguridad"
+                  ]
+    },
+    {
+        "name":  "Olfa",
+        "logo":  "/assets/img/categorias/articulosdeferreteria/Olfa.jpg",
+        "categories":  [
+                           "Articulos de Ferreteria",
+                           "Herramientas"
+                       ],
+        "links":  [
+                      "/articulos-de-ferreteria",
+                      "/herramientas"
+                  ]
+    },
+    {
+        "name":  "Value",
+        "logo":  "/assets/img/categorias/electrico/Value.jpg",
+        "categories":  [
+                           "Equipo Electrico"
+                       ],
+        "links":  [
+                      "/equipo-electrico"
+                  ]
+    },
+    {
+        "name":  "Sndway",
+        "logo":  "/assets/img/categorias/electrico/Sndway.jpg",
+        "categories":  [
+                           "Equipo Electrico"
+                       ],
+        "links":  [
+                      "/equipo-electrico"
+                  ]
+    },
+    {
+        "name":  "Martell",
+        "logo":  "/assets/img/categorias/epp/Martell.jpg",
+        "categories":  [
+                           "EPP y Seguridad"
+                       ],
+        "links":  [
+                      "/epp-y-seguridad"
+                  ]
+    },
+    {
+        "name":  "Petzel",
+        "logo":  "/assets/img/categorias/accesoporcuerdas/petzel.jpg",
+        "categories":  [
+                           "Acceso por Cuerdas"
+                       ],
+        "links":  [
+                      "/acceso-por-cuerdas"
+                  ]
+    },
+    {
+        "name":  "Ansell",
+        "logo":  "/assets/img/categorias/epp/Ansel.jpg",
+        "categories":  [
+                           "EPP y Seguridad"
+                       ],
+        "links":  [
+                      "/epp-y-seguridad"
+                  ]
+    },
+    {
+        "name":  "Delta Plus",
+        "logo":  "/assets/img/categorias/epp/Delta plus.jpg",
+        "categories":  [
+                           "EPP y Seguridad"
+                       ],
+        "links":  [
+                      "/epp-y-seguridad"
+                  ]
+    },
+    {
+        "name":  "Parker Legris",
+        "logo":  "/assets/img/categorias/articulosdeferreteria/Parker Legris.jpg",
+        "categories":  [
+                           "Articulos de Ferreteria"
+                       ],
+        "links":  [
+                      "/articulos-de-ferreteria"
+                  ]
+    },
+    {
+        "name":  "Hont",
+        "logo":  "/assets/img/categorias/reparaciondepalas/Hont.jpg",
+        "categories":  [
+                           "Reparacion de Palas"
+                       ],
+        "links":  [
+                      "/reparacion-de-palas"
+                  ]
+    },
+    {
+        "name":  "Bosch",
+        "logo":  "/assets/img/categorias/electrico/Bosch.jpg",
+        "categories":  [
+                           "Equipo Electrico"
+                       ],
+        "links":  [
+                      "/equipo-electrico"
+                  ]
+    },
+    {
+        "name":  "Wurth",
+        "logo":  "/assets/img/categorias/epp/Wurth.jpg",
+        "categories":  [
+                           "EPP y Seguridad",
+                           "Articulos de Ferreteria"
+                       ],
+        "links":  [
+                      "/epp-y-seguridad",
+                      "/articulos-de-ferreteria"
+                  ]
+    },
+    {
+        "name":  "Bosean",
+        "logo":  "/assets/img/categorias/electrico/Bosean.jpg",
+        "categories":  [
+                           "Equipo Electrico"
+                       ],
+        "links":  [
+                      "/equipo-electrico"
+                  ]
+    },
+    {
+        "name":  "Safeface",
+        "logo":  "/assets/img/categorias/accesoporcuerdas/safeface.jpg",
+        "categories":  [
+                           "Acceso por Cuerdas"
+                       ],
+        "links":  [
+                      "/acceso-por-cuerdas"
+                  ]
+    },
+    {
+        "name":  "Edelweis",
+        "logo":  "/assets/img/categorias/accesoporcuerdas/ELEWESI.jpg",
+        "categories":  [
+                           "Acceso por Cuerdas"
+                       ],
+        "links":  [
+                      "/acceso-por-cuerdas"
+                  ]
+    },
+    {
+        "name":  "Tramontina",
+        "logo":  "/assets/img/categorias/articulosdeferreteria/Tramontina.jpg",
+        "categories":  [
+                           "Articulos de Ferreteria"
+                       ],
+        "links":  [
+                      "/articulos-de-ferreteria"
+                  ]
+    },
+    {
+        "name":  "Steelpro Safety",
+        "logo":  "/assets/img/categorias/epp/Steelpro Safety.jpg",
+        "categories":  [
+                           "EPP y Seguridad",
+                           "Equipo Electrico"
+                       ],
+        "links":  [
+                      "/epp-y-seguridad",
+                      "/equipo-electrico"
+                  ]
+    },
+    {
+        "name":  "Atlas",
+        "logo":  "/assets/img/categorias/articulosdeferreteria/Atlas.jpg",
+        "categories":  [
+                           "Articulos de Ferreteria"
+                       ],
+        "links":  [
+                      "/articulos-de-ferreteria"
+                  ]
+    },
+    {
+        "name":  "Rockbros",
+        "logo":  "/assets/img/categorias/epp/Rockbros.jpg",
+        "categories":  [
+                           "EPP y Seguridad"
+                       ],
+        "links":  [
+                      "/epp-y-seguridad"
+                  ]
+    },
+    {
+        "name":  "Motorola",
+        "logo":  "/assets/img/categorias/electrico/Motorola.jpg",
+        "categories":  [
+                           "Equipo Electrico"
+                       ],
+        "links":  [
+                      "/equipo-electrico"
+                  ]
+    },
+    {
+        "name":  "Forclaz",
+        "logo":  "/assets/img/categorias/accesoporcuerdas/forclaz.jpg",
+        "categories":  [
+                           "Acceso por Cuerdas"
+                       ],
+        "links":  [
+                      "/acceso-por-cuerdas"
+                  ]
+    },
+    {
+        "name":  "Fenix",
+        "logo":  "/assets/img/categorias/accesoporcuerdas/fenix.jpg",
+        "categories":  [
+                           "Acceso por Cuerdas"
+                       ],
+        "links":  [
+                      "/acceso-por-cuerdas"
+                  ]
+    },
+    {
+        "name":  "Aliyiqi",
+        "logo":  "/assets/img/categorias/electrico/Aliyiqi.jpg",
+        "categories":  [
+                           "Equipo Electrico"
+                       ],
+        "links":  [
+                      "/equipo-electrico"
+                  ]
+    },
+    {
+        "name":  "Absolute Zero",
+        "logo":  "/assets/img/categorias/epp/Absolute zero.jpg",
+        "categories":  [
+                           "EPP y Seguridad"
+                       ],
+        "links":  [
+                      "/epp-y-seguridad"
+                  ]
+    },
+    {
+        "name":  "Center",
+        "logo":  "/assets/img/categorias/electrico/Center.jpg",
+        "categories":  [
+                           "Equipo Electrico"
+                       ],
+        "links":  [
+                      "/equipo-electrico"
+                  ]
+    },
+    {
+        "name":  "Taurus",
+        "logo":  "/assets/img/categorias/electrico/Taurus.jpg",
+        "categories":  [
+                           "Equipo Electrico"
+                       ],
+        "links":  [
+                      "/equipo-electrico"
+                  ]
+    },
+    {
+        "name":  "Bauker",
+        "logo":  "/assets/img/categorias/electrico/Bauker.jpg",
+        "categories":  [
+                           "Equipo Electrico"
+                       ],
+        "links":  [
+                      "/equipo-electrico"
+                  ]
+    },
+    {
+        "name":  "Surtek",
+        "logo":  "/assets/img/categorias/articulosdeferreteria/Surtek.jpg",
+        "categories":  [
+                           "Articulos de Ferreteria"
+                       ],
+        "links":  [
+                      "/articulos-de-ferreteria"
+                  ]
+    },
+    {
+        "name":  "Energizer",
+        "logo":  "/assets/img/categorias/electrico/Energizer.jpg",
+        "categories":  [
+                           "Equipo Electrico"
+                       ],
+        "links":  [
+                      "/equipo-electrico"
+                  ]
+    },
+    {
+        "name":  "Avanti",
+        "logo":  "/assets/img/categorias/accesoporcuerdas/avanti.jpg",
+        "categories":  [
+                           "Acceso por Cuerdas"
+                       ],
+        "links":  [
+                      "/acceso-por-cuerdas"
+                  ]
+    },
+    {
+        "name":  "Airtech",
+        "logo":  "/assets/img/categorias/reparaciondepalas/Airtech.jpg",
+        "categories":  [
+                           "Reparacion de Palas"
+                       ],
+        "links":  [
+                      "/reparacion-de-palas"
+                  ]
+    },
+    {
+        "name":  "Climbing Technologies",
+        "logo":  "/assets/img/categorias/accesoporcuerdas/climingteclogies.jpg",
+        "categories":  [
+                           "Acceso por Cuerdas",
+                           "EPP y Seguridad"
+                       ],
+        "links":  [
+                      "/acceso-por-cuerdas",
+                      "/epp-y-seguridad"
+                  ]
+    },
+    {
+        "name":  "Toughbuilt",
+        "logo":  "/assets/img/categorias/herramientas/Toughbuilt.jpg",
+        "categories":  [
+                           "Herramientas"
+                       ],
+        "links":  [
+                      "/herramientas"
+                  ]
+    },
+    {
+        "name":  "Honeywell",
+        "logo":  "/assets/img/categorias/epp/Honeywell.jpg",
+        "categories":  [
+                           "EPP y Seguridad"
+                       ],
+        "links":  [
+                      "/epp-y-seguridad"
+                  ]
+    },
+    {
+        "name":  "Halux",
+        "logo":  "/assets/img/categorias/electrico/Halux.jpg",
+        "categories":  [
+                           "Equipo Electrico"
+                       ],
+        "links":  [
+                      "/equipo-electrico"
+                  ]
+    },
+    {
+        "name":  "Beal",
+        "logo":  "/assets/img/categorias/accesoporcuerdas/beal.jpg",
+        "categories":  [
+                           "Acceso por Cuerdas"
+                       ],
+        "links":  [
+                      "/acceso-por-cuerdas"
+                  ]
+    },
+    {
+        "name":  "Kamasa",
+        "logo":  "/assets/img/categorias/articulosdeferreteria/Kamasa.jpg",
+        "categories":  [
+                           "Articulos de Ferreteria"
+                       ],
+        "links":  [
+                      "/articulos-de-ferreteria"
+                  ]
+    },
+    {
+        "name":  "Eclipse",
+        "logo":  "/assets/img/categorias/reparaciondepalas/Eclipse.jpg",
+        "categories":  [
+                           "Reparacion de Palas"
+                       ],
+        "links":  [
+                      "/reparacion-de-palas"
+                  ]
+    },
+    {
+        "name":  "Total",
+        "logo":  "/assets/img/categorias/articulosdeferreteria/Total.jpg",
+        "categories":  [
+                           "Articulos de Ferreteria"
+                       ],
+        "links":  [
+                      "/articulos-de-ferreteria"
+                  ]
+    },
+    {
+        "name":  "Aguerri",
+        "logo":  "/assets/img/categorias/accesoporcuerdas/aguerri.jpg",
+        "categories":  [
+                           "Acceso por Cuerdas"
+                       ],
+        "links":  [
+                      "/acceso-por-cuerdas"
+                  ]
+    },
+    {
+        "name":  "Kuhlmann",
+        "logo":  "/assets/img/categorias/reparaciondepalas/Kuhlmann.jpg",
+        "categories":  [
+                           "Reparacion de Palas"
+                       ],
+        "links":  [
+                      "/reparacion-de-palas"
+                  ]
+    },
+    {
+        "name":  "Truper",
+        "logo":  "/assets/img/categorias/articulosdeferreteria/Truper.jpg",
+        "categories":  [
+                           "Articulos de Ferreteria",
+                           "Herramientas",
+                           "Equipo Electrico"
+                       ],
+        "links":  [
+                      "/articulos-de-ferreteria",
+                      "/herramientas",
+                      "/equipo-electrico"
+                  ]
+    },
+    {
+        "name":  "Midland",
+        "logo":  "/assets/img/categorias/electrico/Midland.jpg",
+        "categories":  [
+                           "Equipo Electrico"
+                       ],
+        "links":  [
+                      "/equipo-electrico"
+                  ]
+    },
+    {
+        "name":  "Bahco",
+        "logo":  "/assets/img/categorias/articulosdeferreteria/Bahco.jpg",
+        "categories":  [
+                           "Articulos de Ferreteria",
+                           "Herramientas"
+                       ],
+        "links":  [
+                      "/articulos-de-ferreteria",
+                      "/herramientas"
+                  ]
+    },
+    {
+        "name":  "Ineco",
+        "logo":  "/assets/img/categorias/electrico/Ineco.jpg",
+        "categories":  [
+                           "Equipo Electrico"
+                       ],
+        "links":  [
+                      "/equipo-electrico"
+                  ]
+    },
+    {
+        "name":  "Juragjanka",
+        "logo":  "/assets/img/categorias/accesoporcuerdas/juragjanka.jpg",
+        "categories":  [
+                           "Acceso por Cuerdas"
+                       ],
+        "links":  [
+                      "/acceso-por-cuerdas"
+                  ]
+    },
+    {
+        "name":  "Kaya",
+        "logo":  "/assets/img/categorias/accesoporcuerdas/kaya.jpg",
+        "categories":  [
+                           "Acceso por Cuerdas"
+                       ],
+        "links":  [
+                      "/acceso-por-cuerdas"
+                  ]
+    },
+    {
+        "name":  "Dewalt",
+        "logo":  "/assets/img/categorias/electrico/Dewalt.jpg",
+        "categories":  [
+                           "Equipo Electrico"
+                       ],
+        "links":  [
+                      "/equipo-electrico"
+                  ]
+    },
+    {
+        "name":  "Lund \u0026 Sorensen",
+        "logo":  "/assets/img/categorias/reparaciondepalas/Lund \u0026 Sorensen.jpg",
+        "categories":  [
+                           "Reparacion de Palas"
+                       ],
+        "links":  [
+                      "/reparacion-de-palas"
+                  ]
+    },
+    {
+        "name":  "Yowexa",
+        "logo":  "/assets/img/categorias/electrico/Yowexa.jpg",
+        "categories":  [
+                           "Equipo Electrico"
+                       ],
+        "links":  [
+                      "/equipo-electrico"
+                  ]
+    },
+    {
+        "name":  "Pretul",
+        "logo":  "/assets/img/categorias/articulosdeferreteria/Pretul.jpg",
+        "categories":  [
+                           "Articulos de Ferreteria",
+                           "Herramientas"
+                       ],
+        "links":  [
+                      "/articulos-de-ferreteria",
+                      "/herramientas"
+                  ]
+    },
+    {
+        "name":  "Dong Cheng",
+        "logo":  "/assets/img/categorias/electrico/Dong Cheng.jpg",
+        "categories":  [
+                           "Equipo Electrico"
+                       ],
+        "links":  [
+                      "/equipo-electrico"
+                  ]
+    },
+    {
+        "name":  "Comind",
+        "logo":  "/assets/img/categorias/reparaciondepalas/Comind.jpg",
+        "categories":  [
+                           "Reparacion de Palas"
+                       ],
+        "links":  [
+                      "/reparacion-de-palas"
+                  ]
+    },
+    {
+        "name":  "Safeyear",
+        "logo":  "/assets/img/categorias/epp/Safeyear.jpg",
+        "categories":  [
+                           "EPP y Seguridad"
+                       ],
+        "links":  [
+                      "/epp-y-seguridad"
+                  ]
+    },
+    {
+        "name":  "Irudek",
+        "logo":  "/assets/img/categorias/accesoporcuerdas/irudek.jpg",
+        "categories":  [
+                           "Acceso por Cuerdas"
+                       ],
+        "links":  [
+                      "/acceso-por-cuerdas"
+                  ]
+    },
+    {
+        "name":  "Stanley",
+        "logo":  "/assets/img/categorias/epp/Stanley.jpg",
+        "categories":  [
+                           "EPP y Seguridad",
+                           "Articulos de Ferreteria"
+                       ],
+        "links":  [
+                      "/epp-y-seguridad",
+                      "/articulos-de-ferreteria"
+                  ]
+    },
+    {
+        "name":  "Portwest",
+        "logo":  "/assets/img/categorias/epp/Portwest.jpg",
+        "categories":  [
+                           "EPP y Seguridad"
+                       ],
+        "links":  [
+                      "/epp-y-seguridad"
+                  ]
+    },
+    {
+        "name":  "Activex",
+        "logo":  "/assets/img/categorias/epp/Activex.jpg",
+        "categories":  [
+                           "EPP y Seguridad"
+                       ],
+        "links":  [
+                      "/epp-y-seguridad"
+                  ]
+    },
+    {
+        "name":  "Edge",
+        "logo":  "/assets/img/categorias/epp/Edge.jpg",
+        "categories":  [
+                           "EPP y Seguridad"
+                       ],
+        "links":  [
+                      "/epp-y-seguridad"
+                  ]
+    },
+    {
+        "name":  "Tyvex",
+        "logo":  "/assets/img/categorias/epp/Tyvex.jpg",
+        "categories":  [
+                           "EPP y Seguridad"
+                       ],
+        "links":  [
+                      "/epp-y-seguridad"
+                  ]
+    },
+    {
+        "name":  "Uyustools",
+        "logo":  "/assets/img/categorias/electrico/Uyustools.jpg",
+        "categories":  [
+                           "Equipo Electrico"
+                       ],
+        "links":  [
+                      "/equipo-electrico"
+                  ]
+    },
+    {
+        "name":  "Norseg",
+        "logo":  "/assets/img/categorias/epp/Norseg.jpg",
+        "categories":  [
+                           "EPP y Seguridad"
+                       ],
+        "links":  [
+                      "/epp-y-seguridad"
+                  ]
+    },
+    {
+        "name":  "Kolor",
+        "logo":  "/assets/img/categorias/articulosdeferreteria/Kolor.jpg",
+        "categories":  [
+                           "Articulos de Ferreteria"
+                       ],
+        "links":  [
+                      "/articulos-de-ferreteria"
+                  ]
+    },
+    {
+        "name":  "Mennekes",
+        "logo":  "/assets/img/categorias/articulosdeferreteria/Mennekes.jpg",
+        "categories":  [
+                           "Articulos de Ferreteria"
+                       ],
+        "links":  [
+                      "/articulos-de-ferreteria"
+                  ]
+    },
+    {
+        "name":  "3M",
+        "logo":  "/assets/img/categorias/epp/3m.jpg",
+        "categories":  [
+                           "EPP y Seguridad"
+                       ],
+        "links":  [
+                      "/epp-y-seguridad"
+                  ]
+    },
+    {
+        "name":  "Bremen",
+        "logo":  "/assets/img/categorias/articulosdeferreteria/Bremen.jpg",
+        "categories":  [
+                           "Articulos de Ferreteria"
+                       ],
+        "links":  [
+                      "/articulos-de-ferreteria"
+                  ]
+    }
+]
