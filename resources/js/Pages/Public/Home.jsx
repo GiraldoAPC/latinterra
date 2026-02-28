@@ -152,8 +152,8 @@ export default function Home() {
                                 flexWrap: "wrap",
                             }}
                         >
-                            <a className="btn btn-ghost" href="/marcas">
-                                Ver marcas
+                            <a className="btn btn-ghost" href="#productos">
+                                Ver categorías
                             </a>
                             <a className="btn btn-ghost" href="#cursos">
                                 Ver cursos
@@ -223,10 +223,10 @@ export default function Home() {
                         </div>
                         <a
                             className="btn btn-primary reveal"
-                            href="/marcas"
+                            href="#productos"
                             style={{ transitionDelay: ".08s" }}
                         >
-                            Ver catálogo
+                            Ver categorías
                         </a>
                     </div>
 
@@ -768,4 +768,3 @@ export default function Home() {
         </PublicLayout>
     );
 }
-

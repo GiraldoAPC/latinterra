@@ -88,33 +88,21 @@ export default function About() {
                             <div className="about-copy reveal">
                                 <h2>¿Quiénes somos?</h2>
                                 <p>
-                                    <b>Latin Terra</b> Latin Terra es una
-                                    empresa peruana especializada en la
-                                    comercialización de equipos de protección
-                                    personal (EPP), herramientas, equipos para
-                                    trabajo en altura, artículos de ferretería
-                                    industrial y equipos de medición, dirigida a
-                                    empresas de los sectores construcción,
-                                    industria, minería, mantenimiento y
-                                    servicios técnicos.
+                                    Latin Terra es una empresa peruana dedicada
+                                    a la comercialización de soluciones
+                                    industriales, incluyendo equipos de
+                                    protección personal, herramientas y
+                                    suministros para diversos sectores
+                                    productivos.
                                 </p>
                                 <p>
-                                    Trabajamos con marcas reconocidas del
-                                    mercado y ofrecemos productos certificados
-                                    que cumplen con estándares de seguridad y
-                                    calidad, asegurando soluciones confiables
-                                    para operaciones en campo y planta.
-                                </p>
-                                <p>
-                                    Brindamos asesoría técnica personalizada,
-                                    cotizaciones formales en PDF y atención
-                                    directa vía WhatsApp, garantizando rapidez
-                                    en la gestión, opciones de descuento y
-                                    facilidades de pago. Nuestro objetivo es
-                                    convertirnos en un proveedor estratégico que
-                                    aporte eficiencia, seguridad y continuidad
-                                    operativa a nuestros clientes a nivel
-                                    nacional.
+                                    Trabajamos con marcas reconocidas y
+                                    ofrecemos productos que cumplen estándares
+                                    de calidad y seguridad. Nuestro compromiso
+                                    es brindar atención ágil, asesoría
+                                    personalizada y soluciones confiables que
+                                    respalden las operaciones de nuestros
+                                    clientes a nivel nacional.
                                 </p>
 
                                 <div className="about-features">

@@ -10,6 +10,11 @@ const products = [
         desc: "Protección respiratoria, auditiva y soluciones EPP para uso industrial.",
     },
     {
+        name: "Absolute Fire",
+        logo: "/assets/img/categorias/epp/Absolute fire.jpg",
+        desc: "Protección especializada para trabajos con riesgo térmico, fuego y entornos de alta exigencia.",
+    },
+    {
         name: "Absolute Zero",
         logo: "/assets/img/categorias/epp/Absolute zero.jpg",
         desc: "Ropa y accesorios de protección para ambientes de trabajo exigentes.",
@@ -20,14 +25,19 @@ const products = [
         desc: "Implementos de seguridad y protección personal para operación diaria.",
     },
     {
+        name: "ATX",
+        logo: "/assets/img/categorias/epp/ATX - Activex.jpg",
+        desc: "Línea técnica de protección industrial para operaciones exigentes y cumplimiento en campo.",
+    },
+    {
         name: "Ansell",
         logo: "/assets/img/categorias/epp/Ansel.jpg",
         desc: "Guantes y soluciones de protección para manos en industria y laboratorio.",
     },
     {
-        name: "Climbing Technologies",
-        logo: "/assets/img/categorias/epp/Climbing Tecnologies.jpg",
-        desc: "Equipos técnicos y elementos de seguridad para trabajos especializados.",
+        name: "TRUPER",
+        logo: "/assets/img/categorias/herramientas/Truper.jpg",
+        desc: "Herramientas y soluciones confiables para seguridad, mantenimiento y operación industrial.",
     },
     {
         name: "Delta Plus",
@@ -95,9 +105,14 @@ const products = [
         desc: "Protección personal certificada para minería, construcción e industria.",
     },
     {
-        name: "Tyvex",
+        name: "V-FLEX",
+        logo: "/assets/img/categorias/epp/V-FLEX.jpg",
+        desc: "Soluciones de protección personal con enfoque en confort, ajuste y desempeño operativo.",
+    },
+    {
+        name: "DUPONT",
         logo: "/assets/img/categorias/epp/Tyvex.jpg",
-        desc: "Indumentaria de protección y barrera para trabajos especiales.",
+        desc: "Indumentaria y materiales de protección de alto desempeño para entornos industriales exigentes.",
     },
     {
         name: "Wurth",
@@ -152,8 +167,6 @@ export default function EppSeguridad() {
 
             <PublicHeader current="products" productHref="/epp-y-seguridad" whatsappHref={getWhatsAppUrl()} />
 
-            
-
             <section className="catalog-hero" aria-label="Encabezado de categoría">
                 <div
                     className="catalog-hero__bg"
@@ -181,6 +194,9 @@ export default function EppSeguridad() {
                     <h1 className="catalog-hero__title">EPP y Seguridad</h1>
                     <p className="catalog-hero__subtitle">
                         Marcas y soluciones para protección personal e industrial
+                    </p>
+                    <p className="catalog-hero__subtitle">
+                        En Latin Terra brindamos soluciones integrales en Equipos de Protección Personal (EPP) para empresas que priorizan la seguridad y el cumplimiento normativo. Ofrecemos productos certificados y de alto desempeño para entornos industriales exigentes, garantizando protección, confiabilidad y respaldo técnico en cada proyecto.
                     </p>
                     <p className="catalog-hero__crumb">
                         <Link href="/">INICIO</Link> / EPP Y SEGURIDAD

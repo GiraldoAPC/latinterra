@@ -22,14 +22,6 @@ export default function PublicFooter() {
                                 <i className="fa-regular fa-envelope" aria-hidden="true" />
                                 ventas@latin-terra.com
                             </a>
-                            <a
-                                href="https://www.google.com/maps/search/?api=1&query=Huaraz%2C%20Ancash%2C%20Peru"
-                                target="_blank"
-                                rel="noreferrer"
-                            >
-                                <i className="fa-solid fa-location-dot" aria-hidden="true" />
-                                Huaraz, Áncash - Perú
-                            </a>
                         </div>
                     </div>
 
@@ -39,7 +31,7 @@ export default function PublicFooter() {
                             <a href="https://www.facebook.com/share/1BnVinCAXH/" target="_blank" rel="noreferrer" aria-label="Facebook">
                                 <i className="fa-brands fa-facebook-f" aria-hidden="true" />
                             </a>
-                            <a href="https://www.instagram.com/" target="_blank" rel="noreferrer" aria-label="Instagram">
+                            <a href="https://www.instagram.com/latin_.terra?igsh=bTVkMWo2a3BxZGg3" target="_blank" rel="noreferrer" aria-label="Instagram">
                                 <i className="fa-brands fa-instagram" aria-hidden="true" />
                             </a>
                         </div>
@@ -49,7 +41,7 @@ export default function PublicFooter() {
 
             <div className="footer-pro-bar">
                 <div className="container footer-pro-bar-inner">
-                    <span>© {year} Latin Terra | Todos los derechos reservados</span>
+                    <span>&copy; {year} Latin Terra | Todos los derechos reservados</span>
                     <span>Diseño web Latin Terra</span>
                 </div>
             </div>

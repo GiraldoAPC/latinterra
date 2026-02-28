@@ -246,7 +246,6 @@ export default function Contacto() {
                                         <div className="contact-page-lt__badge">LT</div>
                                         <div>
                                             <h3>Oficina principal</h3>
-                                            <p>Huaraz, Ancash - Peru</p>
                                             <div className="contact-page-lt__links">
                                                 <a href={WHATSAPP_WEB_URL} target="_blank" rel="noreferrer">
                                                     +51 954 178 081
@@ -287,31 +286,6 @@ export default function Contacto() {
                         </div>
                     </section>
 
-                    <section className="contact-page-lt__map-band reveal">
-                        <div className="container contact-page-lt__map-band-head">
-                            <div>
-                                <span className="contact-page-lt__kicker">UBICACION</span>
-                                <h3>Mapa referencial</h3>
-                            </div>
-                            <a
-                                className="btn btn-dark"
-                                href="https://www.google.com/maps/search/?api=1&query=Huaraz%2C%20Ancash%2C%20Peru"
-                                target="_blank"
-                                rel="noreferrer"
-                            >
-                                Abrir en Google Maps
-                            </a>
-                        </div>
-
-                        <div className="contact-page-lt__map-band-frame">
-                            <iframe
-                                title="Mapa de Huaraz Ancash"
-                                loading="lazy"
-                                referrerPolicy="no-referrer-when-downgrade"
-                                src="https://www.google.com/maps?q=Huaraz,+Ancash,+Peru&output=embed"
-                            />
-                        </div>
-                    </section>
                 </main>
 
                 <PublicFooter />

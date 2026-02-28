@@ -31,9 +31,7 @@ Route::get('/contacto', function () {
 })->name('contacto');
 Route::post('/contacto/enviar', [PublicContactController::class, 'send'])->name('contacto.send');
 
-Route::get('/marcas', function () {
-    return Inertia::render('Public/Marcas');
-})->name('marcas');
+Route::redirect('/marcas', '/', 301)->name('marcas');
 
 Route::get('/acceso-por-cuerdas', function () {
     return Inertia::render('Public/Trabajosenaltura');

@@ -11,7 +11,7 @@ export default function PublicHeader({
 }) {
     const [menuOpen, setMenuOpen] = useState(false);
     const facebookUrl = "https://www.facebook.com/share/1BnVinCAXH/";
-    const instagramUrl = "https://www.instagram.com/";
+    const instagramUrl = "https://www.instagram.com/latin_.terra?igsh=bTVkMWo2a3BxZGg3";
     const isHome = current === "home";
     const anchor = (id) => (isHome ? `#${id}` : `/#${id}`);
     const productsUrl = productHref ?? anchor("productos");
@@ -91,11 +91,6 @@ export default function PublicHeader({
                                         ))}
                                     </div>
                                 </div>
-                            </li>
-                            <li>
-                                <Link href="/marcas" className={isActive("brands")}>
-                                    Marcas
-                                </Link>
                             </li>
                             <li>
                                 <a href={anchor("faq")}>FAQ</a>
@@ -205,11 +200,6 @@ export default function PublicHeader({
                                     </div>
                                 </div>
                             </details>
-                        </li>
-                        <li>
-                            <Link href="/marcas" data-close="true" className={isActive("brands")} onClick={() => setMenuOpen(false)}>
-                                Marcas
-                            </Link>
                         </li>
                         <li>
                             <a href={anchor("faq")} data-close="true" onClick={() => setMenuOpen(false)}>
