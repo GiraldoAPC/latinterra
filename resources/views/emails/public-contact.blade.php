@@ -25,12 +25,12 @@
             <td>{{ $data['company'] ?? '-' }}</td>
         </tr>
         <tr>
-            <td style="font-weight: bold;">Segmento</td>
-            <td>{{ $data['segment'] ?? '-' }}</td>
+            <td style="font-weight: bold;">Tipo de documento</td>
+            <td>{{ $data['document_type'] ?? '-' }}</td>
         </tr>
         <tr>
-            <td style="font-weight: bold;">Categoria</td>
-            <td>{{ $data['topic'] ?? '-' }}</td>
+            <td style="font-weight: bold;">RUC/DNI</td>
+            <td>{{ $data['document_number'] ?? '-' }}</td>
         </tr>
         <tr>
             <td style="font-weight: bold; vertical-align: top;">Mensaje</td>

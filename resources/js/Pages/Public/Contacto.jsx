@@ -55,8 +55,8 @@ export default function Contacto() {
             phone: (formData.get("phone") || "").toString().trim(),
             email: (formData.get("email") || "").toString().trim(),
             company: (formData.get("company") || "").toString().trim(),
-            segment: (formData.get("segment") || "").toString().trim(),
-            topic: (formData.get("topic") || "").toString().trim(),
+            document_type: (formData.get("document_type") || "").toString().trim(),
+            document_number: (formData.get("document_number") || "").toString().trim(),
             message: (formData.get("message") || "").toString().trim(),
             recaptcha_token: recaptchaToken,
         };
@@ -129,23 +129,6 @@ export default function Contacto() {
                                     <span className="contact-page-lt__kicker">CONTACTO COMERCIAL</span>
                                     <h2>Solicita informacion o cotizacion</h2>
                                 </div>
-
-                                <div className="contact-page-lt__intro-card">
-                                    <div className="contact-page-lt__intro-item">
-                                        <span className="bullet" />
-                                        <div>
-                                            <b>Respuesta comercial</b>
-                                            <p>Atencion para cotizaciones, marcas y categorias</p>
-                                        </div>
-                                    </div>
-                                    <div className="contact-page-lt__intro-item">
-                                        <span className="bullet" />
-                                        <div>
-                                            <b>Horario</b>
-                                            <p>Lun-Sab: 8:00 a.m. - 6:00 p.m.</p>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
 
                             <div className="contact-page-lt__grid">
@@ -187,40 +170,27 @@ export default function Contacto() {
 
                                     <div className="contact-page-lt__row">
                                         <div>
-                                            <label htmlFor="segment">Segmento</label>
-                                            <select id="segment" name="segment" defaultValue="">
-                                                <option value="">Selecciona un segmento</option>
-                                                <option>Industria</option>
-                                                <option>Construccion</option>
-                                                <option>Mineria</option>
-                                                <option>Mantenimiento</option>
-                                                <option>Comercio</option>
-                                                <option>Otro</option>
+                                            <label htmlFor="document_type">Tipo de documento</label>
+                                            <select id="document_type" name="document_type" defaultValue="">
+                                                <option value="">Selecciona una opcion</option>
+                                                <option>DNI</option>
+                                                <option>RUC</option>
                                             </select>
-                                            {fieldError("segment") ? <small className="contact-page-lt__error">{fieldError("segment")}</small> : null}
+                                            {fieldError("document_type") ? <small className="contact-page-lt__error">{fieldError("document_type")}</small> : null}
                                         </div>
                                         <div>
-                                            <label htmlFor="topic">Linea de producto</label>
-                                            <select id="topic" name="topic" defaultValue="">
-                                                <option value="">Selecciona una categoria</option>
-                                                <option>Acceso por Cuerdas</option>
-                                                <option>EPP y Seguridad</option>
-                                                <option>Articulos de Ferreteria</option>
-                                                <option>Herramientas</option>
-                                                <option>Equipo Electrico</option>
-                                                <option>Reparacion de Palas</option>
-                                                <option>Catalogo General</option>
-                                            </select>
-                                            {fieldError("topic") ? <small className="contact-page-lt__error">{fieldError("topic")}</small> : null}
+                                            <label htmlFor="document_number">RUC/DNI</label>
+                                            <input id="document_number" name="document_number" placeholder="Ingresa tu numero de documento" />
+                                            {fieldError("document_number") ? <small className="contact-page-lt__error">{fieldError("document_number")}</small> : null}
                                         </div>
                                     </div>
 
                                     <div className="contact-page-lt__field">
-                                        <label htmlFor="message">Detalle del requerimiento</label>
+                                        <label htmlFor="message">Mensaje</label>
                                         <textarea
                                             id="message"
                                             name="message"
-                                            placeholder="Ejemplo: Necesito cotizacion de EPP para 20 personas, con entrega en Huaraz..."
+                                            placeholder="Escribe aqui tu requerimiento."
                                             required
                                         />
                                         {fieldError("message") ? <small className="contact-page-lt__error">{fieldError("message")}</small> : null}
@@ -234,6 +204,10 @@ export default function Contacto() {
                                         <button type="submit" className="btn btn-primary" disabled={isSending}>
                                             {isSending ? "Enviando..." : "Enviar al correo"}
                                         </button>
+                                        <div className="contact-page-lt__recaptcha-note">
+                                            <i className="fa-brands fa-google" aria-hidden="true" />
+                                            <span>Protegido por Google reCAPTCHA</span>
+                                        </div>
                                     </div>
 
                                     {successMessage ? (
@@ -242,42 +216,33 @@ export default function Contacto() {
                                 </form>
 
                                 <aside className="contact-page-lt__side reveal" style={{ transitionDelay: ".06s" }}>
-                                    <div className="contact-page-lt__panel contact-page-lt__panel--highlight">
-                                        <div className="contact-page-lt__badge">LT</div>
-                                        <div>
-                                            <h3>Oficina principal</h3>
-                                            <div className="contact-page-lt__links">
-                                                <a href={WHATSAPP_WEB_URL} target="_blank" rel="noreferrer">
-                                                    +51 954 178 081
-                                                </a>
-                                                <a href="mailto:ventas@latin-terra.com">
-                                                    ventas@latin-terra.com
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="contact-page-lt__panel">
-                                        <h4>Canales de atencion</h4>
-                                        <div className="contact-page-lt__info-item">
-                                            <span className="ico">WA</span>
+                                    <div className="contact-page-lt__intro-card">
+                                        <a className="contact-page-lt__intro-action" href={WHATSAPP_WEB_URL} target="_blank" rel="noreferrer">
+                                            <span className="contact-page-lt__intro-icon" aria-hidden="true">
+                                                <i className="fa-brands fa-whatsapp" />
+                                            </span>
                                             <div>
                                                 <b>WhatsApp</b>
-                                                <span>Consultas y cotizaciones con respuesta rapida</span>
+                                                <p>+51 954 178 081</p>
                                             </div>
-                                        </div>
-                                        <div className="contact-page-lt__info-item">
-                                            <span className="ico">EM</span>
+                                        </a>
+                                        <a className="contact-page-lt__intro-action" href="mailto:ventas@latin-terra.com">
+                                            <span className="contact-page-lt__intro-icon" aria-hidden="true">
+                                                <i className="fa-regular fa-envelope" />
+                                            </span>
                                             <div>
                                                 <b>Correo ventas</b>
-                                                <span>Envio de listas, fichas tecnicas y requerimientos</span>
+                                                <p>ventas@latin-terra.com</p>
                                             </div>
-                                        </div>
-                                        <div className="contact-page-lt__info-item">
-                                            <span className="ico">HR</span>
+                                        </a>
+                                        <div className="contact-page-lt__intro-action">
+                                            <span className="contact-page-lt__intro-icon" aria-hidden="true">
+                                                <i className="fa-regular fa-clock" />
+                                            </span>
                                             <div>
                                                 <b>Horario</b>
-                                                <span>Lun-Sab: 8:00 a.m. - 6:00 p.m.</span>
+                                                <p>Lunes a viernes de 8:00 a.m. a 6:00 p.m.</p>
+                                                <p>Sabado de 8:00 a.m. a 1:00 p.m.</p>
                                             </div>
                                         </div>
                                     </div>
@@ -285,7 +250,6 @@ export default function Contacto() {
                             </div>
                         </div>
                     </section>
-
                 </main>
 
                 <PublicFooter />

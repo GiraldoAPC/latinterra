@@ -25,7 +25,7 @@ const getWhatsAppUrl = (text = whatsappDefaultText) =>
     `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(text)}`;
 const getBrandId = (name) => name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
-export default function TrabajosEnAltura() {
+export default function TrabajosAlturaCatalogo() {
     useEffect(() => {
         const runInit = () => {
             if (typeof window.initProductCatalogs === "function") {
@@ -64,7 +64,7 @@ export default function TrabajosEnAltura() {
             <link rel="stylesheet" href="/assets/css/Productos.css" />
             <script defer src="/assets/js/nosotros.js"></script>
 
-            <PublicHeader current="products" productHref="/acceso-por-cuerdas" whatsappHref={getWhatsAppUrl()} />
+            <PublicHeader current="products" productHref="/trabajos-en-altura" whatsappHref={getWhatsAppUrl()} />
 
             <section className="catalog-hero" aria-label="Encabezado de categoria">
                 <div

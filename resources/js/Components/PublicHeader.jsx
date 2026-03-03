@@ -20,13 +20,14 @@ export default function PublicHeader({
     const currentProductHref = (productHref ?? "").split("?")[0];
     const productCategories = [
         { href: "/acceso-por-cuerdas", label: "Acceso por Cuerdas", icon: "fa-solid fa-link" },
+        { href: "/trabajos-en-altura", label: "Trabajos en Altura", icon: "fa-solid fa-user-shield" },
         { href: "/epp-y-seguridad", label: "EPP y Seguridad", icon: "fa-solid fa-shield" },
         { href: "/articulos-de-ferreteria", label: "Articulos de Ferreteria", icon: "fa-solid fa-tools" },
         { href: "/herramientas", label: "Herramientas", icon: "fa-solid fa-toolbox" },
         { href: "/equipo-electrico", label: "Equipo Electrico", icon: "fa-solid fa-bolt" },
         { href: "/reparacion-de-palas", label: "Reparacion de Palas", icon: "fa-solid fa-gears" },
+        { href: "/parques-eolicos", label: "Parques Eolicos", icon: "fa-solid fa-wind" },
     ];
-
     const isActive = (key) => (current === key ? "active" : "");
     const isProductItemActive = (href) => current === "products" && currentProductHref === href;
 
@@ -52,7 +53,6 @@ export default function PublicHeader({
                 <div className="container nav">
                     <a className="brand" href={homeUrl} aria-label="Latin Terra - Inicio">
                         <img src="/assets/img/logo.png" alt="Latin Terra Logo" />
-                        <div className="name">LATIN TERRA</div>
                     </a>
 
                     <nav aria-label="Navegacion principal">
@@ -93,7 +93,10 @@ export default function PublicHeader({
                                 </div>
                             </li>
                             <li>
-                                <a href={anchor("faq")}>FAQ</a>
+                                <Link href="/acceso-por-cuerdas#beal">BEAL</Link>
+                            </li>
+                            <li>
+                                <Link href="/reparacion-de-palas#kuhlmann">Kuhlmann</Link>
                             </li>
                             <li>
                                 <Link href={contactUrl} className={isActive("contact")}>
@@ -145,7 +148,6 @@ export default function PublicHeader({
                     <div className="drawer-head">
                         <div className="brand" style={{ minWidth: "auto" }}>
                             <img src="/assets/img/logo.png" alt="Latin Terra Logo" />
-                            <div className="name">LATIN TERRA</div>
                         </div>
                         <button className="burger" id="drawerClose" aria-label="Cerrar menu" onClick={() => setMenuOpen(false)}>
                             <span />
@@ -202,9 +204,14 @@ export default function PublicHeader({
                             </details>
                         </li>
                         <li>
-                            <a href={anchor("faq")} data-close="true" onClick={() => setMenuOpen(false)}>
-                                FAQ
-                            </a>
+                            <Link href="/acceso-por-cuerdas#beal" data-close="true" onClick={() => setMenuOpen(false)}>
+                                BEAL
+                            </Link>
+                        </li>
+                        <li>
+                            <Link href="/reparacion-de-palas#kuhlmann" data-close="true" onClick={() => setMenuOpen(false)}>
+                                Kuhlmann
+                            </Link>
                         </li>
                         <li>
                             <Link href={contactUrl} data-close="true" className={isActive("contact")} onClick={() => setMenuOpen(false)}>

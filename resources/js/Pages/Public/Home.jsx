@@ -133,17 +133,11 @@ export default function Home() {
                         className="hero-card reveal"
                         style={{ transitionDelay: ".2s" }}
                     >
-                        <h3>Todo en un solo proveedor</h3>
+                        <h3>Atencion comercial directa</h3>
                         <p className="mini">
-                            Cotiza rápido por WhatsApp y recibe atención
-                            personalizada para tu obra, industria o comercio.
+                            Escribenos por WhatsApp y recibe respuesta
+                            comercial para cotizaciones, marcas y proyectos.
                         </p>
-                        <div className="chips">
-                            <span className="chip">EPP</span>
-                            <span className="chip">Eléctricos</span>
-                            <span className="chip">Herramientas</span>
-                            <span className="chip">Trabajos en altura</span>
-                        </div>
                         <div
                             style={{
                                 marginTop: 14,
@@ -152,11 +146,8 @@ export default function Home() {
                                 flexWrap: "wrap",
                             }}
                         >
-                            <a className="btn btn-ghost" href="#productos">
-                                Ver categorías
-                            </a>
-                            <a className="btn btn-ghost" href="#cursos">
-                                Ver cursos
+                            <a className="btn btn-ghost" href={WHATSAPP_WEB_URL} target="_blank" rel="noreferrer">
+                                Contactenos
                             </a>
                         </div>
                     </aside>
@@ -291,6 +282,58 @@ export default function Home() {
 
                             <a className="link" href="/acceso-por-cuerdas">
                                 Ver productos →{/* (tu opción pro) */}
+                            </a>
+                        </article>
+
+                        <article
+                            className="card reveal"
+                            style={{ transitionDelay: ".02s" }}
+                        >
+                            <div className="card-media">
+                                <img
+                                    src="/assets/img/categorias/Trabajos-en-Altura.jpg"
+                                    alt="Trabajos en Altura"
+                                    loading="lazy"
+                                />
+                            </div>
+
+                            <div className="kicker">
+                                <span className="badge">Altura</span>
+                            </div>
+
+                            <div className="cat-head">
+                                <div className="cat-ico">
+                                    <svg
+                                        width="22"
+                                        height="22"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                    >
+                                        <path
+                                            d="M12 2l8 4v6c0 5-3.5 9.5-8 10-4.5-.5-8-5-8-10V6l8-4Z"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                            opacity=".75"
+                                        />
+                                        <path
+                                            d="M9 12l2 2 4-5"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                        />
+                                    </svg>
+                                </div>
+                                <h4>Trabajos en Altura</h4>
+                            </div>
+
+                            <p>
+                                Marcas y soluciones para proteccion,
+                                rescate y seguridad especializada en altura.
+                            </p>
+
+                            <a className="link" href="/trabajos-en-altura">
+                                Ver productos ->
                             </a>
                         </article>
 
@@ -544,6 +587,49 @@ export default function Home() {
 
                             <a className="link" href="/reparacion-de-palas">
                                 Ver productos →
+                            </a>
+                        </article>
+
+                        <article
+                            className="card reveal"
+                            style={{ transitionDelay: ".06s" }}
+                        >
+                            <div className="card-media">
+                                <img
+                                    src="/assets/img/encabezado/reparacion-de-palas.jpg"
+                                    alt="Parques Eolicos"
+                                    loading="lazy"
+                                />
+                            </div>
+
+                            <div className="kicker">
+                                <span className="badge">Eolicos</span>
+                            </div>
+
+                            <div className="cat-head">
+                                <div className="cat-ico">
+                                    <svg
+                                        width="22"
+                                        height="22"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                    >
+                                        <path d="M12 3v13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                                        <path d="M12 8l-5 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                                        <path d="M12 8l5 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                                        <circle cx="12" cy="8" r="2" stroke="currentColor" strokeWidth="2" />
+                                    </svg>
+                                </div>
+                                <h4>Parques Eolicos</h4>
+                            </div>
+
+                            <p>
+                                Marcas para mantenimiento, limpieza tecnica
+                                y equipos de medicion en parques eolicos.
+                            </p>
+
+                            <a className="link" href="/parques-eolicos">
+                                Ver productos ->
                             </a>
                         </article>
                     </div>

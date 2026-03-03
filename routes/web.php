@@ -37,7 +37,9 @@ Route::get('/acceso-por-cuerdas', function () {
     return Inertia::render('Public/Trabajosenaltura');
 })->name('accesoporcuerdas');
 
-Route::redirect('/trabajos-en-altura', '/acceso-por-cuerdas', 301);
+Route::get('/trabajos-en-altura', function () {
+    return Inertia::render('Public/TrabajosAlturaCatalogo');
+})->name('trabajosenaltura');
 
 Route::redirect('/trabajosenaltura', '/acceso-por-cuerdas', 301);
 
@@ -64,6 +66,10 @@ Route::get('/articulos-de-ferreteria', function () {
 Route::get('/reparacion-de-palas', function () {
     return Inertia::render('Public/ReparacionPalas');
 })->name('reparacionpalas.catalogo');
+
+Route::get('/parques-eolicos', function () {
+    return Inertia::render('Public/ParquesEolicos');
+})->name('parqueseolicos.catalogo');
 
 
 Route::get('/dashboard', function () {

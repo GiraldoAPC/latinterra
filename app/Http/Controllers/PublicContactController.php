@@ -17,8 +17,8 @@ class PublicContactController extends Controller
             'phone' => ['nullable', 'string', 'max:50'],
             'email' => ['nullable', 'email', 'max:150'],
             'company' => ['nullable', 'string', 'max:150'],
-            'segment' => ['nullable', 'string', 'max:100'],
-            'topic' => ['nullable', 'string', 'max:120'],
+            'document_type' => ['nullable', 'string', 'max:20'],
+            'document_number' => ['nullable', 'string', 'max:30'],
             'message' => ['required', 'string', 'max:4000'],
             'recaptcha_token' => ['nullable', 'string'],
         ]);
@@ -29,7 +29,7 @@ class PublicContactController extends Controller
 
         Mail::send('emails.public-contact', ['data' => $data], function ($mail) use ($toEmail, $data) {
             $mail->to($toEmail)
-                ->subject('Nuevo contacto web - ' . ($data['topic'] ?: 'Consulta general'))
+                ->subject('Nuevo contacto web - ' . ($data['document_type'] ?: 'Consulta general'))
                 ->replyTo($data['email'] ?: $toEmail, $data['name']);
         });
 

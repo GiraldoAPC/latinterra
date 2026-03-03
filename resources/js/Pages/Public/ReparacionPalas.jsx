@@ -16,6 +16,7 @@ const whatsappNumber = "51954178081";
 const whatsappDefaultText = "Hola Latin Terra, quisiera cotizar productos para reparacion de palas.";
 const getWhatsAppUrl = (text = whatsappDefaultText) =>
     `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(text)}`;
+const getBrandId = (name) => name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
 export default function ReparacionPalas() {
     useEffect(() => {
@@ -100,6 +101,7 @@ export default function ReparacionPalas() {
 
                             return (
                                 <article
+                                    id={getBrandId(item.name)}
                                     key={item.name}
                                     className="product-card js-product-card reveal"
                                     data-search={`${item.name} ${item.desc}`}
