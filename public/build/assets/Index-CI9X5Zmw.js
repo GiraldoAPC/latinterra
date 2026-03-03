@@ -1,0 +1,1 @@
+import{j as t,S as e}from"./app-BlMePq0j.js";import{A as r}from"./AdminLayout-FphwE0bA.js";import"./index-B9X9MWFJ.js";function i(){return t.jsxs(t.Fragment,{children:[t.jsx(e,{title:"Productos"}),t.jsx(r,{title:"Productos",children:t.jsx("div",{className:"text-sm text-muted-foreground",children:"Página en construcción."})})]})}export{i as default};
