@@ -27,3 +27,7 @@ storage/framework/cache/*
 storage/framework/sessions/*
 storage/framework/views/*
 storage/logs/*
+
+# Fuentes de datos (Excel) - no se versionan, ya extraidos a resources/data
+/*.xlsx
+~$*.xlsx

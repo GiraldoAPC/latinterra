@@ -62,27 +62,19 @@ export default function Home() {
 
                 <div className="container hero-content">
                     <div>
-                        <span className="pill reveal">
-                            Abastecimiento confiable • EPP • Herramientas •
-                            Eléctricos
-                        </span>
-
-                        <h1
-                            className="reveal"
-                            style={{ transitionDelay: ".05s" }}
-                        >
-                            Soluciones integrales en productos industriales,
-                            <br />
-                            comerciales y de seguridad
-                        </h1>
-
-                        <p
-                            className="reveal"
-                            style={{ transitionDelay: ".1s" }}
-                        >
-                            Abastecimiento confiable en herramientas, equipos
-                            eléctricos, EPP, trabajos en altura y más.
-                        </p>
+                        <div className="hero-headline">
+                            <span className="hero-headline__bar" aria-hidden="true" />
+                            <h1
+                                className="reveal"
+                                style={{ transitionDelay: ".05s" }}
+                            >
+                                Soluciones integrales en
+                                <br />
+                                productos industriales,
+                                <br />
+                                comerciales y <span>de seguridad</span>
+                            </h1>
+                        </div>
 
                         <div
                             className="hero-actions reveal"
@@ -104,7 +96,7 @@ export default function Home() {
                                     />
                                 </svg>
                             </a>
-                            <a className="btn btn-dark" href="/contacto">
+                            <a className="btn btn-outline" href="/contacto">
                                 Contáctanos
                                 <svg
                                     className="icon"
@@ -114,13 +106,13 @@ export default function Home() {
                                 >
                                     <path
                                         d="M4 4h16v12H5.5L4 17.5V4Z"
-                                        stroke="white"
+                                        stroke="currentColor"
                                         strokeWidth="2"
                                         strokeLinejoin="round"
                                     />
                                     <path
                                         d="M7 8h10M7 11h7"
-                                        stroke="white"
+                                        stroke="currentColor"
                                         strokeWidth="2"
                                         strokeLinecap="round"
                                     />
@@ -128,29 +120,6 @@ export default function Home() {
                             </a>
                         </div>
                     </div>
-
-                    <aside
-                        className="hero-card reveal"
-                        style={{ transitionDelay: ".2s" }}
-                    >
-                        <h3>Atencion comercial directa</h3>
-                        <p className="mini">
-                            Escribenos por WhatsApp y recibe respuesta
-                            comercial para cotizaciones, marcas y proyectos.
-                        </p>
-                        <div
-                            style={{
-                                marginTop: 14,
-                                display: "flex",
-                                gap: 10,
-                                flexWrap: "wrap",
-                            }}
-                        >
-                            <a className="btn btn-ghost" href={WHATSAPP_WEB_URL} target="_blank" rel="noreferrer">
-                                Contactenos
-                            </a>
-                        </div>
-                    </aside>
                 </div>
 
                 <div className="hero-controls">
@@ -202,15 +171,8 @@ export default function Home() {
                     <div className="section-head">
                         <div>
                             <h2 className="section-title reveal">
-                                Categorías Principales de Productos
+                                Categorías Principales de <span>Productos</span>
                             </h2>
-                            <p
-                                className="section-sub reveal"
-                                style={{ transitionDelay: ".05s" }}
-                            >
-                                Categorías destacadas. Cada una con imagen/ícono
-                                y enlace a productos.
-                            </p>
                         </div>
                         <a
                             className="btn btn-primary reveal"

@@ -1,5 +1,5 @@
 import { Link } from "@inertiajs/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 function faIcon(className) {
     return <i className={className} aria-hidden="true" />;
@@ -8,8 +8,11 @@ function faIcon(className) {
 export default function PublicHeader({
     current = "home",
     productHref,
+    bealLine = "pro",
 }) {
     const [menuOpen, setMenuOpen] = useState(false);
+    const [scrolled, setScrolled] = useState(false);
+    const headerRef = useRef(null);
     const facebookUrl = "https://www.facebook.com/share/1BnVinCAXH/";
     const instagramUrl = "https://www.instagram.com/latin_.terra?igsh=bTVkMWo2a3BxZGg3";
     const isHome = current === "home";
@@ -47,12 +50,43 @@ export default function PublicHeader({
         };
     }, [menuOpen]);
 
+    useEffect(() => {
+        const onScroll = () => setScrolled(window.scrollY > 40);
+        onScroll();
+        window.addEventListener("scroll", onScroll, { passive: true });
+        return () => window.removeEventListener("scroll", onScroll);
+    }, [current]);
+
+    useEffect(() => {
+        const header = headerRef.current;
+        if (!header) {
+            return;
+        }
+
+        const setHeaderHeightVar = () => {
+            document.documentElement.style.setProperty(
+                "--lt-header-h",
+                `${header.offsetHeight}px`
+            );
+        };
+
+        setHeaderHeightVar();
+
+        const observer = new ResizeObserver(setHeaderHeightVar);
+        observer.observe(header);
+
+        return () => observer.disconnect();
+    }, []);
+
     return (
         <>
-            <header className="site-header">
+            <header
+                ref={headerRef}
+                className={`site-header ${scrolled ? "is-scrolled" : "is-floating"}`}
+            >
                 <div className="container nav">
                     <a className="brand" href={homeUrl} aria-label="Latin Terra - Inicio">
-                        <img src="/assets/img/logo.png" alt="Latin Terra Logo" />
+                        <img src="/assets/img/logo-latin-terra-blanco-verde.png" alt="Latin Terra Logo" />
                     </a>
 
                     <nav aria-label="Navegacion principal">
@@ -92,8 +126,37 @@ export default function PublicHeader({
                                     </div>
                                 </div>
                             </li>
-                            <li>
-                                <Link href="/acceso-por-cuerdas#beal">BEAL</Link>
+                            <li className="menu-item menu-item--products">
+                                <a href="/beal" className={isActive("beal")}>
+                                    BEAL
+                                    <span className="menu-caret" aria-hidden="true">
+                                        {faIcon("fa-solid fa-chevron-down")}
+                                    </span>
+                                </a>
+                                <div className="products-submenu products-submenu--sm" role="menu" aria-label="Lineas Beal">
+                                    <div className="products-submenu__grid products-submenu__grid--1col">
+                                        <Link
+                                            href="/beal"
+                                            role="menuitem"
+                                            className={`products-submenu__link ${bealLine === "sport" ? "" : "is-current"}`}
+                                        >
+                                            <span className="products-submenu__icon" aria-hidden="true">
+                                                {faIcon("fa-solid fa-shield-halved")}
+                                            </span>
+                                            <span>Profesional</span>
+                                        </Link>
+                                        <Link
+                                            href="/beal/sport"
+                                            role="menuitem"
+                                            className={`products-submenu__link ${bealLine === "sport" ? "is-current" : ""}`}
+                                        >
+                                            <span className="products-submenu__icon" aria-hidden="true">
+                                                {faIcon("fa-solid fa-mountain")}
+                                            </span>
+                                            <span>Sport</span>
+                                        </Link>
+                                    </div>
+                                </div>
                             </li>
                             <li>
                                 <Link href="/reparacion-de-palas#kuhlmann">Kuhlmann</Link>
@@ -203,10 +266,47 @@ export default function PublicHeader({
                                 </div>
                             </details>
                         </li>
-                        <li>
-                            <Link href="/acceso-por-cuerdas#beal" data-close="true" onClick={() => setMenuOpen(false)}>
-                                BEAL
-                            </Link>
+                        <li className="drawer-products">
+                            <details>
+                                <summary className={isActive("beal")}>
+                                    <span className="drawer-products__summary-main">
+                                        <span className="drawer-products__summary-icon" aria-hidden="true">
+                                            {faIcon("fa-solid fa-shield-halved")}
+                                        </span>
+                                        <span>BEAL</span>
+                                    </span>
+                                    <span className="drawer-products__caret" aria-hidden="true">
+                                        {faIcon("fa-solid fa-chevron-down")}
+                                    </span>
+                                </summary>
+
+                                <div className="drawer-products__actions">
+                                    <div className="drawer-products__list">
+                                        <Link
+                                            href="/beal"
+                                            data-close="true"
+                                            className={bealLine === "sport" ? "" : "active"}
+                                            onClick={() => setMenuOpen(false)}
+                                        >
+                                            <span className="drawer-products__item-icon" aria-hidden="true">
+                                                {faIcon("fa-solid fa-shield-halved")}
+                                            </span>
+                                            <span>Profesional</span>
+                                        </Link>
+                                        <Link
+                                            href="/beal/sport"
+                                            data-close="true"
+                                            className={bealLine === "sport" ? "active" : ""}
+                                            onClick={() => setMenuOpen(false)}
+                                        >
+                                            <span className="drawer-products__item-icon" aria-hidden="true">
+                                                {faIcon("fa-solid fa-mountain")}
+                                            </span>
+                                            <span>Sport</span>
+                                        </Link>
+                                    </div>
+                                </div>
+                            </details>
                         </li>
                         <li>
                             <Link href="/reparacion-de-palas#kuhlmann" data-close="true" onClick={() => setMenuOpen(false)}>

@@ -37,6 +37,14 @@ Route::get('/acceso-por-cuerdas', function () {
     return Inertia::render('Public/Trabajosenaltura');
 })->name('accesoporcuerdas');
 
+Route::get('/beal', function () {
+    return Inertia::render('Public/Beal', ['initialLine' => 'pro']);
+})->name('beal');
+
+Route::get('/beal/sport', function () {
+    return Inertia::render('Public/Beal', ['initialLine' => 'sport']);
+})->name('beal.sport');
+
 Route::get('/trabajos-en-altura', function () {
     return Inertia::render('Public/TrabajosAlturaCatalogo');
 })->name('trabajosenaltura');
