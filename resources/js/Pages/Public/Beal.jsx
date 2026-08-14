@@ -281,6 +281,8 @@ export default function Beal({ initialLine = "pro" }) {
                                 key={item.key}
                                 href={item.key === "sport" ? "/beal/sport" : "/beal"}
                                 className={`beal-hero-tabs__link ${line === item.key ? "is-active" : ""}`}
+                                preserveScroll
+                                preserveState={false}
                             >
                                 {item.label}
                             </Link>

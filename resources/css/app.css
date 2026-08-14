@@ -2067,6 +2067,11 @@ body.menu-open .lt-public .drawer-panel{
   display: block;
 }
 
+.lt-public.beal-page .catalog-hero__title{
+  text-transform: uppercase;
+  font-size: clamp(1.2rem, 2.8vw, 1.9rem);
+}
+
 .lt-public.beal-page .beal-hero-line{
   display: inline-block;
   margin-left: 10px;
