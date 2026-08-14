@@ -64,11 +64,15 @@ export default function EquipoElectrico() {
 
     return (
         <div className="catalog-page lt-public">
-            <Head title="Equipo Electrico | Latin Terra" />
-            <meta
-                name="description"
-                content="Catalogo de marcas de equipo electrico, medicion, energia y herramientas tecnicas."
-            />
+            <Head title="Equipo Electrico | Latin Terra">
+                <meta
+                    name="description"
+                    content="Catalogo de marcas de equipo electrico, medicion, energia y herramientas tecnicas."
+                />
+                <meta property="og:title" content="Equipo Electrico | Latin Terra" />
+                <meta property="og:description" content="Catalogo de marcas de equipo electrico, medicion, energia y herramientas tecnicas." />
+                <meta property="og:image" content="https://latin-terra.com/assets/img/encabezado/equipo-electrico.jpg" />
+            </Head>
 
             <link rel="stylesheet" href="/assets/css/nosotros.css" />
             <link rel="stylesheet" href="/assets/css/Productos.css" />

@@ -59,11 +59,15 @@ export default function EppSeguridad() {
 
     return (
         <div className="catalog-page lt-public">
-            <Head title="EPP y Seguridad | Latin Terra" />
-            <meta
-                name="description"
-                content="Marcas de EPP y seguridad industrial: protección personal, visual, respiratoria y vestimenta de trabajo."
-            />
+            <Head title="EPP y Seguridad | Latin Terra">
+                <meta
+                    name="description"
+                    content="Marcas de EPP y seguridad industrial: protección personal, visual, respiratoria y vestimenta de trabajo."
+                />
+                <meta property="og:title" content="EPP y Seguridad | Latin Terra" />
+                <meta property="og:description" content="Marcas de EPP y seguridad industrial: protección personal, visual, respiratoria y vestimenta de trabajo." />
+                <meta property="og:image" content="https://latin-terra.com/assets/img/encabezado/epp-y-seguridad.jpg" />
+            </Head>
 
             <link rel="stylesheet" href="/assets/css/nosotros.css" />
             <link rel="stylesheet" href="/assets/css/Productos.css" />

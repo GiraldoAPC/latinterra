@@ -50,11 +50,15 @@ export default function ParquesEolicos() {
 
     return (
         <div className="catalog-page lt-public">
-            <Head title="Parques Eolicos | Latin Terra" />
-            <meta
-                name="description"
-                content="Marcas y soluciones para parques eolicos, mantenimiento tecnico, limpieza industrial y equipos de medicion."
-            />
+            <Head title="Parques Eolicos | Latin Terra">
+                <meta
+                    name="description"
+                    content="Marcas y soluciones para parques eolicos, mantenimiento tecnico, limpieza industrial y equipos de medicion."
+                />
+                <meta property="og:title" content="Parques Eolicos | Latin Terra" />
+                <meta property="og:description" content="Marcas y soluciones para parques eolicos, mantenimiento tecnico, limpieza industrial y equipos de medicion." />
+                <meta property="og:image" content="https://latin-terra.com/assets/img/encabezado/reparacion-de-palas.jpg" />
+            </Head>
 
             <link rel="stylesheet" href="/assets/css/nosotros.css" />
             <link rel="stylesheet" href="/assets/css/Productos.css" />

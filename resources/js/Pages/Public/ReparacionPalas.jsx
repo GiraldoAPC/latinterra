@@ -47,11 +47,15 @@ export default function ReparacionPalas() {
 
     return (
         <div className="catalog-page lt-public">
-            <Head title="Reparacion de Palas | Latin Terra" />
-            <meta
-                name="description"
-                content="Catalogo de marcas para reparacion de palas, mantenimiento y consumibles especializados."
-            />
+            <Head title="Reparacion de Palas | Latin Terra">
+                <meta
+                    name="description"
+                    content="Catalogo de marcas para reparacion de palas, mantenimiento y consumibles especializados."
+                />
+                <meta property="og:title" content="Reparacion de Palas | Latin Terra" />
+                <meta property="og:description" content="Catalogo de marcas para reparacion de palas, mantenimiento y consumibles especializados." />
+                <meta property="og:image" content="https://latin-terra.com/assets/img/encabezado/reparacion-de-palas.jpg" />
+            </Head>
 
             <link rel="stylesheet" href="/assets/css/nosotros.css" />
             <link rel="stylesheet" href="/assets/css/Productos.css" />

@@ -9,11 +9,15 @@ const WHATSAPP_WEB_URL = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURICompon
 export default function About() {
     return (
         <>
-            <Head title="Nosotros | Latin Terra" />
-            <meta
-                name="description"
-                content="Conoce Latin Terra: empresa peruana de productos industriales, comerciales y de seguridad."
-            />
+            <Head title="Nosotros | Latin Terra">
+                <meta
+                    name="description"
+                    content="Conoce Latin Terra: empresa peruana de productos industriales, comerciales y de seguridad."
+                />
+                <meta property="og:title" content="Nosotros | Latin Terra" />
+                <meta property="og:description" content="Conoce Latin Terra: empresa peruana de productos industriales, comerciales y de seguridad." />
+                <meta property="og:image" content="https://latin-terra.com/assets/img/nosotros.jpg" />
+            </Head>
 
             {/* CSS SOLO de esta página */}
             <link rel="stylesheet" href="/assets/css/nosotros.css" />

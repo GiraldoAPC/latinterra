@@ -238,11 +238,15 @@ export default function Beal({ initialLine = "pro" }) {
 
     return (
         <div className="catalog-page lt-public beal-page">
-            <Head title="BEAL | Latin Terra" />
-            <meta
-                name="description"
-                content="Catálogo Beal Profesional y Sport: cuerdas, arneses, cascos, mosquetones y accesorios para trabajo en altura y escalada."
-            />
+            <Head title="BEAL | Latin Terra">
+                <meta
+                    name="description"
+                    content="Catálogo Beal Profesional y Sport: cuerdas, arneses, cascos, mosquetones y accesorios para trabajo en altura y escalada."
+                />
+                <meta property="og:title" content="Catálogo BEAL | Latin Terra" />
+                <meta property="og:description" content="Catálogo Beal Profesional y Sport: cuerdas, arneses, cascos, mosquetones y accesorios para trabajo en altura y escalada." />
+                <meta property="og:image" content="https://latin-terra.com/assets/img/encabezado/acceso-por-cuerdas.jpg" />
+            </Head>
 
             <link rel="stylesheet" href="/assets/css/nosotros.css" />
             <link rel="stylesheet" href="/assets/css/Productos.css" />

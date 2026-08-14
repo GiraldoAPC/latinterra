@@ -85,11 +85,15 @@ export default function Contacto() {
 
     return (
         <>
-            <Head title="Contacto | Latin Terra" />
-            <meta
-                name="description"
-                content="Contacta a Latin Terra para cotizaciones de EPP, herramientas, equipo eléctrico, ferretería y soluciones industriales."
-            />
+            <Head title="Contacto | Latin Terra">
+                <meta
+                    name="description"
+                    content="Contacta a Latin Terra para cotizaciones de EPP, herramientas, equipo eléctrico, ferretería y soluciones industriales."
+                />
+                <meta property="og:title" content="Contacto | Latin Terra" />
+                <meta property="og:description" content="Contacta a Latin Terra para cotizaciones de EPP, herramientas, equipo eléctrico, ferretería y soluciones industriales." />
+                <meta property="og:image" content="https://latin-terra.com/assets/img/encabezado/contactenos.jpg" />
+            </Head>
             <link rel="stylesheet" href="/assets/css/nosotros.css" />
             <link rel="stylesheet" href="/assets/css/Productos.css" />
             <script defer src="/assets/js/nosotros.js"></script>

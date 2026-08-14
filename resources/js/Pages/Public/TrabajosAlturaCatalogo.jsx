@@ -51,11 +51,15 @@ export default function TrabajosAlturaCatalogo() {
 
     return (
         <div className="catalog-page lt-public">
-            <Head title="Trabajos en Altura | Latin Terra" />
-            <meta
-                name="description"
-                content="Catalogo de marcas para trabajos en altura, rescate y sistemas de seguridad especializada."
-            />
+            <Head title="Trabajos en Altura | Latin Terra">
+                <meta
+                    name="description"
+                    content="Catalogo de marcas para trabajos en altura, rescate y sistemas de seguridad especializada."
+                />
+                <meta property="og:title" content="Trabajos en Altura | Latin Terra" />
+                <meta property="og:description" content="Catalogo de marcas para trabajos en altura, rescate y sistemas de seguridad especializada." />
+                <meta property="og:image" content="https://latin-terra.com/assets/img/encabezado/acceso-por-cuerdas.jpg" />
+            </Head>
 
             <link rel="stylesheet" href="/assets/css/nosotros.css" />
             <link rel="stylesheet" href="/assets/css/Productos.css" />

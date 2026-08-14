@@ -24,7 +24,11 @@ export default function Home() {
 
     return (
         <PublicLayout title="Inicio">
-            <Head title="Inicio" />
+            <Head title="Inicio">
+                <meta property="og:title" content="Latin Terra | Soluciones industriales, EPP y trabajo en altura" />
+                <meta property="og:description" content="Abastecimiento confiable en herramientas, equipos electricos, EPP, trabajos en altura y mas." />
+                <meta property="og:image" content="https://latin-terra.com/assets/img/slider/slider1.jpg" />
+            </Head>
             <link rel="stylesheet" href="/assets/css/home.css" />
 
             <PublicHeader current="home" whatsappHref={WHATSAPP_WEB_URL} />

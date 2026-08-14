@@ -38,11 +38,15 @@ export default function Marcas() {
 
     return (
         <div className="catalog-page lt-public brands-page-lt">
-            <Head title="Marcas | Latin Terra" />
-            <meta
-                name="description"
-                content="Catalogo de marcas trabajadas por Latin Terra en sus categorias de productos, con busqueda y enlaces por categoria."
-            />
+            <Head title="Marcas | Latin Terra">
+                <meta
+                    name="description"
+                    content="Catalogo de marcas trabajadas por Latin Terra en sus categorias de productos, con busqueda y enlaces por categoria."
+                />
+                <meta property="og:title" content="Marcas | Latin Terra" />
+                <meta property="og:description" content="Catalogo de marcas trabajadas por Latin Terra en sus categorias de productos, con busqueda y enlaces por categoria." />
+                <meta property="og:image" content="https://latin-terra.com/assets/img/encabezado/marca.jpg" />
+            </Head>
 
             <link rel="stylesheet" href="/assets/css/nosotros.css" />
             <link rel="stylesheet" href="/assets/css/Productos.css" />

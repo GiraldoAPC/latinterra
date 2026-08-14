@@ -45,11 +45,15 @@ export default function Herramientas() {
 
     return (
         <div className="catalog-page lt-public">
-            <Head title="Herramientas | Latin Terra" />
-            <meta
-                name="description"
-                content="Catalogo de marcas de herramientas para mantenimiento, taller e industria."
-            />
+            <Head title="Herramientas | Latin Terra">
+                <meta
+                    name="description"
+                    content="Catalogo de marcas de herramientas para mantenimiento, taller e industria."
+                />
+                <meta property="og:title" content="Herramientas | Latin Terra" />
+                <meta property="og:description" content="Catalogo de marcas de herramientas para mantenimiento, taller e industria." />
+                <meta property="og:image" content="https://latin-terra.com/assets/img/categorias/Herramientas.jpg" />
+            </Head>
 
             <link rel="stylesheet" href="/assets/css/nosotros.css" />
             <link rel="stylesheet" href="/assets/css/Productos.css" />
