@@ -5,7 +5,7 @@ import PublicHeader from "@/Components/PublicHeader";
 import PublicFooter from "@/Components/PublicFooter";
 
 const WHATSAPP_PHONE = "51954178081";
-const WHATSAPP_BASE_TEXT = "Hola Latin Terra, deseo una cotizacion.";
+const WHATSAPP_BASE_TEXT = "Hola Latin Terra, deseo una cotización.";
 const WHATSAPP_WEB_URL = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(WHATSAPP_BASE_TEXT)}`;
 const RECAPTCHA_SITE_KEY = "6LfZDHosAAAAAPEGIEgAcW-DwG-HB5eIv0AJ7A_q";
 
@@ -88,7 +88,7 @@ export default function Contacto() {
             <Head title="Contacto | Latin Terra" />
             <meta
                 name="description"
-                content="Contacta a Latin Terra para cotizaciones de EPP, herramientas, equipo electrico, ferreteria y soluciones industriales."
+                content="Contacta a Latin Terra para cotizaciones de EPP, herramientas, equipo eléctrico, ferretería y soluciones industriales."
             />
             <link rel="stylesheet" href="/assets/css/nosotros.css" />
             <link rel="stylesheet" href="/assets/css/Productos.css" />
@@ -112,7 +112,7 @@ export default function Contacto() {
                         </div>
                         <h1 className="catalog-hero__title">Contacto</h1>
                         <p className="catalog-hero__subtitle">
-                            Cotizaciones, consultas comerciales y atencion para proyectos industriales
+                            Cotizaciones, consultas comerciales y atención para proyectos industriales
                         </p>
                         <p className="catalog-hero__crumb">
                             <a href="/">INICIO</a> / CONTACTO
@@ -127,7 +127,7 @@ export default function Contacto() {
                             <div className="contact-page-lt__intro reveal">
                                 <div>
                                     <span className="contact-page-lt__kicker">CONTACTO COMERCIAL</span>
-                                    <h2>Solicita informacion o cotizacion</h2>
+                                    <h2>Solicita información o cotización</h2>
                                 </div>
                             </div>
 
@@ -139,17 +139,17 @@ export default function Contacto() {
                                     noValidate
                                 >
                                     <div className="contact-page-lt__form-head">
-                                        <h3>Formulario de cotizacion</h3>
+                                        <h3>Formulario de cotización</h3>
                                     </div>
 
                                     <div className="contact-page-lt__row">
                                         <div>
-                                            <label htmlFor="name">Nombres y apellidos</label>
+                                            <label htmlFor="name">Nombre</label>
                                             <input id="name" name="name" placeholder="Tu nombre completo" required />
                                             {fieldError("name") ? <small className="contact-page-lt__error">{fieldError("name")}</small> : null}
                                         </div>
                                         <div>
-                                            <label htmlFor="phone">Telefono</label>
+                                            <label htmlFor="phone">Teléfono</label>
                                             <input id="phone" name="phone" placeholder="+51 999 999 999" />
                                             {fieldError("phone") ? <small className="contact-page-lt__error">{fieldError("phone")}</small> : null}
                                         </div>
@@ -172,7 +172,7 @@ export default function Contacto() {
                                         <div>
                                             <label htmlFor="document_type">Tipo de documento</label>
                                             <select id="document_type" name="document_type" defaultValue="">
-                                                <option value="">Selecciona una opcion</option>
+                                                <option value="">Selecciona una opción</option>
                                                 <option>DNI</option>
                                                 <option>RUC</option>
                                             </select>
@@ -180,7 +180,7 @@ export default function Contacto() {
                                         </div>
                                         <div>
                                             <label htmlFor="document_number">RUC/DNI</label>
-                                            <input id="document_number" name="document_number" placeholder="Ingresa tu numero de documento" />
+                                            <input id="document_number" name="document_number" placeholder="Ingresa tu número de documento" />
                                             {fieldError("document_number") ? <small className="contact-page-lt__error">{fieldError("document_number")}</small> : null}
                                         </div>
                                     </div>
@@ -190,7 +190,7 @@ export default function Contacto() {
                                         <textarea
                                             id="message"
                                             name="message"
-                                            placeholder="Escribe aqui tu requerimiento."
+                                            placeholder="Escribe aquí tu requerimiento."
                                             required
                                         />
                                         {fieldError("message") ? <small className="contact-page-lt__error">{fieldError("message")}</small> : null}
@@ -242,7 +242,7 @@ export default function Contacto() {
                                             <div>
                                                 <b>Horario</b>
                                                 <p>Lunes a viernes de 8:00 a.m. a 6:00 p.m.</p>
-                                                <p>Sabado de 8:00 a.m. a 1:00 p.m.</p>
+                                                <p>Sábado de 8:00 a.m. a 1:00 p.m.</p>
                                             </div>
                                         </div>
                                     </div>

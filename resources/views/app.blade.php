@@ -12,6 +12,12 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+
+        {{-- Cargadas aqui (bloqueante) en vez de inyectadas por React, para evitar el
+             flash sin estilos (logo/menu sin tamano) al entrar a cada pagina --}}
+        <link rel="stylesheet" href="/assets/css/home.css" />
+        <link rel="stylesheet" href="/assets/css/nosotros.css" />
+        <link rel="stylesheet" href="/assets/css/Productos.css" />
         @if (($page['component'] ?? null) === 'Public/Contacto')
             <script src="https://www.google.com/recaptcha/enterprise.js?render=6LfZDHosAAAAAPEGIEgAcW-DwG-HB5eIv0AJ7A_q"></script>
             <style>

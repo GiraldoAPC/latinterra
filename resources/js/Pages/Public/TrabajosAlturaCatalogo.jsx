@@ -9,12 +9,9 @@ const products = [
     { name: "Beal", logo: "/assets/img/categorias/accesoporcuerdas/beal.jpg", desc: "Cuerdas y equipos tecnicos para rescate, soporte y progresion en altura." },
     { name: "TRUPER", logo: "/assets/img/categorias/herramientas/Truper.jpg", desc: "Herramientas de apoyo para mantenimiento, instalacion y trabajo tecnico." },
     { name: "Edelweis", logo: "/assets/img/categorias/accesoporcuerdas/ELEWESI.jpg", desc: "Componentes de anclaje y sujecion para maniobras controladas." },
-    { name: "Fenix", logo: "/assets/img/categorias/accesoporcuerdas/fenix.jpg", desc: "Iluminacion y accesorios para operaciones en campo y altura." },
-    { name: "Forclaz", logo: "/assets/img/categorias/accesoporcuerdas/forclaz.jpg", desc: "Accesorios tecnicos para actividades de altura y exigencia operativa." },
     { name: "Irudek", logo: "/assets/img/categorias/accesoporcuerdas/irudek.jpg", desc: "Sistemas anticaidas y lineas de vida para trabajo vertical." },
     { name: "Kaya", logo: "/assets/img/categorias/accesoporcuerdas/kaya.jpg", desc: "Equipos para rescate, evacuacion y acceso por cuerdas." },
     { name: "Petzel", logo: "/assets/img/categorias/accesoporcuerdas/petzel.jpg", desc: "Sistemas de proteccion, iluminacion y progresion para altura." },
-    { name: "Safeface", logo: "/assets/img/categorias/accesoporcuerdas/safeface.jpg", desc: "Proteccion personal complementaria para operaciones de riesgo." },
     { name: "Singing Rock", logo: "/assets/img/categorias/accesoporcuerdas/SINGINGROCK.jpg", desc: "Equipos para trabajo en altura, rescate y anclajes." },
     { name: "Yoke", logo: "/assets/img/categorias/accesoporcuerdas/YOKE.jpg", desc: "Herrajes y puntos de anclaje de alta resistencia." },
 ];

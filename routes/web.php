@@ -67,9 +67,7 @@ Route::get('/herramientas', function () {
     return Inertia::render('Public/Herramientas');
 })->name('herramientas.catalogo');
 
-Route::get('/articulos-de-ferreteria', function () {
-    return Inertia::render('Public/ArticulosFerreteria');
-})->name('ferreteria.catalogo');
+Route::redirect('/articulos-de-ferreteria', '/herramientas', 301)->name('ferreteria.catalogo');
 
 Route::get('/reparacion-de-palas', function () {
     return Inertia::render('Public/ReparacionPalas');

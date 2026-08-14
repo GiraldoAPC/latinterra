@@ -243,7 +243,7 @@ export default function Home() {
                             </p>
 
                             <a className="link" href="/acceso-por-cuerdas">
-                                Ver productos →{/* (tu opción pro) */}
+                                Detalles →{/* (tu opción pro) */}
                             </a>
                         </article>
 
@@ -295,7 +295,7 @@ export default function Home() {
                             </p>
 
                             <a className="link" href="/trabajos-en-altura">
-                                Ver productos ->
+                                Detalles ->
                             </a>
                         </article>
 
@@ -347,7 +347,7 @@ export default function Home() {
                             </p>
 
                             <a className="link" href="/epp-y-seguridad">
-                                Ver productos →
+                                Detalles →
                             </a>
                         </article>
 
@@ -400,9 +400,9 @@ export default function Home() {
 
                             <a
                                 className="link"
-                                href="/articulos-de-ferreteria"
+                                href="/herramientas"
                             >
-                                Ver productos →
+                                Detalles →
                             </a>
                         </article>
 
@@ -451,7 +451,7 @@ export default function Home() {
                                 className="link"
                                 href="/herramientas"
                             >
-                                Ver productos →
+                                Detalles →
                             </a>
                         </article>
 
@@ -497,7 +497,7 @@ export default function Home() {
                             </p>
 
                             <a className="link" href="/equipo-electrico">
-                                Ver productos →
+                                Detalles →
                             </a>
                         </article>
 
@@ -548,7 +548,7 @@ export default function Home() {
                             </p>
 
                             <a className="link" href="/reparacion-de-palas">
-                                Ver productos →
+                                Detalles →
                             </a>
                         </article>
 
@@ -591,7 +591,7 @@ export default function Home() {
                             </p>
 
                             <a className="link" href="/parques-eolicos">
-                                Ver productos ->
+                                Detalles ->
                             </a>
                         </article>
                     </div>
