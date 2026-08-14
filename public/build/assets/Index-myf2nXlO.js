@@ -1,0 +1,1 @@
+import{j as t,S as e}from"./app-BwYRxDCH.js";import{A as r}from"./AdminLayout-B9Vfn-Rz.js";import"./index-MLDxOyTN.js";function o(){return t.jsxs(t.Fragment,{children:[t.jsx(e,{title:"Categorias"}),t.jsx(r,{title:"Productos",children:t.jsx("div",{className:"text-sm text-muted-foreground",children:"Página en construcción."})})]})}export{o as default};

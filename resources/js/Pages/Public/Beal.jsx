@@ -120,6 +120,13 @@ export default function Beal({ initialLine = "pro" }) {
     }, [activeProduct]);
 
     useEffect(() => {
+        if (sessionStorage.getItem("bealScrollToCatalogo") === "1") {
+            sessionStorage.removeItem("bealScrollToCatalogo");
+            document.getElementById("beal-catalogo")?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+    }, []);
+
+    useEffect(() => {
         const onEscape = (e) => {
             if (e.key === "Escape") setActiveProduct(null);
         };
@@ -283,6 +290,7 @@ export default function Beal({ initialLine = "pro" }) {
                                 className={`beal-hero-tabs__link ${line === item.key ? "is-active" : ""}`}
                                 preserveScroll
                                 preserveState={false}
+                                onClick={() => sessionStorage.setItem("bealScrollToCatalogo", "1")}
                             >
                                 {item.label}
                             </Link>
@@ -313,7 +321,7 @@ export default function Beal({ initialLine = "pro" }) {
                         </div>
                     ) : (
                         <>
-                            <div className="beal-toolbar-row">
+                            <div className="beal-toolbar-row" id="beal-catalogo">
                                 <div className="product-search beal-search reveal">
                                     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                                         <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" />
