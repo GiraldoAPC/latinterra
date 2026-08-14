@@ -125,37 +125,8 @@ export default function PublicHeader({
                                     </div>
                                 </div>
                             </li>
-                            <li className="menu-item menu-item--products">
-                                <a href="/beal" className={isActive("beal")}>
-                                    BEAL
-                                    <span className="menu-caret" aria-hidden="true">
-                                        {faIcon("fa-solid fa-chevron-down")}
-                                    </span>
-                                </a>
-                                <div className="products-submenu products-submenu--sm" role="menu" aria-label="Lineas Beal">
-                                    <div className="products-submenu__grid products-submenu__grid--1col">
-                                        <Link
-                                            href="/beal"
-                                            role="menuitem"
-                                            className={`products-submenu__link ${bealLine === "sport" ? "" : "is-current"}`}
-                                        >
-                                            <span className="products-submenu__icon" aria-hidden="true">
-                                                {faIcon("fa-solid fa-shield-halved")}
-                                            </span>
-                                            <span>Profesional</span>
-                                        </Link>
-                                        <Link
-                                            href="/beal/sport"
-                                            role="menuitem"
-                                            className={`products-submenu__link ${bealLine === "sport" ? "is-current" : ""}`}
-                                        >
-                                            <span className="products-submenu__icon" aria-hidden="true">
-                                                {faIcon("fa-solid fa-mountain")}
-                                            </span>
-                                            <span>Sport</span>
-                                        </Link>
-                                    </div>
-                                </div>
+                            <li>
+                                <Link href="/beal" className={isActive("beal")}>BEAL</Link>
                             </li>
                             <li>
                                 <Link href="/reparacion-de-palas#kuhlmann">Kuhlmann</Link>
@@ -265,47 +236,10 @@ export default function PublicHeader({
                                 </div>
                             </details>
                         </li>
-                        <li className="drawer-products">
-                            <details>
-                                <summary className={isActive("beal")}>
-                                    <span className="drawer-products__summary-main">
-                                        <span className="drawer-products__summary-icon" aria-hidden="true">
-                                            {faIcon("fa-solid fa-shield-halved")}
-                                        </span>
-                                        <span>BEAL</span>
-                                    </span>
-                                    <span className="drawer-products__caret" aria-hidden="true">
-                                        {faIcon("fa-solid fa-chevron-down")}
-                                    </span>
-                                </summary>
-
-                                <div className="drawer-products__actions">
-                                    <div className="drawer-products__list">
-                                        <Link
-                                            href="/beal"
-                                            data-close="true"
-                                            className={bealLine === "sport" ? "" : "active"}
-                                            onClick={() => setMenuOpen(false)}
-                                        >
-                                            <span className="drawer-products__item-icon" aria-hidden="true">
-                                                {faIcon("fa-solid fa-shield-halved")}
-                                            </span>
-                                            <span>Profesional</span>
-                                        </Link>
-                                        <Link
-                                            href="/beal/sport"
-                                            data-close="true"
-                                            className={bealLine === "sport" ? "active" : ""}
-                                            onClick={() => setMenuOpen(false)}
-                                        >
-                                            <span className="drawer-products__item-icon" aria-hidden="true">
-                                                {faIcon("fa-solid fa-mountain")}
-                                            </span>
-                                            <span>Sport</span>
-                                        </Link>
-                                    </div>
-                                </div>
-                            </details>
+                        <li>
+                            <Link href="/beal" data-close="true" className={isActive("beal")} onClick={() => setMenuOpen(false)}>
+                                BEAL
+                            </Link>
                         </li>
                         <li>
                             <Link href="/reparacion-de-palas#kuhlmann" data-close="true" onClick={() => setMenuOpen(false)}>

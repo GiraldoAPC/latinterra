@@ -2082,6 +2082,57 @@ body.menu-open .lt-public .drawer-panel{
   color: #d5f5c8;
 }
 
+.lt-public.beal-page .beal-hero-tabs{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  margin-top: 26px;
+}
+
+.lt-public.beal-page .beal-hero-tabs__link{
+  position: relative;
+  padding-bottom: 12px;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: rgba(255,255,255,.62);
+  transition: color .2s ease;
+}
+
+.lt-public.beal-page .beal-hero-tabs__link::after{
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: rgba(255,255,255,.3);
+  transition: background .2s ease, height .2s ease;
+}
+
+.lt-public.beal-page .beal-hero-tabs__link:hover{
+  color: rgba(255,255,255,.88);
+}
+
+.lt-public.beal-page .beal-hero-tabs__link.is-active{
+  color: #fff;
+  font-weight: 800;
+}
+
+.lt-public.beal-page .beal-hero-tabs__link.is-active::after{
+  background: var(--lt-green);
+  height: 2px;
+}
+
+@media (max-width: 480px){
+  .lt-public.beal-page .beal-hero-tabs{
+    gap: 24px;
+  }
+  .lt-public.beal-page .beal-hero-tabs__link{
+    font-size: 1rem;
+  }
+}
+
 .lt-public .beal-switch{
   display: grid;
   grid-template-columns: repeat(2, minmax(0,1fr));

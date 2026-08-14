@@ -274,6 +274,18 @@ export default function Beal({ initialLine = "pro" }) {
                     <p className="catalog-hero__crumb">
                         <Link href="/">INICIO</Link> / BEAL / {LINES.find((l) => l.key === line)?.label.toUpperCase()}
                     </p>
+
+                    <nav className="beal-hero-tabs" aria-label="Línea Beal">
+                        {LINES.map((item) => (
+                            <Link
+                                key={item.key}
+                                href={item.key === "sport" ? "/beal/sport" : "/beal"}
+                                className={`beal-hero-tabs__link ${line === item.key ? "is-active" : ""}`}
+                            >
+                                {item.label}
+                            </Link>
+                        ))}
+                    </nav>
                 </div>
                 <div className="catalog-hero__curve" aria-hidden="true" />
             </section>
