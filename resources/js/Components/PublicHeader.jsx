@@ -85,7 +85,7 @@ export default function PublicHeader({
             >
                 <div className="container nav">
                     <a className="brand" href={homeUrl} aria-label="Latin Terra - Inicio">
-                        <img src="/assets/img/logo-latin-terra-blanco-verde.png" alt="Latin Terra Logo" />
+                        <img src="/assets/img/logo-oficial.png" alt="Latin Terra Logo" />
                     </a>
 
                     <nav aria-label="Navegacion principal">

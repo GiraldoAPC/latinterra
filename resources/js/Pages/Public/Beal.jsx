@@ -527,9 +527,6 @@ export default function Beal({ initialLine = "pro" }) {
                                             </div>
                                             <div className="beal-card__head">
                                                 <span className="beal-card__tag">{item.subcategory}</span>
-                                                {item.price && (
-                                                    <span className="beal-card__price">S/ {item.price}</span>
-                                                )}
                                             </div>
                                             <h3>{item.name}</h3>
                                             <p>{item.description}</p>
@@ -621,9 +618,6 @@ export default function Beal({ initialLine = "pro" }) {
                             <div className="beal-modal__body">
                                 <div className="beal-card__head">
                                     <span className="beal-card__tag">{activeProduct.subcategory}</span>
-                                    {activeProduct.price && (
-                                        <span className="beal-card__price beal-modal__price">S/ {activeProduct.price}</span>
-                                    )}
                                 </div>
 
                                 <h2 className="beal-modal__title">{activeProduct.name}</h2>

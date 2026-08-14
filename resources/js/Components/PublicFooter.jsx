@@ -6,7 +6,7 @@ export default function PublicFooter() {
             <div className="footer-pro-main">
                 <div className="container footer-pro-inner">
                     <div className="footer-pro-brand">
-                        <img src="/assets/img/logo-latin-terra-blanco-verde.png" alt="Latin Terra" />
+                        <img src="/assets/img/logo-latin-terr-blanco.png" alt="Latin Terra" />
                     </div>
 
                     <div className="footer-pro-contact">
