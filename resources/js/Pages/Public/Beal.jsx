@@ -272,9 +272,7 @@ export default function Beal({ initialLine = "pro" }) {
                     <div className="beal-hero-badge">
                         <img src="/assets/img/categorias/accesoporcuerdas/beal.jpg" alt="Beal" />
                     </div>
-                    <h1 className="catalog-hero__title">
-                        Catálogo BEAL <span className="beal-hero-line">{LINES.find((l) => l.key === line)?.label}</span>
-                    </h1>
+                    <h1 className="catalog-hero__title">Catálogo BEAL</h1>
                     <p className="catalog-hero__subtitle">
                         {LINES.find((l) => l.key === line)?.tagline}
                     </p>
