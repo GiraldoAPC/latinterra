@@ -45,6 +45,10 @@ Route::get('/beal/sport', function () {
     return Inertia::render('Public/Beal', ['initialLine' => 'sport']);
 })->name('beal.sport');
 
+Route::get('/kuhlmann', function () {
+    return Inertia::render('Public/Kuhlmann');
+})->name('kuhlmann');
+
 Route::get('/trabajos-en-altura', function () {
     return Inertia::render('Public/TrabajosAlturaCatalogo');
 })->name('trabajosenaltura');

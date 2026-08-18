@@ -129,7 +129,7 @@ export default function PublicHeader({
                                 <Link href="/beal" className={isActive("beal")}>BEAL</Link>
                             </li>
                             <li>
-                                <Link href="/reparacion-de-palas#kuhlmann">Kuhlmann</Link>
+                                <Link href="/kuhlmann" className={isActive("kuhlmann")}>Kuhlmann</Link>
                             </li>
                             <li>
                                 <Link href={contactUrl} className={isActive("contact")}>
@@ -242,7 +242,7 @@ export default function PublicHeader({
                             </Link>
                         </li>
                         <li>
-                            <Link href="/reparacion-de-palas#kuhlmann" data-close="true" onClick={() => setMenuOpen(false)}>
+                            <Link href="/kuhlmann" data-close="true" className={isActive("kuhlmann")} onClick={() => setMenuOpen(false)}>
                                 Kuhlmann
                             </Link>
                         </li>

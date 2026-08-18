@@ -1,0 +1,47 @@
+{
+    "termica90": [
+        { "sku": "17-2385DT", "watts": "1140W", "size": "5000 x 500 mm (197 x 19,7 in)", "weightNet": "7,2 kg", "weightGross": "8,2 kg", "color": "Azul oscuro" },
+        { "sku": "10-9580DT", "watts": "700W", "size": "3000 x 500 mm (118,1 x 19,7 in)", "weightNet": "5,4 kg", "weightGross": "6,4 kg", "color": "Verde" },
+        { "sku": "13-1246DT", "watts": "560W", "size": "2000 x 500 mm (78,7 x 19,7 in)", "weightNet": "3,8 kg", "weightGross": "4,8 kg", "color": "Azul oscuro" },
+        { "sku": "11-9774DT", "watts": "270W", "size": "1000 x 500 mm (39,4 x 19,7 in)", "weightNet": "2,55 kg", "weightGross": "3,55 kg", "color": "Azul oscuro" },
+        { "sku": "08-9323DT", "watts": "200W", "size": "600 x 600 mm (23,6 x 23,6 in)", "weightNet": "2 kg", "weightGross": "3 kg", "color": "Azul oscuro" },
+        { "sku": "08-9099DT", "watts": "450W", "size": "1000 x 1000 mm (39,4 x 39,4 in)", "weightNet": "3,9 kg", "weightGross": "4,9 kg", "color": "Azul oscuro", "note": "Manta mostrada sin controlador" },
+        { "sku": "10-9486DT", "watts": "750W", "size": "1300 x 1300 mm (51,2 x 51,2 in)", "weightNet": "5,35 kg", "weightGross": "6,35 kg", "color": "Azul oscuro" },
+        { "sku": "08-9030DT", "watts": "1200W", "size": "2000 x 1000 mm (78,7 x 39,4 in)", "weightNet": "6,4 kg", "weightGross": "7,4 kg", "color": "Azul oscuro" },
+        { "sku": "22-4148DT", "watts": "1730W", "size": "3000 x 1000 mm (118,2 x 39,4 in)", "weightNet": "9,4 kg", "weightGross": "10,4 kg", "color": "Azul oscuro" },
+        { "sku": "10-9488DT", "watts": "200W", "size": "700 x 1000 x 700 mm (27,6 x 39,4 x 27,6 in)", "weightNet": "1,7 kg", "weightGross": "2,7 kg", "color": "Azul oscuro", "note": "Manta mostrada con caja de control analógica" },
+        { "sku": "12-1076DT", "watts": "450W", "size": "1200 x 800 mm (47,2 x 31,5 in)", "weightNet": "3,6 kg", "weightGross": "4,6 kg", "color": "Azul oscuro" },
+        { "sku": "12-1066DT", "watts": "200W", "size": "1000 x 290 mm (39,4 x 11,4 in)", "weightNet": "2,1 kg", "weightGross": "3,1 kg", "color": "Azul oscuro" },
+        { "sku": "10-9614DT", "watts": "220W", "size": "1500 x 290 mm (59,1 x 11,4 in)", "weightNet": "2,25 kg", "weightGross": "3,25 kg", "color": "Azul oscuro" },
+        { "sku": "09-9389DT", "watts": "400W", "size": "3800 x 290 mm (149,6 x 11,4 in)", "weightNet": "4,2 kg", "weightGross": "5,2 kg", "color": "Azul oscuro" },
+        { "sku": "23-4243DT", "watts": "650W", "size": "3800 x 290 mm (149,6 x 11,4 in)", "weightNet": "3,85 kg", "weightGross": "4,85 kg", "color": "Azul oscuro" }
+    ],
+    "altaTemp": [
+        { "sku": "10-9580HTDT", "watts": "1400W", "size": "3000 x 500 mm (118,1 x 19,7 in)", "weightNet": "6,15 kg", "weightGross": "7,15 kg", "color": "Plateado" },
+        { "sku": "13-1246HTDT", "watts": "900W", "size": "2000 x 500 mm (78,7 x 19,7 in)", "weightNet": "4,4 kg", "weightGross": "5,4 kg", "color": "Plateado" },
+        { "sku": "11-9774HTDT", "watts": "450W", "size": "1000 x 500 mm (39,4 x 19,7 in)", "weightNet": "2,75 kg", "weightGross": "3,75 kg", "color": "Plateado" },
+        { "sku": "08-9323HTDT", "watts": "430W", "size": "600 x 600 mm (23,6 x 23,6 in)", "weightNet": "2,2 kg", "weightGross": "3,2 kg", "color": "Plateado" },
+        { "sku": "08-9099HTDT", "watts": "900W", "size": "1000 x 1000 mm (39,4 x 39,4 in)", "weightNet": "4,35 kg", "weightGross": "5,35 kg", "color": "Plateado" },
+        { "sku": "10-9486HTDT", "watts": "1420W", "size": "1300 x 1300 mm (51,2 x 51,2 in)", "weightNet": "6 kg", "weightGross": "7 kg", "color": "Plateado" },
+        { "sku": "08-9030HTDT", "watts": "1800W", "size": "2000 x 1000 mm (78,7 x 39,4 in)", "weightNet": "8 kg", "weightGross": "9 kg", "color": "Plateado" },
+        { "sku": "12-1076HTDT", "watts": "930W", "size": "1200 x 800 mm (47,2 x 31,5 in)", "weightNet": "4,25 kg", "weightGross": "5,25 kg", "color": "Plateado" }
+    ],
+    "analogica": [
+        { "sku": "08-9294B", "watts": "1700W", "size": "1000 x 590 mm (39,4 x 23,2 in)", "weightNet": "2,8 kg", "weightGross": "3,8 kg", "color": "Naranja" },
+        { "sku": "08-9294A", "watts": "2500W", "size": "2000 x 430 mm (78,7 x 16,9 in)", "weightNet": "3,85 kg", "weightGross": "4,85 kg", "color": "Naranja" },
+        { "sku": "14-1574", "watts": "2500W", "size": "2500 x 430 mm (98,4 x 16,9 in)", "weightNet": "4,7 kg", "weightGross": "5,7 kg", "color": "Naranja" }
+    ],
+    "accesorios": [
+        { "sku": "17-2246", "name": "Sujeción por lazos", "description": "4 lazos para una fácil sujeción de la manta calefactora.", "weightNet": "0,3 kg", "weightGross": "1,3 kg", "image": "/assets/img/categorias/kuhlmann/sujecion-lazos.png" },
+        { "sku": "17-2246A", "name": "Sujeción por hebillas", "description": "4 hebillas para una fácil sujeción de la manta calefactora.", "weightNet": "0,5 kg", "weightGross": "1,5 kg", "image": "/assets/img/categorias/kuhlmann/sujecion-hebillas.png" },
+        { "sku": "K-9099ADK", "name": "Enchufe 230V DK", "description": "Opción de enchufe de alimentación Dinamarca para mantas calefactoras Kuhlmann." },
+        { "sku": "K-9099ADE", "name": "Enchufe 230V Schuko", "description": "Opción de enchufe de alimentación Schuko/Europeo para mantas calefactoras Kuhlmann." },
+        { "sku": "K-9099AEU230", "name": "Enchufe 230V CEE", "description": "Opción de enchufe de alimentación industrial CEE para mantas calefactoras Kuhlmann." },
+        { "sku": "K-9099AGB", "name": "Enchufe 230V UK", "description": "Opción de enchufe de alimentación Reino Unido para mantas calefactoras Kuhlmann." },
+        { "sku": "K-9099US230", "name": "Enchufe 230V US", "description": "Opción de enchufe de alimentación Estados Unidos para mantas calefactoras Kuhlmann." }
+    ],
+    "controladores": [
+        { "sku": "DIGITHERM-FIJO", "name": "Controlador DigiTherm fijo", "description": "Controlador digital de temperatura integrado a la manta calefactora. Rango ajustable, función de temporizador y aumento gradual de temperatura.", "image": "/assets/img/categorias/kuhlmann/controlador-digitherm-fijo.png" },
+        { "sku": "DIGITHERM-EXT", "name": "Controlador DigiTherm externo", "description": "Mismo controlador DigiTherm, en versión externa para conectar a la manta calefactora sin ir fijado a ella.", "image": "/assets/img/categorias/kuhlmann/controlador-digitherm-externo.png" }
+    ]
+}
