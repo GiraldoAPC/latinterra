@@ -13,6 +13,9 @@ const products = [
     { name: "Makita", logo: "/assets/img/categorias/electrico/Makita.jpg", desc: "Herramientas electricas profesionales para construccion e industria." },
     { name: "Bosch", logo: "/assets/img/categorias/electrico/Bosch.jpg", desc: "Linea Azul: herramientas electricas profesionales de alto rendimiento." },
     { name: "DeWalt", logo: "/assets/img/categorias/electrico/Dewalt.jpg", desc: "Herramientas electricas resistentes para uso profesional intensivo." },
+    { name: "Milwaukee Tool", logo: "/assets/img/categorias/herramientas/milwauke.jpeg", desc: "Herramientas electricas profesionales de alto rendimiento para uso intensivo." },
+    { name: "CAT", logo: "/assets/img/categorias/herramientas/cat.jpeg", desc: "Herramientas y equipos robustos con el respaldo de la marca Caterpillar." },
+    { name: "Volteck", logo: "/assets/img/categorias/herramientas/volteck.jpeg", desc: "Herramientas y equipo electrico para instalacion, taller e industria." },
 ];
 
 const whatsappNumber = "51954178081";
