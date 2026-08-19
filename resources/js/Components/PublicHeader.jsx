@@ -25,7 +25,7 @@ export default function PublicHeader({
         { href: "/acceso-por-cuerdas", label: "Acceso por Cuerdas", icon: "fa-solid fa-link" },
         { href: "/trabajos-en-altura", label: "Trabajos en Altura", icon: "fa-solid fa-user-shield" },
         { href: "/epp-y-seguridad", label: "EPP y Seguridad", icon: "fa-solid fa-shield" },
-        { href: "/herramientas", label: "Herramientas", icon: "fa-solid fa-toolbox" },
+        { href: "/herramientas", label: "Herramientas y Ferretería", icon: "fa-solid fa-toolbox" },
         { href: "/equipo-electrico", label: "Equipo Electrico", icon: "fa-solid fa-bolt" },
         { href: "/reparacion-de-palas", label: "Reparacion de Palas", icon: "fa-solid fa-gears" },
         { href: "/parques-eolicos", label: "Parques Eolicos", icon: "fa-solid fa-wind" },

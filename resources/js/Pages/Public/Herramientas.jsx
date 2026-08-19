@@ -9,6 +9,10 @@ const products = [
     { name: "Pretul", logo: "/assets/img/categorias/herramientas/Pretul.jpg", desc: "Herramienta utilitaria para trabajo diario, obra y servicio tecnico." },
     { name: "Toughbuilt", logo: "/assets/img/categorias/herramientas/Toughbuilt.jpg", desc: "Herramientas y accesorios robustos para obra y trabajo de campo." },
     { name: "Truper", logo: "/assets/img/categorias/herramientas/Truper.jpg", desc: "Herramientas y complementos para instalacion, construccion y taller." },
+    { name: "Stanley", logo: "/assets/img/categorias/articulosdeferreteria/Stanley.jpg", desc: "Herramientas manuales y electricas de referencia para taller e industria." },
+    { name: "Makita", logo: "/assets/img/categorias/electrico/Makita.jpg", desc: "Herramientas electricas profesionales para construccion e industria." },
+    { name: "Bosch", logo: "/assets/img/categorias/electrico/Bosch.jpg", desc: "Linea Azul: herramientas electricas profesionales de alto rendimiento." },
+    { name: "DeWalt", logo: "/assets/img/categorias/electrico/Dewalt.jpg", desc: "Herramientas electricas resistentes para uso profesional intensivo." },
 ];
 
 const whatsappNumber = "51954178081";
@@ -45,13 +49,13 @@ export default function Herramientas() {
 
     return (
         <div className="catalog-page lt-public">
-            <Head title="Herramientas | Latin Terra">
+            <Head title="Herramientas y Ferretería | Latin Terra">
                 <meta
                     name="description"
-                    content="Catalogo de marcas de herramientas para mantenimiento, taller e industria."
+                    content="Catalogo de marcas de herramientas y ferreteria para mantenimiento, taller e industria."
                 />
-                <meta property="og:title" content="Herramientas | Latin Terra" />
-                <meta property="og:description" content="Catalogo de marcas de herramientas para mantenimiento, taller e industria." />
+                <meta property="og:title" content="Herramientas y Ferretería | Latin Terra" />
+                <meta property="og:description" content="Catalogo de marcas de herramientas y ferreteria para mantenimiento, taller e industria." />
                 <meta property="og:image" content="https://latin-terra.com/assets/img/categorias/Herramientas.jpg" />
             </Head>
 
@@ -73,12 +77,12 @@ export default function Herramientas() {
                             <path d="M13 8l3 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
                         </svg>
                     </div>
-                    <h1 className="catalog-hero__title">Herramientas</h1>
+                    <h1 className="catalog-hero__title">Herramientas y Ferretería</h1>
                     <p className="catalog-hero__subtitle">
-                        Marcas para herramientas, precision y mantenimiento tecnico
+                        Marcas para herramientas, ferreteria, precision y mantenimiento tecnico
                     </p>
                     <p className="catalog-hero__crumb">
-                        <Link href="/">INICIO</Link> / HERRAMIENTAS
+                        <Link href="/">INICIO</Link> / HERRAMIENTAS Y FERRETERÍA
                     </p>
                 </div>
                 <div className="catalog-hero__curve" aria-hidden="true" />
