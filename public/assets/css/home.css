@@ -347,6 +347,19 @@ body.menu-open .drawer-panel {
         opacity 0.6s ease,
         transform 1.2s ease;
 }
+
+/* En movil las fotos son muy panoramicas: el recorte centrado por
+   defecto deja ver solo el cielo vacio del medio y corta a las
+   personas, que estan hacia los bordes. Ajustamos el punto de
+   enfoque por foto para que las personas queden dentro del recorte. */
+@media (max-width: 768px) {
+    .slide:nth-child(1) {
+        background-position: 78% center;
+    }
+    .slide:nth-child(2) {
+        background-position: 22% center;
+    }
+}
 .slide.active {
     opacity: 1;
     transform: scale(1);
