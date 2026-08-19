@@ -2497,8 +2497,9 @@ body.beal-modal-open{
 
 .lt-public .beal-modal__spec{
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 10px;
+  gap: 4px 10px;
   padding: 12px 14px;
   font-size: .85rem;
   background: #fff;
@@ -2516,15 +2517,17 @@ body.beal-modal-open{
 .lt-public .beal-modal__spec span{
   color: #64748b;
   font-weight: 600;
-  flex: 1;
+  flex: 1 1 auto;
   min-width: 0;
 }
 
 .lt-public .beal-modal__spec strong{
   color: #1f2a44;
-  text-align: right;
+  text-align: left;
   font-weight: 700;
   word-break: break-word;
+  flex: 1 1 100%;
+  margin-left: 26px;
 }
 
 .lt-public .beal-modal__spec--wide{
