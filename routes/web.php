@@ -20,6 +20,41 @@ Route::get('/', function () {
     return Inertia::render('Public/Home');
 })->name('home');
 
+Route::get('/sitemap.xml', function () {
+    $baseUrl = 'https://latin-terra.com';
+
+    $pages = [
+        ['url' => '/', 'priority' => '1.0', 'changefreq' => 'weekly'],
+        ['url' => '/nosotros', 'priority' => '0.6', 'changefreq' => 'monthly'],
+        ['url' => '/contacto', 'priority' => '0.7', 'changefreq' => 'monthly'],
+        ['url' => '/acceso-por-cuerdas', 'priority' => '0.8', 'changefreq' => 'weekly'],
+        ['url' => '/trabajos-en-altura', 'priority' => '0.8', 'changefreq' => 'weekly'],
+        ['url' => '/epp-y-seguridad', 'priority' => '0.8', 'changefreq' => 'weekly'],
+        ['url' => '/equipo-electrico', 'priority' => '0.8', 'changefreq' => 'weekly'],
+        ['url' => '/herramientas', 'priority' => '0.8', 'changefreq' => 'weekly'],
+        ['url' => '/reparacion-de-palas', 'priority' => '0.8', 'changefreq' => 'weekly'],
+        ['url' => '/parques-eolicos', 'priority' => '0.8', 'changefreq' => 'weekly'],
+        ['url' => '/beal', 'priority' => '0.9', 'changefreq' => 'weekly'],
+        ['url' => '/beal/sport', 'priority' => '0.9', 'changefreq' => 'weekly'],
+        ['url' => '/kuhlmann', 'priority' => '0.9', 'changefreq' => 'weekly'],
+    ];
+
+    $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+    $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
+
+    foreach ($pages as $page) {
+        $xml .= "  <url>\n";
+        $xml .= '    <loc>' . $baseUrl . $page['url'] . "</loc>\n";
+        $xml .= '    <changefreq>' . $page['changefreq'] . "</changefreq>\n";
+        $xml .= '    <priority>' . $page['priority'] . "</priority>\n";
+        $xml .= "  </url>\n";
+    }
+
+    $xml .= '</urlset>';
+
+    return response($xml, 200)->header('Content-Type', 'application/xml');
+})->name('sitemap');
+
 
 Route::get('/nosotros', function () {
     /*sleep(1);*/

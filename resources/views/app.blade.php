@@ -48,8 +48,8 @@
                     'image' => 'encabezado/equipo-electrico.jpg',
                 ],
                 'Public/Herramientas' => [
-                    'title' => 'Herramientas | Latin Terra',
-                    'description' => 'Catalogo de marcas de herramientas para mantenimiento, taller e industria.',
+                    'title' => 'Herramientas y Ferreteria | Latin Terra',
+                    'description' => 'Catalogo de marcas de herramientas y ferreteria para mantenimiento, taller e industria.',
                     'image' => 'categorias/Herramientas.jpg',
                 ],
                 'Public/ReparacionPalas' => [
@@ -67,6 +67,11 @@
                     'description' => 'Catalogo Beal Profesional y Sport: cuerdas, arneses, cascos, mosquetones y accesorios para trabajo en altura y escalada.',
                     'image' => 'encabezado/acceso-por-cuerdas.jpg',
                 ],
+                'Public/Kuhlmann' => [
+                    'title' => 'Catalogo Kuhlmann | Latin Terra',
+                    'description' => 'Catalogo Kuhlmann Electro-Heat: mantas termicas y calefactoras industriales para curado de composites y reparacion de palas de aerogeneradores.',
+                    'image' => 'encabezado/reparacion-de-palas.jpg',
+                ],
             ];
 
             $ogDefault = $ogCatalog['Public/Home'];
@@ -75,11 +80,17 @@
 
         <title inertia>{{ config('app.name', 'Latin Terra') }}</title>
 
-        {{-- Open Graph / vista previa al compartir el enlace (WhatsApp, Facebook, etc).
-             Se calcula aqui (servidor) porque esos bots no ejecutan JavaScript, asi
-             que las etiquetas del <Head> de React no les sirven de nada. --}}
+        {{-- Meta description + canonical: se calculan aqui (servidor) para que
+             cualquier buscador/bot los vea de inmediato, sin depender de que
+             ejecuten el JavaScript de React. --}}
+        <meta name="description" content="{{ $og['description'] }}" inertia>
+        <meta name="robots" content="index, follow" inertia>
+        <link rel="canonical" href="https://latin-terra.com{{ request()->getRequestUri() }}" inertia>
+
+        {{-- Open Graph / vista previa al compartir el enlace (WhatsApp, Facebook, etc). --}}
         <meta property="og:site_name" content="Latin Terra" inertia>
         <meta property="og:type" content="website" inertia>
+        <meta property="og:locale" content="es_PE" inertia>
         <meta property="og:title" content="{{ $og['title'] }}" inertia>
         <meta property="og:description" content="{{ $og['description'] }}" inertia>
         <meta property="og:image" content="https://latin-terra.com/assets/img/{{ $og['image'] }}" inertia>
@@ -90,6 +101,30 @@
         <meta name="twitter:title" content="{{ $og['title'] }}" inertia>
         <meta name="twitter:description" content="{{ $og['description'] }}" inertia>
         <meta name="twitter:image" content="https://latin-terra.com/assets/img/{{ $og['image'] }}" inertia>
+
+        {{-- Datos estructurados (Schema.org) de la empresa, para resultados
+             enriquecidos y el panel de conocimiento de Google. --}}
+        <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": "Latin Terra",
+            "url": "https://latin-terra.com",
+            "logo": "https://latin-terra.com/assets/img/logo-oficial.png",
+            "image": "https://latin-terra.com/assets/img/slider/slider1.jpg",
+            "description": "Abastecimiento de herramientas, equipos electricos, EPP, trabajos en altura y soluciones industriales en Peru.",
+            "telephone": "+51954178081",
+            "email": "ventas@latin-terra.com",
+            "address": {
+                "@type": "PostalAddress",
+                "addressCountry": "PE"
+            },
+            "sameAs": [
+                "https://www.facebook.com/share/1BnVinCAXH/",
+                "https://www.instagram.com/latin_.terra"
+            ]
+        }
+        </script>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
