@@ -1,86 +1,68 @@
 import { Head, Link } from "@inertiajs/react";
-import PublicHeader from "@/Components/PublicHeader";
-import PublicFooter from "@/Components/PublicFooter";
+import StudentLayout from "@/Layouts/StudentLayout";
+import { Card, CardContent } from "@/Components/ui/card";
+import { Badge } from "@/Components/ui/badge";
+import { Button } from "@/Components/ui/button";
+import { GraduationCap } from "lucide-react";
 
 export default function MisCursos({ enrollments }) {
     return (
-        <div className="catalog-page lt-public beal-page">
-            <Head title="Mis Cursos | Aula Virtual | Latin Terra" />
-
-            <link rel="stylesheet" href="/assets/css/nosotros.css" />
-            <link rel="stylesheet" href="/assets/css/Productos.css" />
-            <script defer src="/assets/js/nosotros.js"></script>
-
-            <PublicHeader current="aula" />
-
-            <section className="catalog-hero" aria-label="Mis cursos" style={{ minHeight: 220 }}>
-                <div className="catalog-hero__bg" style={{ backgroundImage: "url('/assets/img/encabezado/epp-y-seguridad.jpg')" }} />
-                <div className="catalog-hero__overlay" />
-                <div className="catalog-hero__content">
-                    <h1 className="catalog-hero__title">Mis Cursos</h1>
-                    <p className="catalog-hero__crumb">
-                        <Link href="/">INICIO</Link> / <Link href="/aula">AULA VIRTUAL</Link> / MIS CURSOS
-                    </p>
-                </div>
-                <div className="catalog-hero__curve" aria-hidden="true" />
-            </section>
-
-            <main className="catalog-main">
-                <div className="container">
-                    {enrollments.length === 0 && (
-                        <div style={{ textAlign: "center", padding: "40px 0" }}>
-                            <p className="catalog-empty" style={{ display: "block" }}>
-                                Aun no estas inscrito en ningun curso.
-                            </p>
-                            <Link className="btn btn-primary" href="/aula" style={{ marginTop: 12 }}>
-                                Ver catalogo de cursos
-                            </Link>
-                        </div>
-                    )}
-
-                    <section className="product-grid" aria-label="Mis cursos">
+        <>
+            <Head title="Mis Cursos | Aula Virtual" />
+            <StudentLayout title="Mis cursos">
+                {enrollments.length === 0 ? (
+                    <Card>
+                        <CardContent className="flex flex-col items-center gap-3 py-16 text-center">
+                            <GraduationCap className="h-10 w-10 text-slate-300" />
+                            <p className="text-slate-500">Aun no estas inscrito en ningun curso.</p>
+                            <Button asChild>
+                                <Link href="/aula">Ver catalogo de cursos</Link>
+                            </Button>
+                        </CardContent>
+                    </Card>
+                ) : (
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         {enrollments.map((e) => (
-                            <article key={e.id} className="product-card reveal">
-                                <span className="beal-card__tag">
-                                    {e.status === "completed" ? "Completado" : "En curso"}
-                                </span>
-                                <h3>{e.course.title}</h3>
-                                <div style={{ margin: "8px 0" }}>
-                                    <div style={{ height: 8, borderRadius: 999, background: "rgba(15,23,42,.08)", overflow: "hidden" }}>
-                                        <div
-                                            style={{
-                                                height: "100%",
-                                                width: `${e.progress}%`,
-                                                background: "var(--lt-green)",
-                                                borderRadius: 999,
-                                            }}
-                                        />
+                            <Card key={e.id}>
+                                <CardContent className="p-5">
+                                    <Badge variant={e.status === "completed" ? "default" : "secondary"}>
+                                        {e.status === "completed" ? "Completado" : "En curso"}
+                                    </Badge>
+                                    <h3 className="mt-2 font-semibold text-[#14264a]">{e.course.title}</h3>
+
+                                    <div className="mt-3">
+                                        <div className="h-2 overflow-hidden rounded-full bg-slate-100">
+                                            <div
+                                                className="h-full rounded-full bg-[#58b22d]"
+                                                style={{ width: `${e.progress}%` }}
+                                            />
+                                        </div>
+                                        <span className="text-xs text-slate-500">{e.progress}% completado</span>
                                     </div>
-                                    <span style={{ fontSize: ".8rem", color: "#64748b" }}>{e.progress}% completado</span>
-                                </div>
 
-                                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                                    <Link className="btn btn-primary product-quote-btn" href={`/aula/${e.course.slug}`}>
-                                        {e.progress >= 100 ? "Revisar curso" : "Continuar"}
-                                    </Link>
-                                    {e.progress >= 100 && (
-                                        <Link className="btn btn-dark product-quote-btn" href={`/aula/${e.course.slug}/examen`}>
-                                            Rendir examen
-                                        </Link>
-                                    )}
-                                    {e.has_certificate && (
-                                        <Link className="btn btn-outline product-quote-btn" href={`/aula/certificado/${e.id}`}>
-                                            Ver certificado
-                                        </Link>
-                                    )}
-                                </div>
-                            </article>
+                                    <div className="mt-4 flex flex-wrap gap-2">
+                                        <Button asChild size="sm">
+                                            <Link href={`/aula/${e.course.slug}`}>
+                                                {e.progress >= 100 ? "Revisar" : "Continuar"}
+                                            </Link>
+                                        </Button>
+                                        {e.progress >= 100 && (
+                                            <Button asChild size="sm" variant="secondary">
+                                                <Link href={`/aula/${e.course.slug}/examen`}>Examen</Link>
+                                            </Button>
+                                        )}
+                                        {e.has_certificate && (
+                                            <Button asChild size="sm" variant="outline">
+                                                <Link href={`/aula/certificado/${e.id}`}>Certificado</Link>
+                                            </Button>
+                                        )}
+                                    </div>
+                                </CardContent>
+                            </Card>
                         ))}
-                    </section>
-                </div>
-            </main>
-
-            <PublicFooter />
-        </div>
+                    </div>
+                )}
+            </StudentLayout>
+        </>
     );
 }

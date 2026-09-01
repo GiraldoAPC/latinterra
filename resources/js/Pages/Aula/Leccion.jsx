@@ -1,6 +1,8 @@
 import { Head, Link, router } from "@inertiajs/react";
-import PublicHeader from "@/Components/PublicHeader";
-import PublicFooter from "@/Components/PublicFooter";
+import StudentLayout from "@/Layouts/StudentLayout";
+import { Card, CardContent } from "@/Components/ui/card";
+import { Button } from "@/Components/ui/button";
+import { CircleCheck, CirclePlay } from "lucide-react";
 
 export default function Leccion({ course, lesson, enrollment, completedLessonIds, allCompleted }) {
     const isCompleted = completedLessonIds.includes(lesson.id);
@@ -10,107 +12,89 @@ export default function Leccion({ course, lesson, enrollment, completedLessonIds
     };
 
     return (
-        <div className="catalog-page lt-public beal-page">
-            <Head title={`${lesson.title} - ${course.title} | Latin Terra`} />
+        <>
+            <Head title={`${lesson.title} - ${course.title}`} />
+            <StudentLayout>
+                <p className="mb-3 text-sm text-slate-500">
+                    <Link href={`/aula/${course.slug}`} className="hover:underline">{course.title}</Link>
+                    {" / "}
+                    {lesson.title}
+                </p>
 
-            <link rel="stylesheet" href="/assets/css/nosotros.css" />
-            <script defer src="/assets/js/nosotros.js"></script>
-
-            <PublicHeader current="aula" />
-
-            <main className="catalog-main" style={{ paddingTop: "calc(var(--lt-header-h, 88px) + 20px)" }}>
-                <div className="container">
-                    <p className="catalog-hero__crumb" style={{ color: "#64748b", marginBottom: 12 }}>
-                        <Link href="/">INICIO</Link> / <Link href={`/aula/${course.slug}`}>{course.title}</Link> / {lesson.title}
-                    </p>
-
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 320px", gap: 24 }} className="lesson-layout">
-                        <div>
-                            <div style={{ position: "relative", paddingTop: "56.25%", borderRadius: 16, overflow: "hidden", background: "#000" }}>
-                                <iframe
-                                    src={`https://www.youtube-nocookie.com/embed/${lesson.youtube_video_id}`}
-                                    title={lesson.title}
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                    allowFullScreen
-                                    style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: 0 }}
-                                />
-                            </div>
-
-                            <h1 style={{ fontSize: "1.4rem", fontWeight: 800, margin: "16px 0 6px" }}>{lesson.title}</h1>
-                            {lesson.description && <p style={{ color: "#64748b" }}>{lesson.description}</p>}
-
-                            <div style={{ marginTop: 16, display: "flex", gap: 10, flexWrap: "wrap" }}>
-                                <button
-                                    className="btn btn-primary"
-                                    onClick={markComplete}
-                                    disabled={isCompleted}
-                                >
-                                    {isCompleted ? "Clase completada" : "Marcar como completada"}
-                                </button>
-                                {allCompleted && (
-                                    <Link className="btn btn-dark" href={`/aula/${course.slug}/examen`}>
-                                        Rendir examen final
-                                    </Link>
-                                )}
-                            </div>
+                <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_320px]">
+                    <div>
+                        <div className="relative overflow-hidden rounded-2xl bg-black" style={{ paddingTop: "56.25%" }}>
+                            <iframe
+                                src={`https://www.youtube-nocookie.com/embed/${lesson.youtube_video_id}`}
+                                title={lesson.title}
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowFullScreen
+                                className="absolute inset-0 h-full w-full border-0"
+                            />
                         </div>
 
-                        <aside>
-                            <div className="beal-modal__specs" style={{ marginBottom: 14 }}>
-                                <div className="beal-modal__spec beal-modal__spec--wide">
-                                    <i className="fa-solid fa-chart-simple" aria-hidden="true" />
-                                    <span>Progreso: {enrollment.progress}%</span>
-                                </div>
-                            </div>
+                        <h1 className="mt-4 text-xl font-bold text-[#14264a]">{lesson.title}</h1>
+                        {lesson.description && <p className="mt-1 text-slate-500">{lesson.description}</p>}
 
-                            {course.modules.map((m) => (
-                                <div key={m.id} style={{ marginBottom: 14 }}>
-                                    <h4 style={{ fontWeight: 800, fontSize: ".9rem", margin: "0 0 6px" }}>{m.title}</h4>
-                                    <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-                                        {m.lessons.map((l) => {
-                                            const done = completedLessonIds.includes(l.id);
-                                            const active = l.id === lesson.id;
-                                            return (
-                                                <li key={l.id}>
-                                                    <Link
-                                                        href={`/aula/${course.slug}/clase/${l.id}`}
-                                                        style={{
-                                                            display: "flex",
-                                                            alignItems: "center",
-                                                            gap: 8,
-                                                            padding: "8px 10px",
-                                                            borderRadius: 10,
-                                                            fontSize: ".86rem",
-                                                            fontWeight: active ? 800 : 500,
-                                                            color: active ? "var(--lt-green-2)" : "#334155",
-                                                            background: active ? "rgba(88,178,45,.10)" : "transparent",
-                                                        }}
-                                                    >
-                                                        <i
-                                                            className={`fa-solid ${done ? "fa-circle-check" : "fa-circle-play"}`}
-                                                            style={{ color: done ? "var(--lt-green)" : "#94a3b8" }}
-                                                            aria-hidden="true"
-                                                        />
-                                                        {l.title}
-                                                    </Link>
-                                                </li>
-                                            );
-                                        })}
-                                    </ul>
-                                </div>
-                            ))}
-                        </aside>
+                        <div className="mt-4 flex flex-wrap gap-2">
+                            <Button onClick={markComplete} disabled={isCompleted}>
+                                {isCompleted ? "Clase completada" : "Marcar como completada"}
+                            </Button>
+                            {allCompleted && (
+                                <Button asChild variant="secondary">
+                                    <Link href={`/aula/${course.slug}/examen`}>Rendir examen final</Link>
+                                </Button>
+                            )}
+                        </div>
                     </div>
+
+                    <aside>
+                        <Card className="mb-4">
+                            <CardContent className="p-4">
+                                <span className="text-sm text-slate-500">Progreso del curso</span>
+                                <div className="mt-1 h-2 overflow-hidden rounded-full bg-slate-100">
+                                    <div
+                                        className="h-full rounded-full bg-[#58b22d]"
+                                        style={{ width: `${enrollment.progress}%` }}
+                                    />
+                                </div>
+                                <span className="text-xs text-slate-400">{enrollment.progress}%</span>
+                            </CardContent>
+                        </Card>
+
+                        {course.modules.map((m) => (
+                            <div key={m.id} className="mb-4">
+                                <h4 className="mb-1.5 text-sm font-bold text-[#14264a]">{m.title}</h4>
+                                <ul className="space-y-0.5">
+                                    {m.lessons.map((l) => {
+                                        const done = completedLessonIds.includes(l.id);
+                                        const active = l.id === lesson.id;
+                                        return (
+                                            <li key={l.id}>
+                                                <Link
+                                                    href={`/aula/${course.slug}/clase/${l.id}`}
+                                                    className={`flex items-center gap-2 rounded-lg px-2.5 py-2 text-sm ${
+                                                        active
+                                                            ? "bg-[#58b22d]/10 font-semibold text-[#3e9f25]"
+                                                            : "text-slate-600 hover:bg-slate-50"
+                                                    }`}
+                                                >
+                                                    {done ? (
+                                                        <CircleCheck className="h-4 w-4 shrink-0 text-[#58b22d]" />
+                                                    ) : (
+                                                        <CirclePlay className="h-4 w-4 shrink-0 text-slate-300" />
+                                                    )}
+                                                    {l.title}
+                                                </Link>
+                                            </li>
+                                        );
+                                    })}
+                                </ul>
+                            </div>
+                        ))}
+                    </aside>
                 </div>
-            </main>
-
-            <PublicFooter />
-
-            <style>{`
-                @media (max-width: 900px) {
-                    .lesson-layout { grid-template-columns: 1fr !important; }
-                }
-            `}</style>
-        </div>
+            </StudentLayout>
+        </>
     );
 }

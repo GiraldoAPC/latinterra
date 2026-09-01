@@ -1,6 +1,7 @@
 import { Head, Link } from "@inertiajs/react";
-import PublicHeader from "@/Components/PublicHeader";
-import PublicFooter from "@/Components/PublicFooter";
+import StudentLayout from "@/Layouts/StudentLayout";
+import { Button } from "@/Components/ui/button";
+import { Printer } from "lucide-react";
 
 export default function Certificado({ certificate, enrollment }) {
     const verifyUrl = `${window.location.origin}/certificado/verificar/${certificate.code}`;
@@ -11,67 +12,50 @@ export default function Certificado({ certificate, enrollment }) {
     });
 
     return (
-        <div className="catalog-page lt-public beal-page">
-            <Head title={`Certificado - ${enrollment.course.title} | Latin Terra`} />
-
-            <link rel="stylesheet" href="/assets/css/nosotros.css" />
-
-            <PublicHeader current="aula" />
-
-            <main className="catalog-main" style={{ paddingTop: "calc(var(--lt-header-h, 88px) + 30px)" }}>
-                <div className="container" style={{ maxWidth: 820, margin: "0 auto" }}>
+        <>
+            <Head title={`Certificado - ${enrollment.course.title}`} />
+            <StudentLayout>
+                <div className="mx-auto max-w-3xl">
                     <div
-                        style={{
-                            border: "10px solid var(--lt-green)",
-                            borderRadius: 16,
-                            padding: "48px 32px",
-                            textAlign: "center",
-                            background: "#fff",
-                            boxShadow: "0 24px 60px rgba(2,6,23,.12)",
-                        }}
                         id="certificate-print"
+                        className="rounded-2xl border-[10px] border-[#58b22d] bg-white p-10 text-center shadow-lg sm:p-14"
                     >
-                        <img src="/assets/img/logo-oficial.png" alt="Latin Terra" style={{ height: 60, margin: "0 auto 20px" }} />
-                        <p style={{ letterSpacing: "0.2em", color: "#64748b", fontWeight: 700, fontSize: ".85rem" }}>
+                        <img src="/assets/img/logo-oficial.png" alt="Latin Terra" className="mx-auto mb-5 h-14" />
+                        <p className="text-xs font-bold tracking-[0.2em] text-slate-500">
                             CERTIFICADO DE FINALIZACION
                         </p>
-                        <h1 style={{ fontSize: "1.8rem", fontWeight: 800, margin: "18px 0 6px", color: "#0f1b33" }}>
+                        <h1 className="mt-4 text-2xl font-extrabold text-[#0f1b33] sm:text-3xl">
                             {enrollment.user.name}
                         </h1>
-                        <p style={{ color: "#475569", margin: "0 0 24px" }}>
-                            ha completado satisfactoriamente el curso
-                        </p>
-                        <h2 style={{ fontSize: "1.3rem", fontWeight: 800, color: "var(--lt-green-2)", margin: "0 0 24px" }}>
+                        <p className="mt-1 text-slate-500">ha completado satisfactoriamente el curso</p>
+                        <h2 className="mt-5 text-xl font-extrabold text-[#3e9f25] sm:text-2xl">
                             {enrollment.course.title}
                         </h2>
-                        <p style={{ color: "#64748b", fontSize: ".9rem" }}>Emitido el {issuedDate}</p>
-                        <p style={{ color: "#94a3b8", fontSize: ".8rem", marginTop: 20 }}>
+                        <p className="mt-6 text-sm text-slate-500">Emitido el {issuedDate}</p>
+                        <p className="mt-4 text-xs text-slate-400">
                             Codigo de verificacion: <strong>{certificate.code}</strong>
                         </p>
-                        <p style={{ color: "#94a3b8", fontSize: ".78rem", wordBreak: "break-all" }}>
-                            {verifyUrl}
-                        </p>
+                        <p className="break-all text-xs text-slate-400">{verifyUrl}</p>
                     </div>
 
-                    <div style={{ textAlign: "center", marginTop: 24, display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}>
-                        <button className="btn btn-primary" onClick={() => window.print()}>
+                    <div className="mt-6 flex flex-wrap justify-center gap-2 print:hidden">
+                        <Button onClick={() => window.print()}>
+                            <Printer className="h-4 w-4" />
                             Imprimir / Guardar como PDF
-                        </button>
-                        <Link className="btn btn-outline" href="/aula-virtual/mis-cursos">
-                            Volver a mis cursos
-                        </Link>
+                        </Button>
+                        <Button variant="outline" asChild>
+                            <Link href="/aula-virtual/mis-cursos">Volver a mis cursos</Link>
+                        </Button>
                     </div>
                 </div>
-            </main>
-
-            <PublicFooter />
+            </StudentLayout>
 
             <style>{`
                 @media print {
-                    header, footer, .wa-float, .beal-modal-overlay, main .btn, main a.btn { display: none !important; }
+                    header, .print\\:hidden { display: none !important; }
                     #certificate-print { box-shadow: none !important; }
                 }
             `}</style>
-        </div>
+        </>
     );
 }
