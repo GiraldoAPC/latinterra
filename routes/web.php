@@ -121,7 +121,7 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware(['auth'])->prefix('admin')->group(function () {
+Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/', fn() => Inertia::render('Admin/Dashboard'))->name('admin');
 
     Route::get('/products', fn() => Inertia::render('Admin/Products/Index'))->name('admin.products');
@@ -130,6 +130,26 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::get('/quotes', fn() => Inertia::render('Admin/Quotes/Index'))->name('admin.quotes');
     Route::get('/users', fn() => Inertia::render('Admin/Users/Index'))->name('admin.users');
     Route::get('/settings', fn() => Inertia::render('Admin/Settings/Index'))->name('admin.settings');
+
+    // ===== Aula virtual: gestion de cursos =====
+    Route::get('/cursos', [\App\Http\Controllers\Admin\CourseController::class, 'index'])->name('admin.courses.index');
+    Route::get('/cursos/nuevo', [\App\Http\Controllers\Admin\CourseController::class, 'create'])->name('admin.courses.create');
+    Route::post('/cursos', [\App\Http\Controllers\Admin\CourseController::class, 'store'])->name('admin.courses.store');
+    Route::get('/cursos/{course}', [\App\Http\Controllers\Admin\CourseController::class, 'edit'])->name('admin.courses.edit');
+    Route::put('/cursos/{course}', [\App\Http\Controllers\Admin\CourseController::class, 'update'])->name('admin.courses.update');
+    Route::delete('/cursos/{course}', [\App\Http\Controllers\Admin\CourseController::class, 'destroy'])->name('admin.courses.destroy');
+
+    Route::post('/cursos/{course}/modulos', [\App\Http\Controllers\Admin\CourseModuleController::class, 'store'])->name('admin.modules.store');
+    Route::put('/modulos/{module}', [\App\Http\Controllers\Admin\CourseModuleController::class, 'update'])->name('admin.modules.update');
+    Route::delete('/modulos/{module}', [\App\Http\Controllers\Admin\CourseModuleController::class, 'destroy'])->name('admin.modules.destroy');
+
+    Route::post('/modulos/{module}/clases', [\App\Http\Controllers\Admin\CourseLessonController::class, 'store'])->name('admin.lessons.store');
+    Route::put('/clases/{lesson}', [\App\Http\Controllers\Admin\CourseLessonController::class, 'update'])->name('admin.lessons.update');
+    Route::delete('/clases/{lesson}', [\App\Http\Controllers\Admin\CourseLessonController::class, 'destroy'])->name('admin.lessons.destroy');
+
+    Route::post('/cursos/{course}/examen/preguntas', [\App\Http\Controllers\Admin\ExamController::class, 'storeQuestion'])->name('admin.exam.questions.store');
+    Route::put('/examen/preguntas/{question}', [\App\Http\Controllers\Admin\ExamController::class, 'updateQuestion'])->name('admin.exam.questions.update');
+    Route::delete('/examen/preguntas/{question}', [\App\Http\Controllers\Admin\ExamController::class, 'destroyQuestion'])->name('admin.exam.questions.destroy');
 });
 
 
@@ -137,6 +157,24 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+// ===== Aula virtual (LMS) =====
+use App\Http\Controllers\StudentCourseController;
+use App\Http\Controllers\CertificateController;
+
+Route::get('/aula', [StudentCourseController::class, 'catalog'])->name('aula.catalogo');
+Route::get('/aula/{course:slug}', [StudentCourseController::class, 'show'])->name('aula.curso');
+Route::get('/certificado/verificar/{code}', [CertificateController::class, 'verify'])->name('certificado.verificar');
+
+Route::middleware('auth')->group(function () {
+    Route::post('/aula/{course:slug}/inscribirme', [StudentCourseController::class, 'enroll'])->name('aula.inscribirme');
+    Route::get('/aula-virtual/mis-cursos', [StudentCourseController::class, 'myCourses'])->name('aula.mis-cursos');
+    Route::get('/aula/{course:slug}/clase/{lesson}', [StudentCourseController::class, 'lesson'])->name('aula.leccion');
+    Route::post('/aula/{course:slug}/clase/{lesson}/completar', [StudentCourseController::class, 'completeLesson'])->name('aula.leccion.completar');
+    Route::get('/aula/{course:slug}/examen', [StudentCourseController::class, 'examShow'])->name('aula.examen');
+    Route::post('/aula/{course:slug}/examen', [StudentCourseController::class, 'examSubmit'])->name('aula.examen.enviar');
+    Route::get('/aula/certificado/{enrollment}', [CertificateController::class, 'show'])->name('certificado.ver');
 });
 
 require __DIR__ . '/auth.php';

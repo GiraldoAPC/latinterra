@@ -132,6 +132,9 @@ export default function PublicHeader({
                                 <Link href="/kuhlmann" className={isActive("kuhlmann")}>Kuhlmann</Link>
                             </li>
                             <li>
+                                <Link href="/aula" className={isActive("aula")}>Aula Virtual</Link>
+                            </li>
+                            <li>
                                 <Link href={contactUrl} className={isActive("contact")}>
                                     Contactanos
                                 </Link>
@@ -244,6 +247,11 @@ export default function PublicHeader({
                         <li>
                             <Link href="/kuhlmann" data-close="true" className={isActive("kuhlmann")} onClick={() => setMenuOpen(false)}>
                                 Kuhlmann
+                            </Link>
+                        </li>
+                        <li>
+                            <Link href="/aula" data-close="true" className={isActive("aula")} onClick={() => setMenuOpen(false)}>
+                                Aula Virtual
                             </Link>
                         </li>
                         <li>

@@ -22,6 +22,7 @@ import {
     Menu,
     Settings,
     LogOut,
+    GraduationCap,
 } from "lucide-react";
 
 function NavItem({ href, icon: Icon, label }) {
@@ -84,6 +85,11 @@ function SidebarContent() {
                     label="Categorías"
                 />
                 <NavItem href="/admin/brands" icon={Layers} label="Marcas" />
+                <NavItem
+                    href="/admin/cursos"
+                    icon={GraduationCap}
+                    label="Aula virtual"
+                />
                 <NavItem
                     href="/admin/quotes"
                     icon={FileText}
