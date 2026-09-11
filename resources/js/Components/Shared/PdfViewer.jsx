@@ -45,31 +45,37 @@ export default function PdfViewer({ url }) {
         setPageInput("1");
         setScale(1);
 
+        // eslint-disable-next-line no-console
+        console.log("PdfViewer: cargando", url);
+
         if (!url) {
             setLoading(false);
             setError(true);
             return;
         }
 
-        import("pdfjs-dist").then((pdfjs) => {
-            if (cancelled) return;
-            pdfjs.GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/build/pdf.worker.min.mjs", import.meta.url).href;
+        import("pdfjs-dist")
+            .then((pdfjs) => {
+                if (cancelled) return;
+                pdfjs.GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/build/pdf.worker.min.mjs", import.meta.url).href;
 
-            pdfjs
-                .getDocument(url)
-                .promise.then((doc) => {
-                    if (cancelled) return;
-                    docRef.current = doc;
-                    setNumPages(doc.numPages);
-                    setLoading(false);
-                })
-                .catch(() => {
-                    if (!cancelled) {
+                return pdfjs
+                    .getDocument(url)
+                    .promise.then((doc) => {
+                        if (cancelled) return;
+                        docRef.current = doc;
+                        setNumPages(doc.numPages);
                         setLoading(false);
-                        setError(true);
-                    }
-                });
-        });
+                    });
+            })
+            .catch((err) => {
+                // eslint-disable-next-line no-console
+                console.error("PdfViewer: fallo cargando", url, err);
+                if (!cancelled) {
+                    setLoading(false);
+                    setError(true);
+                }
+            });
 
         return () => {
             cancelled = true;
