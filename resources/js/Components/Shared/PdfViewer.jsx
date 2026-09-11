@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, Minus, Plus, Maximize2, Minimize2, Loader2, AlertTriangle } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 /**
  * Visor de PDF propio (pdf.js renderizando a canvas) con controles en los
@@ -18,6 +19,7 @@ export default function PdfViewer({ url }) {
     const [numPages, setNumPages] = useState(0);
     const [scale, setScale] = useState(1);
     const [loading, setLoading] = useState(true);
+    const [pageRendering, setPageRendering] = useState(false);
     const [error, setError] = useState(false);
     const [isFullscreen, setIsFullscreen] = useState(false);
 
@@ -75,6 +77,7 @@ export default function PdfViewer({ url }) {
         if (!docRef.current || !canvasRef.current) return;
 
         let cancelled = false;
+        setPageRendering(true);
         docRef.current.getPage(page).then((pdfPage) => {
             if (cancelled) return;
             const viewport = pdfPage.getViewport({ scale });
@@ -86,7 +89,11 @@ export default function PdfViewer({ url }) {
             renderTaskRef.current?.cancel();
             const task = pdfPage.render({ canvasContext: context, viewport });
             renderTaskRef.current = task;
-            task.promise.catch(() => {});
+            task.promise
+                .catch(() => {})
+                .finally(() => {
+                    if (!cancelled) setPageRendering(false);
+                });
         });
 
         return () => {
@@ -176,7 +183,17 @@ export default function PdfViewer({ url }) {
                     </div>
                 )}
                 {!loading && !error && (
-                    <canvas ref={canvasRef} className="mx-auto block shadow-2xl" />
+                    <>
+                        <canvas ref={canvasRef} className={cn("mx-auto block shadow-2xl transition-opacity", pageRendering && "opacity-40")} />
+                        {pageRendering && (
+                            <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                                <span className="flex items-center gap-2 rounded-full bg-black/60 px-4 py-2 text-sm text-white">
+                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                    Cargando pagina...
+                                </span>
+                            </div>
+                        )}
+                    </>
                 )}
             </div>
         </div>
