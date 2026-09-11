@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight, Minus, Plus, Maximize2, Loader2, AlertTriangle } from "lucide-react";
+import { ChevronLeft, ChevronRight, Minus, Plus, Maximize2, Minimize2, Loader2, AlertTriangle } from "lucide-react";
 
 /**
  * Visor de PDF propio (pdf.js renderizando a canvas) con controles en los
@@ -9,6 +9,7 @@ import { ChevronLeft, ChevronRight, Minus, Plus, Maximize2, Loader2, AlertTriang
  * inicial del panel.
  */
 export default function PdfViewer({ url }) {
+    const containerRef = useRef(null);
     const canvasRef = useRef(null);
     const docRef = useRef(null);
     const renderTaskRef = useRef(null);
@@ -18,6 +19,21 @@ export default function PdfViewer({ url }) {
     const [scale, setScale] = useState(1);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
+    const [isFullscreen, setIsFullscreen] = useState(false);
+
+    useEffect(() => {
+        const onChange = () => setIsFullscreen(document.fullscreenElement === containerRef.current);
+        document.addEventListener("fullscreenchange", onChange);
+        return () => document.removeEventListener("fullscreenchange", onChange);
+    }, []);
+
+    const toggleFullscreen = () => {
+        if (document.fullscreenElement) {
+            document.exitFullscreen();
+        } else {
+            containerRef.current?.requestFullscreen?.();
+        }
+    };
 
     useEffect(() => {
         let cancelled = false;
@@ -90,7 +106,7 @@ export default function PdfViewer({ url }) {
     };
 
     return (
-        <div className="flex h-full flex-col bg-[#0b0f19]">
+        <div ref={containerRef} className="flex h-full flex-col bg-[#0b0f19]">
             <div className="flex shrink-0 items-center justify-between gap-2 bg-gradient-to-r from-[#024A7D] to-[#00ADEE] px-3 py-2 text-white">
                 <div className="flex items-center gap-1.5">
                     <button
@@ -135,15 +151,14 @@ export default function PdfViewer({ url }) {
                     >
                         <Plus className="h-4 w-4" />
                     </button>
-                    <a
-                        href={url}
-                        target="_blank"
-                        rel="noreferrer"
+                    <button
+                        type="button"
+                        onClick={toggleFullscreen}
                         className="ml-1 flex h-8 w-8 items-center justify-center rounded-md hover:bg-white/15"
-                        title="Abrir en pestaña nueva"
+                        title={isFullscreen ? "Salir de pantalla completa" : "Pantalla completa"}
                     >
-                        <Maximize2 className="h-4 w-4" />
-                    </a>
+                        {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+                    </button>
                 </div>
             </div>
 
