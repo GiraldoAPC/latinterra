@@ -261,8 +261,8 @@ function YouTubePlayer({ videoId, onEnded }) {
                         "Watch on YouTube" badge (bottom) while paused, even with
                         controls disabled. Mask both (pointer-events-none so clicks
                         still fall through to our own toggle button underneath). */}
-                    <div className="pointer-events-none absolute inset-x-0 top-0 h-14 bg-gradient-to-b from-black/70 to-transparent" />
-                    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/85 via-black/50 to-transparent" />
+                    <div className="pointer-events-none absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-black from-60% to-transparent" />
+                    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black from-50% to-transparent" />
                 </>
             )}
 
