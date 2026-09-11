@@ -1,16 +1,29 @@
 import { useEffect, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight, Minus, Plus, Maximize2, Minimize2, Loader2, AlertTriangle } from "lucide-react";
+import { ChevronLeft, ChevronRight, Minus, Plus, Maximize2, Minimize2, AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
+
+/** Mismo spinner celeste que GlobalLoader, en tamano chico para usar inline. */
+function Spinner({ className }) {
+    return (
+        <div
+            className={cn("h-5 w-5 shrink-0 animate-spin rounded-full border-[3px] border-white/20", className)}
+            style={{ borderTopColor: "#00ADEE" }}
+        />
+    );
+}
 
 /**
  * Visor de PDF propio (pdf.js renderizando a canvas) con controles en los
  * colores de Acceso Vertical Peru, en vez de depender del visor nativo del
  * navegador (que no se puede re-estilizar por ser UI del propio Chrome).
  * pdf.js se carga lazy (solo cuando se abre un PDF) para no pesar el bundle
- * inicial del panel.
+ * inicial del panel. La pagina se ajusta automaticamente al espacio
+ * disponible del visor (recalcula al entrar/salir de pantalla completa o
+ * redimensionar), hasta que el usuario haga zoom manual.
  */
 export default function PdfViewer({ url }) {
     const containerRef = useRef(null);
+    const viewportBoxRef = useRef(null);
     const canvasRef = useRef(null);
     const docRef = useRef(null);
     const renderTaskRef = useRef(null);
@@ -18,15 +31,24 @@ export default function PdfViewer({ url }) {
     const [pageInput, setPageInput] = useState("1");
     const [numPages, setNumPages] = useState(0);
     const [scale, setScale] = useState(1);
+    const [autoFit, setAutoFit] = useState(true);
+    const [resizeTick, setResizeTick] = useState(0);
     const [loading, setLoading] = useState(true);
     const [pageRendering, setPageRendering] = useState(false);
     const [error, setError] = useState(false);
     const [isFullscreen, setIsFullscreen] = useState(false);
 
     useEffect(() => {
-        const onChange = () => setIsFullscreen(document.fullscreenElement === containerRef.current);
+        const onChange = () => {
+            setIsFullscreen(document.fullscreenElement === containerRef.current);
+            setResizeTick((t) => t + 1);
+        };
         document.addEventListener("fullscreenchange", onChange);
-        return () => document.removeEventListener("fullscreenchange", onChange);
+        window.addEventListener("resize", onChange);
+        return () => {
+            document.removeEventListener("fullscreenchange", onChange);
+            window.removeEventListener("resize", onChange);
+        };
     }, []);
 
     const toggleFullscreen = () => {
@@ -44,6 +66,7 @@ export default function PdfViewer({ url }) {
         setPage(1);
         setPageInput("1");
         setScale(1);
+        setAutoFit(true);
 
         if (!url) {
             setLoading(false);
@@ -87,7 +110,17 @@ export default function PdfViewer({ url }) {
         setPageRendering(true);
         docRef.current.getPage(page).then((pdfPage) => {
             if (cancelled) return;
-            const viewport = pdfPage.getViewport({ scale });
+
+            let renderScale = scale;
+            if (autoFit && viewportBoxRef.current) {
+                const base = pdfPage.getViewport({ scale: 1 });
+                const box = viewportBoxRef.current.getBoundingClientRect();
+                const fit = Math.min((box.width - 16) / base.width, (box.height - 16) / base.height);
+                renderScale = Math.max(0.25, fit);
+                setScale(renderScale);
+            }
+
+            const viewport = pdfPage.getViewport({ scale: renderScale });
             const canvas = canvasRef.current;
             const context = canvas.getContext("2d");
             canvas.width = viewport.width;
@@ -106,7 +139,8 @@ export default function PdfViewer({ url }) {
         return () => {
             cancelled = true;
         };
-    }, [page, scale, numPages]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [page, numPages, resizeTick, autoFit, scale]);
 
     const goToPage = (n) => {
         const clamped = Math.min(Math.max(1, n), numPages || 1);
@@ -117,6 +151,11 @@ export default function PdfViewer({ url }) {
     const submitPageInput = () => {
         const n = parseInt(pageInput, 10);
         goToPage(Number.isFinite(n) ? n : page);
+    };
+
+    const zoom = (delta) => {
+        setAutoFit(false);
+        setScale((s) => Math.min(3, Math.max(0.25, +(s + delta).toFixed(2))));
     };
 
     return (
@@ -152,7 +191,7 @@ export default function PdfViewer({ url }) {
                 <div className="flex items-center gap-1.5">
                     <button
                         type="button"
-                        onClick={() => setScale((s) => Math.max(0.5, +(s - 0.15).toFixed(2)))}
+                        onClick={() => zoom(-0.15)}
                         className="flex h-8 w-8 items-center justify-center rounded-md hover:bg-white/15"
                     >
                         <Minus className="h-4 w-4" />
@@ -160,7 +199,7 @@ export default function PdfViewer({ url }) {
                     <span className="w-12 text-center text-sm text-white/80">{Math.round(scale * 100)}%</span>
                     <button
                         type="button"
-                        onClick={() => setScale((s) => Math.min(3, +(s + 0.15).toFixed(2)))}
+                        onClick={() => zoom(0.15)}
                         className="flex h-8 w-8 items-center justify-center rounded-md hover:bg-white/15"
                     >
                         <Plus className="h-4 w-4" />
@@ -176,10 +215,10 @@ export default function PdfViewer({ url }) {
                 </div>
             </div>
 
-            <div className="relative flex-1 overflow-auto p-4">
+            <div ref={viewportBoxRef} className="relative flex-1 overflow-auto p-4">
                 {loading && (
                     <div className="flex h-full items-center justify-center gap-2 text-sm text-white/60">
-                        <Loader2 className="h-4 w-4 animate-spin" />
+                        <Spinner />
                         Cargando PDF...
                     </div>
                 )}
@@ -195,7 +234,7 @@ export default function PdfViewer({ url }) {
                         {pageRendering && (
                             <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
                                 <span className="flex items-center gap-2 rounded-full bg-black/60 px-4 py-2 text-sm text-white">
-                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                    <Spinner className="h-4 w-4 border-2" />
                                     Cargando pagina...
                                 </span>
                             </div>
