@@ -114,11 +114,22 @@ function YouTubePlayer({ videoId, onEnded }) {
                         if (cancelled) return;
                         const YT = window.YT.PlayerState;
                         setPlaying(event.data === YT.PLAYING);
+                        if (event.data === YT.PLAYING) {
+                            // Recien al arrancar la reproduccion YouTube ya
+                            // sabe que resoluciones tiene ese video en
+                            // concreto - pedirlo en onReady casi siempre
+                            // devuelve vacio o solo "auto".
+                            setAvailableQualities(event.target.getAvailableQualityLevels?.() ?? []);
+                        }
                         if (event.data === YT.ENDED && !firedRef.current) {
                             firedRef.current = true;
                             setPlaying(false);
                             onEnded();
                         }
+                    },
+                    onPlaybackQualityChange: (event) => {
+                        if (cancelled) return;
+                        setAvailableQualities(event.target.getAvailableQualityLevels?.() ?? []);
                     },
                 },
             });
