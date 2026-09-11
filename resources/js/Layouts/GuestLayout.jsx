@@ -70,16 +70,16 @@ export default function Guest({ children }) {
                 </div>
             </div>
 
-            <div className="flex w-full flex-1 flex-col items-center justify-center gap-3 overflow-hidden bg-slate-50 px-4 py-8 sm:gap-6 sm:px-6 sm:py-12 lg:w-1/2">
+            <div className="flex w-full flex-1 flex-col items-center justify-center gap-5 overflow-hidden bg-slate-50 px-5 py-8 sm:gap-6 sm:px-6 sm:py-12 lg:w-1/2">
                 <Link href="/" className="flex shrink-0 items-center">
                     <img
                         src="/assets/img/acceso-vertical-form.png"
                         alt="Acceso Vertical Peru"
-                        className="h-14 w-auto sm:h-24 lg:h-28"
+                        className="h-24 w-auto sm:h-24 lg:h-28"
                     />
                 </Link>
 
-                <div className="w-full max-w-sm shrink-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-xl shadow-slate-200/60 sm:p-8">
+                <div className="w-full max-w-md shrink-0 rounded-2xl border border-slate-200 bg-white p-6 shadow-xl shadow-slate-200/60 sm:max-w-sm sm:p-8">
                     {children}
                 </div>
 
