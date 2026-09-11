@@ -4,6 +4,7 @@ import StudentLayout from "@/Layouts/StudentLayout";
 import { Button } from "@/Components/ui/button";
 import { Badge } from "@/Components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/Components/ui/dialog";
+import PdfViewer from "@/Components/Shared/PdfViewer";
 import {
     CircleCheck,
     CirclePlay,
@@ -470,11 +471,17 @@ function MaterialPreviewModal({ material, onClose }) {
                 </DialogHeader>
 
                 <div className="relative flex-1 bg-muted">
-                    <iframe
-                        src={viewerSrc}
-                        title={material.title}
-                        className="absolute inset-0 h-full w-full border-0"
-                    />
+                    {isPdf ? (
+                        <div className="absolute inset-0">
+                            <PdfViewer url={material.url} />
+                        </div>
+                    ) : (
+                        <iframe
+                            src={viewerSrc}
+                            title={material.title}
+                            className="absolute inset-0 h-full w-full border-0"
+                        />
+                    )}
                 </div>
 
                 <div className="flex items-center justify-between gap-2 border-t px-4 py-2.5">
