@@ -21,7 +21,7 @@ function Spinner({ className }) {
  * disponible del visor (recalcula al entrar/salir de pantalla completa o
  * redimensionar), hasta que el usuario haga zoom manual.
  */
-export default function PdfViewer({ url }) {
+export default function PdfViewer({ url, onPageSize }) {
     const containerRef = useRef(null);
     const viewportBoxRef = useRef(null);
     const canvasRef = useRef(null);
@@ -111,9 +111,11 @@ export default function PdfViewer({ url }) {
         docRef.current.getPage(page).then((pdfPage) => {
             if (cancelled) return;
 
+            const base = pdfPage.getViewport({ scale: 1 });
+            onPageSize?.(base.width, base.height);
+
             let renderScale = scale;
             if (autoFit && viewportBoxRef.current) {
-                const base = pdfPage.getViewport({ scale: 1 });
                 const box = viewportBoxRef.current.getBoundingClientRect();
                 const fit = Math.min((box.width - 16) / base.width, (box.height - 16) / base.height);
                 renderScale = Math.max(0.25, fit);
@@ -146,6 +148,30 @@ export default function PdfViewer({ url }) {
         const clamped = Math.min(Math.max(1, n), numPages || 1);
         setPage(clamped);
         setPageInput(String(clamped));
+    };
+
+    // Scroll de rueda/trackpad cambia de pagina, como un lector normal -
+    // solo cuando la pagina entra entera en el visor (sin scroll propio),
+    // que es el caso por defecto con el auto-ajuste. Si el usuario hizo
+    // zoom manual y el contenido ya tiene su propio scroll, se deja que
+    // la rueda haga scroll normal en vez de saltar de pagina.
+    const wheelLockRef = useRef(false);
+    const handleWheel = (e) => {
+        const box = viewportBoxRef.current;
+        if (box && box.scrollHeight > box.clientHeight + 4) return;
+        if (wheelLockRef.current || Math.abs(e.deltaY) < 15) return;
+
+        if (e.deltaY > 0 && page < numPages) {
+            goToPage(page + 1);
+        } else if (e.deltaY < 0 && page > 1) {
+            goToPage(page - 1);
+        } else {
+            return;
+        }
+        wheelLockRef.current = true;
+        setTimeout(() => {
+            wheelLockRef.current = false;
+        }, 500);
     };
 
     const submitPageInput = () => {
@@ -215,7 +241,7 @@ export default function PdfViewer({ url }) {
                 </div>
             </div>
 
-            <div ref={viewportBoxRef} className="relative flex-1 overflow-auto p-4">
+            <div ref={viewportBoxRef} onWheel={handleWheel} className="relative flex-1 overflow-auto p-4">
                 {loading && (
                     <div className="flex h-full items-center justify-center gap-2 text-sm text-white/60">
                         <Spinner />
