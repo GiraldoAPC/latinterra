@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Course;
-use App\Models\CourseModule;
+use App\Models\Aula\Course;
+use App\Models\Aula\CourseModule;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
@@ -27,6 +27,7 @@ class CourseModuleController extends Controller
     {
         $data = $request->validate([
             'title' => ['required', 'string', 'max:180'],
+            'description' => ['nullable', 'string', 'max:5000'],
         ]);
 
         $module->update($data);

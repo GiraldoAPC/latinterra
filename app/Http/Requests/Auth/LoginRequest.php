@@ -27,7 +27,9 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'string', 'email'],
+            // Acepta tanto el correo como el numero de documento (DNI) como
+            // identificador de acceso.
+            'email' => ['required', 'string'],
             'password' => ['required', 'string'],
         ];
     }
@@ -41,7 +43,10 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        $identifier = $this->string('email')->trim()->toString();
+        $field = filter_var($identifier, FILTER_VALIDATE_EMAIL) ? 'email' : 'dni';
+
+        if (! Auth::attempt([$field => $identifier, 'password' => $this->string('password')], $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([

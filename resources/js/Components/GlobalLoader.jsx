@@ -9,7 +9,7 @@ export default function GlobalLoader({ show }) {
       aria-live="polite"
       aria-label="Cargando"
       style={{
-        background: "transparent", // 👈 SIN fondo (sin overlay)
+        background: "rgba(15, 27, 51, 0.35)", // overlay oscuro translucido
         margin: 0,
         padding: 0,
       }}
@@ -19,7 +19,7 @@ export default function GlobalLoader({ show }) {
         <div
           className="h-12 w-12 rounded-full border-[3px] border-black/20"
           style={{
-            borderTopColor: "#58b22d", // verde logo
+            borderTopColor: "#00ADEE", // verde logo
             animation: "spin 0.85s linear infinite",
           }}
         />

@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -34,6 +35,11 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
+            // Solo para el panel admin - evita una consulta de mas en cada
+            // pagina publica, que nunca necesita este dato.
+            'settings' => $request->user()?->role === 'admin'
+                ? ['warehouseMode' => Setting::bool('warehouse_mode')]
+                : null,
         ];
     }
 }

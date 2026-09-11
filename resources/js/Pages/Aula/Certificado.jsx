@@ -18,17 +18,17 @@ export default function Certificado({ certificate, enrollment }) {
                 <div className="mx-auto max-w-3xl">
                     <div
                         id="certificate-print"
-                        className="rounded-2xl border-[10px] border-[#58b22d] bg-white p-10 text-center shadow-lg sm:p-14"
+                        className="rounded-2xl border-[10px] border-[#00ADEE] bg-white p-10 text-center shadow-lg sm:p-14"
                     >
-                        <img src="/assets/img/logo-oficial.png" alt="Latin Terra" className="mx-auto mb-5 h-14" />
+                        <img src="/assets/img/LOGO-ACCESO-VERTICAL.png" alt="Acceso Vertical Perú" className="mx-auto mb-5 h-14" />
                         <p className="text-xs font-bold tracking-[0.2em] text-slate-500">
                             CERTIFICADO DE FINALIZACION
                         </p>
-                        <h1 className="mt-4 text-2xl font-extrabold text-[#0f1b33] sm:text-3xl">
+                        <h1 className="mt-4 text-2xl font-extrabold text-[#024A7D] sm:text-3xl">
                             {enrollment.user.name}
                         </h1>
                         <p className="mt-1 text-slate-500">ha completado satisfactoriamente el curso</p>
-                        <h2 className="mt-5 text-xl font-extrabold text-[#3e9f25] sm:text-2xl">
+                        <h2 className="mt-5 text-xl font-extrabold text-[#024A7D] sm:text-2xl">
                             {enrollment.course.title}
                         </h2>
                         <p className="mt-6 text-sm text-slate-500">Emitido el {issuedDate}</p>

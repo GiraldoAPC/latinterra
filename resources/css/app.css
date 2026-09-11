@@ -2,6 +2,184 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Standard project-wide hover: a tinted layer sweeps in from the right
+   (same effect used on the student profile tabs). Drop `.lt-hover-sweep` on
+   any interactive item (dropdown items, select items, list rows...) to get
+   it consistently everywhere instead of a flat background-color hover.
+   Override `--lt-sweep-color` per-instance for dark backgrounds. */
+.lt-hover-sweep {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+}
+.lt-hover-sweep::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--lt-sweep-color, rgba(0, 173, 238, 0.12));
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 250ms ease-out;
+    pointer-events: none;
+}
+.lt-hover-sweep:hover::after,
+.lt-hover-sweep[data-highlighted]::after,
+.lt-hover-sweep[data-state="checked"]::after {
+    transform: scaleX(1);
+}
+
+/* Global page scrollbar: invisible at rest, appears only while hovering the
+   page, so it never reads as a permanent gray strip next to the layout. */
+html {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+}
+html:hover {
+    scrollbar-color: rgba(15, 27, 51, 0.22) transparent;
+}
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background-color: transparent;
+    border-radius: 9999px;
+}
+html:hover::-webkit-scrollbar-thumb {
+    background-color: rgba(15, 27, 51, 0.22);
+}
+::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(15, 27, 51, 0.4);
+}
+
+/* Impresion de ticket: el modal es un overlay fijo con su propio scroll, asi
+   que imprimir la pagina tal cual recorta todo lo que no esta visible en el
+   viewport. Se oculta todo menos #ticket-print y se lo saca del flujo
+   contenido/scrolleable del modal para que fluya normal en la hoja. */
+@media print {
+    /* Tamaño de rollo tiketera 80mm - Chrome lo ofrece como papel al
+       imprimir/guardar en PDF; en una impresora normal (A4/Carta) el
+       navegador la sigue escalando a su hoja, pero el contenido ya viene
+       angosto (max-w-[300px] en PaymentTicket) asi que no se ve estirado. */
+    @page {
+        size: 80mm auto;
+        margin: 4mm;
+    }
+
+    body * {
+        visibility: hidden !important;
+    }
+    #ticket-print,
+    #ticket-print * {
+        visibility: visible !important;
+    }
+    #ticket-print {
+        position: absolute !important;
+        inset: 0 auto auto 0 !important;
+        width: 100% !important;
+        max-width: 300px !important;
+        margin: 0 auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+        border: 0 !important;
+    }
+}
+
+/* Admin sidebar: thin, dark, rounded scrollbar */
+.lt-admin-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+}
+.lt-admin-scroll::-webkit-scrollbar {
+    width: 6px;
+}
+.lt-admin-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+.lt-admin-scroll::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.18);
+    border-radius: 9999px;
+}
+.lt-admin-scroll::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255, 255, 255, 0.32);
+}
+
+/* Contenido scrolleable de los modales (StepperModal, etc): invisible en
+   reposo, solo aparece finita mientras se pasa el mouse por encima - igual
+   criterio que el scrollbar global de la pagina, para que nunca se vea la
+   barra "de toda la vida" pisando el diseño. */
+.lt-modal-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+}
+.lt-modal-scroll:hover {
+    scrollbar-color: rgba(15, 27, 51, 0.22) transparent;
+}
+.lt-modal-scroll::-webkit-scrollbar {
+    width: 6px;
+}
+.lt-modal-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+.lt-modal-scroll::-webkit-scrollbar-thumb {
+    background-color: transparent;
+}
+.lt-modal-scroll:hover::-webkit-scrollbar-thumb {
+    background-color: rgba(15, 27, 51, 0.22);
+    border-radius: 9999px;
+}
+.lt-modal-scroll::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(15, 27, 51, 0.35);
+}
+
+/* Custom YouTube player controls: colored seek/volume sliders */
+.lt-video-seek {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 4px;
+    border-radius: 9999px;
+    outline: none;
+    cursor: pointer;
+    background: linear-gradient(
+        to right,
+        #58b22d var(--progress, 0%),
+        rgba(255, 255, 255, 0.25) var(--progress, 0%)
+    );
+}
+.lt-video-seek::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 9999px;
+    background: #ffffff;
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+}
+.lt-video-seek::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    border: none;
+    border-radius: 9999px;
+    background: #ffffff;
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+}
+.lt-video-seek::-moz-range-track {
+    height: 4px;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.25);
+}
+.lt-video-seek::-moz-range-progress {
+    height: 4px;
+    border-radius: 9999px;
+    background: #58b22d;
+}
+
 @layer base {
     :root {
         --background: 0 0% 100%;
@@ -10,8 +188,8 @@
         --card-foreground: 222.2 84% 4.9%;
         --popover: 0 0% 100%;
         --popover-foreground: 222.2 84% 4.9%;
-        --primary: 222.2 47.4% 11.2%;
-        --primary-foreground: 210 40% 98%;
+        --primary: 204.9 96.9% 24.9%;
+        --primary-foreground: 0 0% 100%;
         --secondary: 210 40% 96.1%;
         --secondary-foreground: 222.2 47.4% 11.2%;
         --muted: 210 40% 96.1%;
@@ -22,7 +200,7 @@
         --destructive-foreground: 210 40% 98%;
         --border: 214.3 31.8% 91.4%;
         --input: 214.3 31.8% 91.4%;
-        --ring: 222.2 84% 4.9%;
+        --ring: 196.4 100% 46.7%;
         --chart-1: 12 76% 61%;
         --chart-2: 173 58% 39%;
         --chart-3: 197 37% 24%;
@@ -71,10 +249,30 @@
 
     body {
         @apply bg-background text-foreground;
+        margin: 0;
         font-size: 1rem;
         line-height: 1.55;
         -webkit-text-size-adjust: 100%;
     }
+}
+
+/* Reset defensivo: se vio un margen superior fantasma en el login (18px)
+   en algunos navegadores/webviews que no respetan el reset de Tailwind
+   sobre <body> con la especificidad esperada. Fuerza margen y alto 0/100%
+   en la cadena html -> body -> #app para que layouts a pantalla completa
+   (como GuestLayout) siempre arranquen exactos en y=0. */
+html,
+body {
+    margin: 0 !important;
+    padding: 0 !important;
+    height: 100%;
+    overscroll-behavior: none;
+}
+
+#app {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
 }
 @layer components {
     body .container {

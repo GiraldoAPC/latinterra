@@ -23,6 +23,7 @@ export default function Examen({ course, enrollment, lastAttempt }) {
             <>
                 <Head title={`Examen - ${course.title}`} />
                 <StudentLayout title="Examen final">
+                    <h1 className="mb-4 text-xl font-bold text-[#024A7D]">Examen final</h1>
                     <Card>
                         <CardContent className="py-10 text-center text-slate-500">
                             Este curso todavia no tiene el examen configurado. Vuelve mas tarde.
@@ -46,7 +47,7 @@ export default function Examen({ course, enrollment, lastAttempt }) {
                     <p className="mb-1 text-sm text-slate-500">
                         <Link href={`/aula/${course.slug}`} className="hover:underline">{course.title}</Link> / Examen final
                     </p>
-                    <h1 className="mb-1 text-xl font-bold text-[#14264a]">Examen final</h1>
+                    <h1 className="mb-1 text-xl font-bold text-[#024A7D]">Examen final</h1>
                     <p className="mb-5 text-slate-500">
                         Necesitas al menos {Number(course.passing_score)}% para aprobar y obtener tu certificado.
                     </p>
@@ -55,7 +56,7 @@ export default function Examen({ course, enrollment, lastAttempt }) {
                         <div
                             className={`mb-5 rounded-xl px-4 py-3 font-semibold ${
                                 lastAttempt?.passed
-                                    ? "bg-[#58b22d]/10 text-[#3e9f25]"
+                                    ? "bg-[#00ADEE]/10 text-[#024A7D]"
                                     : "bg-red-50 text-red-700"
                             }`}
                         >
@@ -66,7 +67,7 @@ export default function Examen({ course, enrollment, lastAttempt }) {
                     {lastAttempt?.passed ? (
                         <Card>
                             <CardContent className="py-10 text-center">
-                                <p className="font-semibold text-[#14264a]">
+                                <p className="font-semibold text-[#024A7D]">
                                     Ya aprobaste este examen con {Number(lastAttempt.score)}%.
                                 </p>
                                 <Button asChild className="mt-4">
@@ -79,14 +80,14 @@ export default function Examen({ course, enrollment, lastAttempt }) {
                             {questions.map((q, idx) => (
                                 <Card key={q.id}>
                                     <CardContent className="p-4">
-                                        <p className="mb-2.5 font-semibold text-[#14264a]">{idx + 1}. {q.question}</p>
+                                        <p className="mb-2.5 font-semibold text-[#024A7D]">{idx + 1}. {q.question}</p>
                                         <div className="grid gap-2">
                                             {q.options.map((o) => (
                                                 <label
                                                     key={o.id}
                                                     className={`flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-sm ${
                                                         data.answers[q.id] === o.id
-                                                            ? "border-[#58b22d] bg-[#58b22d]/5"
+                                                            ? "border-[#00ADEE] bg-[#00ADEE]/5"
                                                             : "border-slate-200"
                                                     }`}
                                                 >

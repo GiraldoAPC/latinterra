@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\CourseLesson;
-use App\Models\CourseModule;
+use App\Models\Aula\CourseLesson;
+use App\Models\Aula\CourseModule;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 

@@ -15,7 +15,7 @@ createInertiaApp({
 
         root.render(<App {...props} />);
     },
-    progress: {
-        color: '#4B5563',
-    },
+    // Se usa el mismo GlobalLoader del sitio publico (ver PublicLayout /
+    // AdminLayout) en vez de la barra de progreso por defecto de Inertia.
+    progress: false,
 });
