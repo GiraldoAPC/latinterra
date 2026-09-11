@@ -117,7 +117,12 @@ export default function PdfViewer({ url, onPageSize }) {
             let renderScale = scale;
             if (autoFit && viewportBoxRef.current) {
                 const box = viewportBoxRef.current.getBoundingClientRect();
-                const fit = Math.min((box.width - 16) / base.width, (box.height - 16) / base.height);
+                // getBoundingClientRect incluye el padding (p-4 = 16px por
+                // lado = 32px por eje) - restarlo mal dejaba el canvas unos
+                // pixeles mas grande que el espacio real, generando scroll
+                // interno de sobra que bloqueaba el cambio de pagina con la
+                // rueda (ver handleWheel).
+                const fit = Math.min((box.width - 32) / base.width, (box.height - 32) / base.height);
                 renderScale = Math.max(0.25, fit);
                 setScale(renderScale);
             }
@@ -158,7 +163,7 @@ export default function PdfViewer({ url, onPageSize }) {
     const wheelLockRef = useRef(false);
     const handleWheel = (e) => {
         const box = viewportBoxRef.current;
-        if (box && box.scrollHeight > box.clientHeight + 4) return;
+        if (box && box.scrollHeight > box.clientHeight + 10) return;
         if (wheelLockRef.current || Math.abs(e.deltaY) < 15) return;
 
         if (e.deltaY > 0 && page < numPages) {
@@ -185,7 +190,7 @@ export default function PdfViewer({ url, onPageSize }) {
     };
 
     return (
-        <div ref={containerRef} className="flex h-full flex-col bg-[#0b0f19]">
+        <div ref={containerRef} className="flex h-full flex-col bg-slate-600">
             <div className="flex shrink-0 items-center justify-between gap-2 bg-gradient-to-r from-[#024A7D] to-[#00ADEE] px-3 py-2 text-white">
                 <div className="flex items-center gap-1.5">
                     <button
