@@ -39,10 +39,10 @@ export default function Login({ status, canResetPassword }) {
                 </div>
             )}
 
-            <form onSubmit={submit} className="space-y-5 sm:space-y-6">
+            <form onSubmit={submit} className="space-y-5 sm:space-y-4">
                 <div>
                     <div className="flex overflow-hidden rounded-lg border border-slate-200 shadow-sm transition-all focus-within:border-[#024A7D] focus-within:ring-4 focus-within:ring-[#024A7D]/15">
-                        <span className="flex w-12 shrink-0 items-center justify-center bg-[#024A7D] text-white">
+                        <span className="flex w-12 shrink-0 items-center justify-center bg-[#024A7D] text-white sm:w-11">
                             <User className="h-4 w-4" />
                         </span>
                         <input
@@ -54,7 +54,7 @@ export default function Login({ status, canResetPassword }) {
                             autoComplete="username"
                             autoFocus
                             onChange={(e) => setData("email", e.target.value)}
-                            className="w-full border-0 bg-transparent px-4 py-6 text-base text-slate-900 outline-none placeholder:text-slate-400"
+                            className="w-full border-0 bg-transparent px-4 py-6 text-base text-slate-900 outline-none placeholder:text-slate-400 sm:px-3 sm:py-2.5 sm:text-sm"
                         />
                     </div>
                     {errors.email && <p className="mt-1.5 text-xs font-medium text-red-600">{errors.email}</p>}
@@ -62,7 +62,7 @@ export default function Login({ status, canResetPassword }) {
 
                 <div>
                     <div className="flex overflow-hidden rounded-lg border border-slate-200 shadow-sm transition-all focus-within:border-[#00ADEE] focus-within:ring-4 focus-within:ring-[#00ADEE]/15">
-                        <span className="flex w-12 shrink-0 items-center justify-center bg-[#00ADEE] text-white">
+                        <span className="flex w-12 shrink-0 items-center justify-center bg-[#00ADEE] text-white sm:w-11">
                             <Lock className="h-4 w-4" />
                         </span>
                         <input
@@ -73,7 +73,7 @@ export default function Login({ status, canResetPassword }) {
                             value={data.password}
                             autoComplete="current-password"
                             onChange={(e) => setData("password", e.target.value)}
-                            className="w-full border-0 bg-transparent px-4 py-6 text-base text-slate-900 outline-none placeholder:text-slate-400"
+                            className="w-full border-0 bg-transparent px-4 py-6 text-base text-slate-900 outline-none placeholder:text-slate-400 sm:px-3 sm:py-2.5 sm:text-sm"
                         />
                         <button
                             type="button"
@@ -106,7 +106,7 @@ export default function Login({ status, canResetPassword }) {
                     )}
                 </div>
 
-                <Button type="submit" className="w-full rounded-lg py-6 text-base font-bold uppercase tracking-wide" disabled={processing}>
+                <Button type="submit" className="w-full rounded-lg py-6 text-base font-bold uppercase tracking-wide sm:py-5 sm:text-sm" disabled={processing}>
                     <LogIn className="h-4 w-4" />
                     {processing ? "Ingresando..." : "Ingresar"}
                 </Button>
