@@ -40,6 +40,14 @@ class HandleInertiaRequests extends Middleware
             'settings' => $request->user()?->role === 'admin'
                 ? ['warehouseMode' => Setting::bool('warehouse_mode')]
                 : null,
+            // Los controladores usan back()->with('success'|'error', ...) /
+            // redirect()->with(...) por todo el sistema; sin compartirlo aca
+            // esos mensajes nunca llegaban al frontend (Inertia no los pasa
+            // automaticamente, a diferencia de "errors" de validacion).
+            'flash' => [
+                'success' => $request->session()->get('success'),
+                'error' => $request->session()->get('error'),
+            ],
         ];
     }
 }

@@ -6,6 +6,7 @@ import { Separator } from "@/Components/ui/separator";
 import { Input } from "@/Components/ui/input";
 import GlobalSearch from "@/Components/Admin/GlobalSearch";
 import GlobalLoader from "@/Components/GlobalLoader";
+import FlashToast from "@/Components/Shared/FlashToast";
 import { useGlobalLoader } from "@/hooks/useGlobalLoader";
 import {
     DropdownMenu,
@@ -336,6 +337,7 @@ export default function AdminLayout({ title = "Admin", children }) {
     return (
         <>
         <GlobalLoader show={showLoader} />
+        <FlashToast />
         <div
             className={cn(
                 "min-h-screen bg-muted/30 md:grid md:transition-[grid-template-columns] md:duration-200",
