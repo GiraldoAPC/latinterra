@@ -36,6 +36,7 @@ export default function PdfViewer({ url }) {
     const docRef = useRef(null);
     const canvasRefs = useRef({});
     const pageWrapRefs = useRef({});
+    const renderTasksRef = useRef({});
     const pinchRef = useRef(null);
 
     const [numPages, setNumPages] = useState(0);
@@ -83,6 +84,8 @@ export default function PdfViewer({ url }) {
         setRenderedUpTo(0);
         canvasRefs.current = {};
         pageWrapRefs.current = {};
+        Object.values(renderTasksRef.current).forEach((t) => t?.cancel());
+        renderTasksRef.current = {};
 
         if (!url) {
             setLoading(false);
@@ -141,11 +144,22 @@ export default function PdfViewer({ url }) {
                 const viewport = pdfPage.getViewport({ scale: renderScale });
                 const canvas = canvasRefs.current[i];
                 if (!canvas) continue;
+
+                // Si un render anterior de esta MISMA pagina seguia en
+                // vuelo (por ej. este efecto se reinicio por un resize/
+                // pantalla completa mientras aun renderizaba), cancelarlo
+                // antes de tocar el canvas - si no, dos renders escriben
+                // sobre el mismo canvas con distinto tamano/escala y el
+                // resultado sale deformado.
+                renderTasksRef.current[i]?.cancel();
+
                 canvas.width = viewport.width;
                 canvas.height = viewport.height;
                 const ctx = canvas.getContext("2d");
 
-                await pdfPage.render({ canvasContext: ctx, viewport }).promise.catch(() => {});
+                const task = pdfPage.render({ canvasContext: ctx, viewport });
+                renderTasksRef.current[i] = task;
+                await task.promise.catch(() => {});
                 if (!cancelled) setRenderedUpTo(i);
             }
         }
@@ -284,7 +298,7 @@ export default function PdfViewer({ url }) {
                 </div>
             </div>
 
-            <div ref={viewportBoxRef} className="relative flex-1 touch-pan-y overflow-auto overscroll-contain p-4">
+            <div ref={viewportBoxRef} className="relative flex-1 touch-pan-x touch-pan-y overflow-auto overscroll-contain p-4">
                 {loading && (
                     <div className="flex h-full items-center justify-center gap-2 text-sm text-slate-600">
                         <Spinner className="border-slate-400/50" />
