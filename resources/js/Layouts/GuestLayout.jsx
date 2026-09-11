@@ -75,7 +75,7 @@ export default function Guest({ children }) {
                     <img
                         src="/assets/img/acceso-vertical-form.png"
                         alt="Acceso Vertical Peru"
-                        className="h-24 w-auto sm:h-24 lg:h-28"
+                        className="h-32 w-auto sm:h-28 lg:h-28"
                     />
                 </Link>
 

@@ -54,7 +54,7 @@ export default function Login({ status, canResetPassword }) {
                             autoComplete="username"
                             autoFocus
                             onChange={(e) => setData("email", e.target.value)}
-                            className="w-full border-0 bg-transparent px-4 py-5 text-base text-slate-900 outline-none placeholder:text-slate-400"
+                            className="w-full border-0 bg-transparent px-4 py-6 text-base text-slate-900 outline-none placeholder:text-slate-400"
                         />
                     </div>
                     {errors.email && <p className="mt-1.5 text-xs font-medium text-red-600">{errors.email}</p>}
@@ -73,7 +73,7 @@ export default function Login({ status, canResetPassword }) {
                             value={data.password}
                             autoComplete="current-password"
                             onChange={(e) => setData("password", e.target.value)}
-                            className="w-full border-0 bg-transparent px-4 py-5 text-base text-slate-900 outline-none placeholder:text-slate-400"
+                            className="w-full border-0 bg-transparent px-4 py-6 text-base text-slate-900 outline-none placeholder:text-slate-400"
                         />
                         <button
                             type="button"
