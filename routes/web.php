@@ -172,6 +172,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::delete('/estudiantes/{student}', [\App\Http\Controllers\Admin\StudentController::class, 'destroy'])->name('admin.students.destroy');
     Route::post('/estudiantes/{student}/foto', [\App\Http\Controllers\Admin\StudentController::class, 'updateAvatar'])->name('admin.students.avatar');
     Route::post('/estudiantes/{student}/cuotas/{installment}/pagar', [\App\Http\Controllers\Admin\StudentController::class, 'payInstallment'])->name('admin.students.installments.pay');
+    Route::post('/estudiantes/{student}/cuotas/{installment}/ampliar', [\App\Http\Controllers\Admin\StudentController::class, 'extendInstallment'])->name('admin.students.installments.extend');
     Route::post('/estudiantes/{student}/ventas', [\App\Http\Controllers\Admin\OtherPaymentController::class, 'sellToStudent'])->name('admin.students.sell');
     Route::get('/productos/buscar', [\App\Http\Controllers\Admin\ProductController::class, 'search'])->name('admin.products.search');
     Route::get('/estudiantes/{student}/matricula/{enrollment}', [\App\Http\Controllers\Admin\StudentReportController::class, 'matricula'])->name('admin.students.matricula');

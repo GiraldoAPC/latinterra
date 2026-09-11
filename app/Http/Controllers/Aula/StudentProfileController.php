@@ -80,6 +80,7 @@ class StudentProfileController extends Controller
                 'overdue' => $i->isOverdue(),
                 'paid_at' => $i->paid_at,
                 'receipt_code' => $i->receipt_code,
+                'was_extended' => $i->wasExtended(),
             ]);
 
         // El cascade Departamento/Provincia/Distrito necesita la cadena

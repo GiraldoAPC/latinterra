@@ -304,6 +304,7 @@ class StudentController extends Controller
                 'payment_method' => $i->payment_method,
                 'payment_reference' => $i->payment_reference,
                 'receipt_code' => $i->receipt_code,
+                'was_extended' => $i->wasExtended(),
             ]);
 
         $otherPayments = OtherPayment::where('user_id', $student->id)
@@ -446,6 +447,25 @@ class StudentController extends Controller
         );
 
         return back()->with('success', 'Pago registrado.');
+    }
+
+    /** Amplia el vencimiento de una cuota especifica - maximo una vez por cuota. */
+    public function extendInstallment(Request $request, User $student, CourseInstallment $installment): RedirectResponse
+    {
+        abort_unless($student->role === 'student', 404);
+        abort_unless($installment->enrollment->user_id === $student->id, 404);
+
+        if ($installment->wasExtended()) {
+            return back()->with('error', 'Esta cuota ya tuvo una ampliacion de plazo, no se puede repetir.');
+        }
+
+        $data = $request->validate([
+            'days' => ['required', 'integer', 'min:1', 'max:60'],
+        ]);
+
+        $installment->extendDueDate($data['days']);
+
+        return back()->with('success', "Vencimiento ampliado {$data['days']} dias.");
     }
 
     /**

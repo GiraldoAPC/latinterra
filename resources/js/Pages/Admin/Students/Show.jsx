@@ -21,6 +21,7 @@ import { ProfileHeader, AcademicoTab, PagosTab, formatDate } from "@/Components/
 import EditStudentModal from "@/Components/Admin/EditStudentModal";
 import NewStudentModal from "@/Components/Admin/NewStudentModal";
 import RegisterPaymentModal from "@/Components/Admin/RegisterPaymentModal";
+import ExtendInstallmentModal from "@/Components/Admin/ExtendInstallmentModal";
 import SellProductModal from "@/Components/Admin/SellProductModal";
 import TicketModal from "@/Components/Shared/TicketModal";
 
@@ -111,6 +112,7 @@ export default function Show({ student, enrollments, orders, installments, other
     const [showSell, setShowSell] = useState(false);
     const [avatarUploading, setAvatarUploading] = useState(false);
     const [payingInstallment, setPayingInstallment] = useState(null);
+    const [extendingInstallment, setExtendingInstallment] = useState(null);
     const [viewingTicket, setViewingTicket] = useState(null);
     const [viewingSaleTicket, setViewingSaleTicket] = useState(null);
     const fullName = [student.last_name, student.name].filter(Boolean).join(" ") || student.name;
@@ -228,6 +230,7 @@ export default function Show({ student, enrollments, orders, installments, other
                                 installments={installments}
                                 onPayInstallment={(i) => setPayingInstallment(i)}
                                 onViewTicket={(i) => setViewingTicket(i)}
+                                onExtendInstallment={(i) => setExtendingInstallment(i)}
                             />
 
                             {otherPayments.length > 0 && (
@@ -289,6 +292,13 @@ export default function Show({ student, enrollments, orders, installments, other
                 onOpenChange={(v) => !v && setPayingInstallment(null)}
                 studentId={student.id}
                 installment={payingInstallment}
+            />
+
+            <ExtendInstallmentModal
+                open={!!extendingInstallment}
+                onOpenChange={(v) => !v && setExtendingInstallment(null)}
+                studentId={student.id}
+                installment={extendingInstallment}
             />
 
             <SellProductModal

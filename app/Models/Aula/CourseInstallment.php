@@ -24,10 +24,14 @@ class CourseInstallment extends Model
         'client_id',
         'buyer_ruc',
         'buyer_business_name',
+        'original_due_date',
+        'due_date_extended_at',
     ];
 
     protected $casts = [
         'due_date' => 'date',
+        'original_due_date' => 'date',
+        'due_date_extended_at' => 'datetime',
         'paid_at' => 'datetime',
         'amount' => 'decimal:2',
     ];
@@ -45,6 +49,29 @@ class CourseInstallment extends Model
     public function isOverdue(): bool
     {
         return $this->status === 'pending' && $this->due_date->isPast();
+    }
+
+    public function wasExtended(): bool
+    {
+        return $this->due_date_extended_at !== null;
+    }
+
+    /**
+     * Amplia el vencimiento X dias - solo una vez por cuota (segunda vez
+     * lanza excepcion, el controlador la traduce a un error normal). Guarda
+     * la fecha original la primera vez, por si hay que auditar despues.
+     */
+    public function extendDueDate(int $days): void
+    {
+        if ($this->wasExtended()) {
+            throw new \RuntimeException('Esta cuota ya tuvo una ampliacion de plazo, no se puede repetir.');
+        }
+
+        $this->update([
+            'original_due_date' => $this->due_date,
+            'due_date' => $this->due_date->copy()->addDays($days),
+            'due_date_extended_at' => now(),
+        ]);
     }
 
     /** Registra el pago con sus detalles y genera el codigo del ticket/boleta/factura. */

@@ -4,7 +4,7 @@ import { Badge } from "@/Components/ui/badge";
 import { Button } from "@/Components/ui/button";
 import { AvatarPicker } from "@/Components/ui/avatar-picker";
 import { cn } from "@/lib/utils";
-import { GraduationCap, Award, CreditCard, Mail, Phone, Calendar, FileText, ClipboardList, Receipt, Wallet } from "lucide-react";
+import { GraduationCap, Award, CreditCard, Mail, Phone, Calendar, FileText, ClipboardList, Receipt, Wallet, CalendarClock } from "lucide-react";
 
 // Piezas visuales compartidas entre el perfil del propio estudiante
 // (Aula/Perfil.jsx) y la vista de administracion de un estudiante
@@ -148,7 +148,7 @@ const INSTALLMENT_TYPE_LABEL = { matricula: "Matricula", mensualidad: "Mensualid
  * `onPay(installment)`, si se pasa, agrega el boton "Marcar pagado" (uso
  * exclusivo del admin - el estudiante solo las ve, no las marca el mismo).
  */
-export function InstallmentsList({ installments, onPay, onViewTicket }) {
+export function InstallmentsList({ installments, onPay, onViewTicket, onExtend }) {
     if (!installments || installments.length === 0) return null;
 
     return (
@@ -182,7 +182,14 @@ export function InstallmentsList({ installments, onPay, onViewTicket }) {
                                             {i.installment_number ? ` #${i.installment_number}` : ""}
                                         </td>
                                         <td className="px-4 py-3">S/ {Number(i.amount).toFixed(2)}</td>
-                                        <td className="px-4 py-3 text-slate-500">{formatDate(i.due_date)}</td>
+                                        <td className="px-4 py-3 text-slate-500">
+                                            {formatDate(i.due_date)}
+                                            {i.was_extended && (
+                                                <span className="ml-1.5 rounded-full bg-violet-100 px-1.5 py-0.5 text-[10px] font-semibold text-violet-700">
+                                                    Ampliado
+                                                </span>
+                                            )}
+                                        </td>
                                         <td className="px-4 py-3">
                                             <span
                                                 className={cn(
@@ -197,28 +204,40 @@ export function InstallmentsList({ installments, onPay, onViewTicket }) {
                                                 {isPaid ? "Pagado" : i.overdue ? "Vencido" : "Pendiente"}
                                             </span>
                                         </td>
-                                        {(onPay || (isPaid && onViewTicket)) && (
+                                        {(onPay || (isPaid && onViewTicket) || (!isPaid && onExtend)) && (
                                             <td className="px-4 py-3 text-right">
-                                                {!isPaid && onPay && (
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => onPay(i)}
-                                                        className="inline-flex items-center gap-1 text-xs font-medium text-[#024A7D] hover:underline"
-                                                    >
-                                                        <Wallet className="h-3.5 w-3.5" />
-                                                        Registrar pago
-                                                    </button>
-                                                )}
-                                                {isPaid && i.receipt_code && onViewTicket && (
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => onViewTicket(i)}
-                                                        className="inline-flex items-center gap-1 text-xs font-medium text-sky-600 hover:underline"
-                                                    >
-                                                        <Receipt className="h-3.5 w-3.5" />
-                                                        Ver ticket
-                                                    </button>
-                                                )}
+                                                <div className="flex flex-col items-end gap-1">
+                                                    {!isPaid && onPay && (
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => onPay(i)}
+                                                            className="inline-flex items-center gap-1 text-xs font-medium text-[#024A7D] hover:underline"
+                                                        >
+                                                            <Wallet className="h-3.5 w-3.5" />
+                                                            Registrar pago
+                                                        </button>
+                                                    )}
+                                                    {!isPaid && onExtend && !i.was_extended && (
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => onExtend(i)}
+                                                            className="inline-flex items-center gap-1 text-xs font-medium text-violet-600 hover:underline"
+                                                        >
+                                                            <CalendarClock className="h-3.5 w-3.5" />
+                                                            Ampliar plazo
+                                                        </button>
+                                                    )}
+                                                    {isPaid && i.receipt_code && onViewTicket && (
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => onViewTicket(i)}
+                                                            className="inline-flex items-center gap-1 text-xs font-medium text-sky-600 hover:underline"
+                                                        >
+                                                            <Receipt className="h-3.5 w-3.5" />
+                                                            Ver ticket
+                                                        </button>
+                                                    )}
+                                                </div>
                                             </td>
                                         )}
                                     </tr>
@@ -232,7 +251,7 @@ export function InstallmentsList({ installments, onPay, onViewTicket }) {
     );
 }
 
-export function PagosTab({ orders, installments, onPayInstallment, onViewTicket }) {
+export function PagosTab({ orders, installments, onPayInstallment, onViewTicket, onExtendInstallment }) {
     const hasInstallments = installments && installments.length > 0;
 
     if (orders.length === 0 && !hasInstallments) {
@@ -249,7 +268,12 @@ export function PagosTab({ orders, installments, onPayInstallment, onViewTicket 
     return (
         <div className="space-y-4">
             {hasInstallments && (
-                <InstallmentsList installments={installments} onPay={onPayInstallment} onViewTicket={onViewTicket} />
+                <InstallmentsList
+                    installments={installments}
+                    onPay={onPayInstallment}
+                    onViewTicket={onViewTicket}
+                    onExtend={onExtendInstallment}
+                />
             )}
 
             {orders.length > 0 && (
