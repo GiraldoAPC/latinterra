@@ -213,8 +213,10 @@ class StudentCourseController extends Controller
             ->firstOrFail();
 
         if ($enrollment->hasBlockingDebt()) {
-            return redirect()->route('aula.mis-cursos')
-                ->with('error', 'Tienes una cuota vencida en este curso. Ponte al dia con tus pagos para seguir avanzando.');
+            return redirect()->route('aula.mis-cursos')->with('debt_block', [
+                'course' => $course->title,
+                'message' => 'Tienes una cuota vencida en este curso. Ponte al dia con tus pagos para seguir avanzando.',
+            ]);
         }
 
         $course->load('modules.lessons.materials', 'modules.exam.questions');

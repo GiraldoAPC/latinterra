@@ -166,7 +166,9 @@ function InfoTab({ profileUser }) {
 }
 
 export default function Perfil({ profileUser, enrollments, orders, installments, stats, documentTypes, genderOptions, sctrOptions }) {
-    const [tab, setTab] = useState("info");
+    const [tab, setTab] = useState(
+        () => new URLSearchParams(window.location.search).get("tab") || "info"
+    );
     const [avatarUploading, setAvatarUploading] = useState(false);
     const [editOpen, setEditOpen] = useState(false);
     const [viewingTicket, setViewingTicket] = useState(null);

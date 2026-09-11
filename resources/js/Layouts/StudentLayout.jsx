@@ -14,6 +14,7 @@ import {
 import { Avatar, AvatarFallback } from "@/Components/ui/avatar";
 import { cn } from "@/lib/utils";
 import FlashToast from "@/Components/Shared/FlashToast";
+import DebtBlockModal from "@/Components/Shared/DebtBlockModal";
 import {
     GraduationCap,
     LayoutGrid,
@@ -161,6 +162,7 @@ export default function StudentLayout({ title, children }) {
     return (
         <>
         <FlashToast />
+        <DebtBlockModal />
         <div
             className={cn(
                 "min-h-screen bg-muted/30 md:grid md:transition-[grid-template-columns] md:duration-200",
