@@ -121,6 +121,9 @@ class StudentReportController extends Controller
                 'payment_method' => $installment->payment_method,
                 'payment_reference' => $installment->payment_reference,
                 'receipt_code' => $installment->receipt_code,
+                'document_type' => $installment->document_type ?? 'ticket',
+                'buyer_ruc' => $installment->buyer_ruc,
+                'buyer_business_name' => $installment->buyer_business_name,
                 'course_title' => $installment->enrollment->course->title,
             ],
         ];

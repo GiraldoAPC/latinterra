@@ -12,6 +12,7 @@ use App\Models\Pais;
 use App\Models\Persona;
 use App\Models\SelectOption;
 use App\Models\User;
+use App\Models\Ventas\Client;
 use App\Models\Ventas\OtherPayment;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -415,9 +416,34 @@ class StudentController extends Controller
         $data = $request->validate([
             'payment_method' => ['required', 'string', 'max:60'],
             'payment_reference' => ['nullable', 'string', 'max:120'],
+            'document_type' => ['nullable', 'in:ticket,boleta,factura'],
+            'client_id' => ['nullable', 'integer', 'exists:clients,id'],
+            'buyer_ruc' => ['nullable', 'digits:11'],
+            'buyer_business_name' => ['nullable', 'string', 'max:180'],
         ]);
 
-        $installment->markPaid($data['payment_method'], $data['payment_reference'] ?? null);
+        $documentType = $data['document_type'] ?? 'ticket';
+        $client = !empty($data['client_id']) ? Client::find($data['client_id']) : null;
+
+        if ($documentType === 'factura' && !$client && (empty($data['buyer_ruc']) || empty($data['buyer_business_name']))) {
+            return back()->withErrors(['buyer_ruc' => 'Para factura, selecciona un cliente o ingresa RUC y razon social.']);
+        }
+
+        if ($documentType === 'factura' && !$client) {
+            $client = Client::firstOrCreate(
+                ['ruc' => $data['buyer_ruc']],
+                ['business_name' => $data['buyer_business_name'], 'type' => 'juridica']
+            );
+        }
+
+        $installment->markPaid(
+            $data['payment_method'],
+            $data['payment_reference'] ?? null,
+            $documentType,
+            $client?->id,
+            $client?->ruc ?? $data['buyer_ruc'] ?? null,
+            $client?->business_name ?? $data['buyer_business_name'] ?? null
+        );
 
         return back()->with('success', 'Pago registrado.');
     }
