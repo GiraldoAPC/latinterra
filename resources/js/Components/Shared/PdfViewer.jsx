@@ -209,7 +209,7 @@ export default function PdfViewer({ url, onPageSize }) {
     };
 
     return (
-        <div ref={containerRef} className="flex h-full flex-col bg-slate-600">
+        <div ref={containerRef} className="flex h-full flex-col bg-slate-300">
             <div className="flex shrink-0 items-center justify-between gap-2 bg-gradient-to-r from-[#024A7D] to-[#00ADEE] px-3 py-2 text-white">
                 <div className="flex items-center gap-1.5">
                     <button
@@ -271,13 +271,13 @@ export default function PdfViewer({ url, onPageSize }) {
                 className="relative flex-1 overflow-auto overscroll-contain p-4"
             >
                 {loading && (
-                    <div className="flex h-full items-center justify-center gap-2 text-sm text-white/60">
-                        <Spinner />
+                    <div className="flex h-full items-center justify-center gap-2 text-sm text-slate-600">
+                        <Spinner className="border-slate-400/50" />
                         Cargando PDF...
                     </div>
                 )}
                 {error && (
-                    <div className="flex h-full flex-col items-center justify-center gap-2 text-sm text-white/60">
+                    <div className="flex h-full flex-col items-center justify-center gap-2 text-sm text-slate-600">
                         <AlertTriangle className="h-5 w-5" />
                         No se pudo cargar el PDF.
                     </div>
