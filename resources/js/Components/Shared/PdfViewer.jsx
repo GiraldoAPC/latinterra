@@ -45,9 +45,6 @@ export default function PdfViewer({ url }) {
         setPageInput("1");
         setScale(1);
 
-        // eslint-disable-next-line no-console
-        console.log("PdfViewer: cargando", url);
-
         if (!url) {
             setLoading(false);
             setError(true);
@@ -60,7 +57,7 @@ export default function PdfViewer({ url }) {
                 pdfjs.GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/build/pdf.worker.min.mjs", import.meta.url).href;
 
                 return pdfjs
-                    .getDocument(url)
+                    .getDocument({ url })
                     .promise.then((doc) => {
                         if (cancelled) return;
                         docRef.current = doc;
@@ -68,9 +65,7 @@ export default function PdfViewer({ url }) {
                         setLoading(false);
                     });
             })
-            .catch((err) => {
-                // eslint-disable-next-line no-console
-                console.error("PdfViewer: fallo cargando", url, err);
+            .catch(() => {
                 if (!cancelled) {
                     setLoading(false);
                     setError(true);
