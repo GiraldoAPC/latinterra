@@ -283,8 +283,13 @@ export default function PdfViewer({ url, onPageSize }) {
                     </div>
                 )}
                 {!loading && !error && (
-                    <>
-                        <canvas ref={canvasRef} className={cn("mx-auto block shadow-2xl transition-opacity", pageRendering && "opacity-40")} />
+                    // min-h-full + flex centra la pagina cuando entra
+                    // entera (queda pareja arriba/abajo en vez de pegada
+                    // arriba con un hueco suelto), y si es mas alta que el
+                    // visor, este div simplemente crece con el contenido y
+                    // el padre (overflow-auto) hace scroll normal.
+                    <div className="flex min-h-full flex-col items-center justify-center">
+                        <canvas ref={canvasRef} className={cn("block shadow-2xl transition-opacity", pageRendering && "opacity-40")} />
                         {pageRendering && (
                             <div className="pointer-events-none sticky inset-x-0 top-1/2 flex justify-center">
                                 <span className="flex items-center gap-2 rounded-full bg-black/60 px-4 py-2 text-sm text-white">
@@ -293,7 +298,7 @@ export default function PdfViewer({ url, onPageSize }) {
                                 </span>
                             </div>
                         )}
-                    </>
+                    </div>
                 )}
             </div>
         </div>
