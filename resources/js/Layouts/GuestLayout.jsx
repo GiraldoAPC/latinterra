@@ -79,7 +79,7 @@ export default function Guest({ children }) {
                     />
                 </Link>
 
-                <div className="w-full max-w-md shrink-0 rounded-2xl border border-slate-200 bg-white p-6 shadow-xl shadow-slate-200/60 sm:max-w-sm sm:p-8">
+                <div className="w-full max-w-md shrink-0 rounded-2xl border border-slate-200 bg-white p-8 shadow-xl shadow-slate-200/60 sm:max-w-sm sm:p-10">
                     {children}
                 </div>
 

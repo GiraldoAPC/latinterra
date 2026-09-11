@@ -42,7 +42,7 @@ export default function Login({ status, canResetPassword }) {
             <form onSubmit={submit} className="space-y-5 sm:space-y-6">
                 <div>
                     <div className="flex overflow-hidden rounded-lg border border-slate-200 shadow-sm transition-all focus-within:border-[#024A7D] focus-within:ring-4 focus-within:ring-[#024A7D]/15">
-                        <span className="flex w-11 shrink-0 items-center justify-center bg-[#024A7D] text-white">
+                        <span className="flex w-12 shrink-0 items-center justify-center bg-[#024A7D] text-white">
                             <User className="h-4 w-4" />
                         </span>
                         <input
@@ -54,7 +54,7 @@ export default function Login({ status, canResetPassword }) {
                             autoComplete="username"
                             autoFocus
                             onChange={(e) => setData("email", e.target.value)}
-                            className="w-full border-0 bg-transparent px-3 py-3.5 text-sm text-slate-900 outline-none placeholder:text-slate-400"
+                            className="w-full border-0 bg-transparent px-4 py-5 text-base text-slate-900 outline-none placeholder:text-slate-400"
                         />
                     </div>
                     {errors.email && <p className="mt-1.5 text-xs font-medium text-red-600">{errors.email}</p>}
@@ -62,7 +62,7 @@ export default function Login({ status, canResetPassword }) {
 
                 <div>
                     <div className="flex overflow-hidden rounded-lg border border-slate-200 shadow-sm transition-all focus-within:border-[#00ADEE] focus-within:ring-4 focus-within:ring-[#00ADEE]/15">
-                        <span className="flex w-11 shrink-0 items-center justify-center bg-[#00ADEE] text-white">
+                        <span className="flex w-12 shrink-0 items-center justify-center bg-[#00ADEE] text-white">
                             <Lock className="h-4 w-4" />
                         </span>
                         <input
@@ -73,7 +73,7 @@ export default function Login({ status, canResetPassword }) {
                             value={data.password}
                             autoComplete="current-password"
                             onChange={(e) => setData("password", e.target.value)}
-                            className="w-full border-0 bg-transparent px-3 py-3.5 text-sm text-slate-900 outline-none placeholder:text-slate-400"
+                            className="w-full border-0 bg-transparent px-4 py-5 text-base text-slate-900 outline-none placeholder:text-slate-400"
                         />
                         <button
                             type="button"
@@ -106,7 +106,7 @@ export default function Login({ status, canResetPassword }) {
                     )}
                 </div>
 
-                <Button type="submit" className="w-full rounded-lg py-5 text-sm font-bold uppercase tracking-wide" disabled={processing}>
+                <Button type="submit" className="w-full rounded-lg py-6 text-base font-bold uppercase tracking-wide" disabled={processing}>
                     <LogIn className="h-4 w-4" />
                     {processing ? "Ingresando..." : "Ingresar"}
                 </Button>
