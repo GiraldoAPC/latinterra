@@ -17,6 +17,14 @@ use Inertia\Inertia;
 */
 
 Route::get('/', function () {
+    // cursos.accesoverticalperu.com comparte el mismo codigo que
+    // latin-terra.com (sitio publico Latin Terra), pero para ese
+    // subdominio la raiz debe ir directo a la Aula Virtual en vez de
+    // mostrar la home publica de Latin Terra.
+    if (request()->getHost() === 'cursos.accesoverticalperu.com') {
+        return redirect()->route('aula.catalogo');
+    }
+
     return Inertia::render('Public/Home');
 })->name('home');
 
