@@ -27,9 +27,9 @@ export default function Login({ status, canResetPassword }) {
         <GuestLayout>
             <Head title="Iniciar sesion" />
 
-            <div className="mb-4 text-center sm:mb-6">
+            <div className="mb-6 text-center sm:mb-8">
                 <h2 className="text-xl font-extrabold text-[#00ADEE] sm:text-2xl">Iniciar sesión</h2>
-                <p className="mt-1 text-sm text-muted-foreground">Bienvenido. Ingresa tus credenciales para continuar.</p>
+                <p className="mt-2 text-sm text-muted-foreground">Bienvenido. Ingresa tus credenciales para continuar.</p>
             </div>
 
             {status && (
@@ -39,7 +39,7 @@ export default function Login({ status, canResetPassword }) {
                 </div>
             )}
 
-            <form onSubmit={submit} className="space-y-3 sm:space-y-4">
+            <form onSubmit={submit} className="space-y-5 sm:space-y-6">
                 <div>
                     <div className="flex overflow-hidden rounded-lg border border-slate-200 shadow-sm transition-all focus-within:border-[#024A7D] focus-within:ring-4 focus-within:ring-[#024A7D]/15">
                         <span className="flex w-11 shrink-0 items-center justify-center bg-[#024A7D] text-white">
@@ -54,7 +54,7 @@ export default function Login({ status, canResetPassword }) {
                             autoComplete="username"
                             autoFocus
                             onChange={(e) => setData("email", e.target.value)}
-                            className="w-full border-0 bg-transparent px-3 py-2.5 text-sm text-slate-900 outline-none placeholder:text-slate-400"
+                            className="w-full border-0 bg-transparent px-3 py-3.5 text-sm text-slate-900 outline-none placeholder:text-slate-400"
                         />
                     </div>
                     {errors.email && <p className="mt-1.5 text-xs font-medium text-red-600">{errors.email}</p>}
@@ -73,7 +73,7 @@ export default function Login({ status, canResetPassword }) {
                             value={data.password}
                             autoComplete="current-password"
                             onChange={(e) => setData("password", e.target.value)}
-                            className="w-full border-0 bg-transparent px-3 py-2.5 text-sm text-slate-900 outline-none placeholder:text-slate-400"
+                            className="w-full border-0 bg-transparent px-3 py-3.5 text-sm text-slate-900 outline-none placeholder:text-slate-400"
                         />
                         <button
                             type="button"
