@@ -12,35 +12,42 @@ function Spinner({ className }) {
     );
 }
 
+function touchDistance(touches) {
+    const dx = touches[0].clientX - touches[1].clientX;
+    const dy = touches[0].clientY - touches[1].clientY;
+    return Math.hypot(dx, dy);
+}
+
 /**
- * Visor de PDF propio (pdf.js renderizando a canvas) con controles en los
- * colores de Acceso Vertical Peru, en vez de depender del visor nativo del
- * navegador (que no se puede re-estilizar por ser UI del propio Chrome).
- * pdf.js se carga lazy (solo cuando se abre un PDF) para no pesar el bundle
- * inicial del panel.
+ * Visor de PDF propio (pdf.js renderizando a canvas por cada pagina) con
+ * controles en los colores de Acceso Vertical Peru, en vez de depender del
+ * visor nativo del navegador (que no se puede re-estilizar por ser UI del
+ * propio Chrome). pdf.js se carga lazy (solo cuando se abre un PDF).
  *
- * La pagina se ajusta al ANCHO disponible (no al alto), asi que si es mas
- * alta que el visor hace scroll normal y suave como un lector cualquiera -
- * el cambio de pagina solo pasa al llegar al borde de arriba/abajo y seguir
- * scrolleando en esa direccion (ver handleWheel), no en cada tick de rueda.
+ * Scroll continuo real: todas las paginas se renderizan apiladas en una
+ * sola columna (como un lector normal), no "una pagina a la vez" - el
+ * numero de pagina arriba se actualiza solo segun cual esta mas visible.
+ * En touch (celular/tablet) se puede hacer zoom con pellizco de dos dedos,
+ * ademas del +/- de la barra.
  */
-export default function PdfViewer({ url, onPageSize }) {
+export default function PdfViewer({ url }) {
     const containerRef = useRef(null);
     const viewportBoxRef = useRef(null);
-    const canvasRef = useRef(null);
     const docRef = useRef(null);
-    const renderTaskRef = useRef(null);
-    const [page, setPage] = useState(1);
-    const [pageInput, setPageInput] = useState("1");
+    const canvasRefs = useRef({});
+    const pageWrapRefs = useRef({});
+    const pinchRef = useRef(null);
+
     const [numPages, setNumPages] = useState(0);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageInput, setPageInput] = useState("1");
     const [scale, setScale] = useState(1);
     const [autoFit, setAutoFit] = useState(true);
     const [resizeTick, setResizeTick] = useState(0);
+    const [renderedUpTo, setRenderedUpTo] = useState(0);
     const [loading, setLoading] = useState(true);
-    const [pageRendering, setPageRendering] = useState(false);
     const [error, setError] = useState(false);
     const [isFullscreen, setIsFullscreen] = useState(false);
-    const pendingEdgeRef = useRef(null); // "top" | "bottom" | null - a que borde ir tras cargar la pagina nueva
 
     useEffect(() => {
         const onChange = () => {
@@ -63,14 +70,19 @@ export default function PdfViewer({ url, onPageSize }) {
         }
     };
 
+    // Carga el documento.
     useEffect(() => {
         let cancelled = false;
         setLoading(true);
         setError(false);
-        setPage(1);
+        setNumPages(0);
+        setCurrentPage(1);
         setPageInput("1");
         setScale(1);
         setAutoFit(true);
+        setRenderedUpTo(0);
+        canvasRefs.current = {};
+        pageWrapRefs.current = {};
 
         if (!url) {
             setLoading(false);
@@ -107,100 +119,73 @@ export default function PdfViewer({ url, onPageSize }) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [url]);
 
+    // Renderiza todas las paginas, en orden, apiladas.
     useEffect(() => {
-        if (!docRef.current || !canvasRef.current) return;
+        if (!docRef.current || !numPages || !viewportBoxRef.current) return;
 
         let cancelled = false;
-        setPageRendering(true);
-        docRef.current.getPage(page).then((pdfPage) => {
-            if (cancelled) return;
 
-            const base = pdfPage.getViewport({ scale: 1 });
-            onPageSize?.(base.width, base.height);
+        async function renderAll() {
+            const box = viewportBoxRef.current.getBoundingClientRect();
+            const availWidth = box.width - 32;
 
-            let renderScale = scale;
-            if (autoFit && viewportBoxRef.current) {
-                // Ajusta solo al ANCHO (menos el padding real, 16px por
-                // lado) - si la pagina queda mas alta que el visor, hace
-                // scroll vertical normal en vez de achicarse para entrar
-                // entera (eso era lo que dejaba todo muy chico y sin poder
-                // scrollear suave).
-                const box = viewportBoxRef.current.getBoundingClientRect();
-                renderScale = Math.max(0.25, (box.width - 32) / base.width);
-                setScale(renderScale);
+            for (let i = 1; i <= numPages; i++) {
+                if (cancelled) return;
+                const pdfPage = await docRef.current.getPage(i);
+                if (cancelled) return;
+
+                const base = pdfPage.getViewport({ scale: 1 });
+                const renderScale = autoFit ? Math.max(0.25, availWidth / base.width) : scale;
+                if (autoFit && i === 1) setScale(renderScale);
+
+                const viewport = pdfPage.getViewport({ scale: renderScale });
+                const canvas = canvasRefs.current[i];
+                if (!canvas) continue;
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
+                const ctx = canvas.getContext("2d");
+
+                await pdfPage.render({ canvasContext: ctx, viewport }).promise.catch(() => {});
+                if (!cancelled) setRenderedUpTo(i);
             }
+        }
 
-            const viewport = pdfPage.getViewport({ scale: renderScale });
-            const canvas = canvasRef.current;
-            const context = canvas.getContext("2d");
-            canvas.width = viewport.width;
-            canvas.height = viewport.height;
-
-            renderTaskRef.current?.cancel();
-            const task = pdfPage.render({ canvasContext: context, viewport });
-            renderTaskRef.current = task;
-            task.promise
-                .catch(() => {})
-                .finally(() => {
-                    if (!cancelled) {
-                        setPageRendering(false);
-                        // Al llegar por scroll al borde inferior y pasar a la
-                        // siguiente pagina, arranca arriba de esa; al pasar
-                        // a la anterior por el borde superior, arranca en su
-                        // borde inferior (como si vinieras "subiendo" desde ahi).
-                        const box = viewportBoxRef.current;
-                        if (box && pendingEdgeRef.current) {
-                            box.scrollTop = pendingEdgeRef.current === "top" ? 0 : box.scrollHeight;
-                            pendingEdgeRef.current = null;
-                        }
-                    }
-                });
-        });
+        renderAll();
 
         return () => {
             cancelled = true;
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [page, numPages, resizeTick, autoFit]);
+    }, [numPages, resizeTick, autoFit, scale]);
 
-    const goToPage = (n, edge) => {
+    // Detecta que pagina esta mas visible para actualizar el numero de
+    // pagina mientras se scrollea (sin esto, solo cambiaria al usar los
+    // botones/el input).
+    useEffect(() => {
+        if (!viewportBoxRef.current || !numPages) return;
+        const observer = new IntersectionObserver(
+            (entries) => {
+                const visible = entries.filter((e) => e.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+                if (visible[0]) {
+                    const n = Number(visible[0].target.dataset.page);
+                    setCurrentPage(n);
+                    setPageInput(String(n));
+                }
+            },
+            { root: viewportBoxRef.current, threshold: [0.4, 0.6, 0.8] }
+        );
+        Object.values(pageWrapRefs.current).forEach((el) => el && observer.observe(el));
+        return () => observer.disconnect();
+    }, [numPages, renderedUpTo]);
+
+    const goToPage = (n) => {
         const clamped = Math.min(Math.max(1, n), numPages || 1);
-        if (clamped === page) return;
-        pendingEdgeRef.current = edge ?? null;
-        setPage(clamped);
-        setPageInput(String(clamped));
-    };
-
-    // Rueda/trackpad: deja que el navegador scrollee normal dentro de la
-    // pagina. Solo cuando ya estas pegado al borde de arriba/abajo Y
-    // segues empujando en esa direccion, pasa a la pagina siguiente o
-    // anterior (arrancando del borde opuesto, como un lector continuo).
-    const wheelLockRef = useRef(false);
-    const handleWheel = (e) => {
-        const box = viewportBoxRef.current;
-        if (!box) return;
-        const atTop = box.scrollTop <= 1;
-        const atBottom = box.scrollTop + box.clientHeight >= box.scrollHeight - 1;
-
-        if (e.deltaY > 0 && atBottom && page < numPages) {
-            if (wheelLockRef.current) return;
-            goToPage(page + 1, "top");
-        } else if (e.deltaY < 0 && atTop && page > 1) {
-            if (wheelLockRef.current) return;
-            goToPage(page - 1, "bottom");
-        } else {
-            return;
-        }
-        e.preventDefault();
-        wheelLockRef.current = true;
-        setTimeout(() => {
-            wheelLockRef.current = false;
-        }, 400);
+        pageWrapRefs.current[clamped]?.scrollIntoView({ behavior: "smooth", block: "start" });
     };
 
     const submitPageInput = () => {
         const n = parseInt(pageInput, 10);
-        goToPage(Number.isFinite(n) ? n : page);
+        goToPage(Number.isFinite(n) ? n : currentPage);
     };
 
     const zoom = (delta) => {
@@ -208,14 +193,48 @@ export default function PdfViewer({ url, onPageSize }) {
         setScale((s) => Math.min(3, Math.max(0.25, +(s + delta).toFixed(2))));
     };
 
+    // Zoom con pellizco de 2 dedos (touch) - el zoom manual desactiva el
+    // auto-ajuste, igual que los botones +/-.
+    useEffect(() => {
+        const box = viewportBoxRef.current;
+        if (!box) return;
+
+        const onTouchStart = (e) => {
+            if (e.touches.length === 2) {
+                pinchRef.current = { startDist: touchDistance(e.touches), startScale: scale };
+            }
+        };
+        const onTouchMove = (e) => {
+            if (e.touches.length === 2 && pinchRef.current) {
+                e.preventDefault();
+                const ratio = touchDistance(e.touches) / pinchRef.current.startDist;
+                setAutoFit(false);
+                setScale(Math.min(3, Math.max(0.25, +(pinchRef.current.startScale * ratio).toFixed(2))));
+            }
+        };
+        const onTouchEnd = () => {
+            pinchRef.current = null;
+        };
+
+        box.addEventListener("touchstart", onTouchStart, { passive: true });
+        box.addEventListener("touchmove", onTouchMove, { passive: false });
+        box.addEventListener("touchend", onTouchEnd);
+        return () => {
+            box.removeEventListener("touchstart", onTouchStart);
+            box.removeEventListener("touchmove", onTouchMove);
+            box.removeEventListener("touchend", onTouchEnd);
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [scale]);
+
     return (
         <div ref={containerRef} className="flex h-full flex-col bg-slate-300">
             <div className="flex shrink-0 items-center justify-between gap-2 bg-gradient-to-r from-[#024A7D] to-[#00ADEE] px-3 py-2 text-white">
                 <div className="flex items-center gap-1.5">
                     <button
                         type="button"
-                        onClick={() => goToPage(page - 1, "bottom")}
-                        disabled={page <= 1}
+                        onClick={() => goToPage(currentPage - 1)}
+                        disabled={currentPage <= 1}
                         className="flex h-8 w-8 items-center justify-center rounded-md hover:bg-white/15 disabled:opacity-30"
                     >
                         <ChevronLeft className="h-4 w-4" />
@@ -230,8 +249,8 @@ export default function PdfViewer({ url, onPageSize }) {
                     <span className="text-sm text-white/80">/ {numPages || "-"}</span>
                     <button
                         type="button"
-                        onClick={() => goToPage(page + 1, "top")}
-                        disabled={page >= numPages}
+                        onClick={() => goToPage(currentPage + 1)}
+                        disabled={currentPage >= numPages}
                         className="flex h-8 w-8 items-center justify-center rounded-md hover:bg-white/15 disabled:opacity-30"
                     >
                         <ChevronRight className="h-4 w-4" />
@@ -265,11 +284,7 @@ export default function PdfViewer({ url, onPageSize }) {
                 </div>
             </div>
 
-            <div
-                ref={viewportBoxRef}
-                onWheel={handleWheel}
-                className="relative flex-1 overflow-auto overscroll-contain p-4"
-            >
+            <div ref={viewportBoxRef} className="relative flex-1 touch-pan-y overflow-auto overscroll-contain p-4">
                 {loading && (
                     <div className="flex h-full items-center justify-center gap-2 text-sm text-slate-600">
                         <Spinner className="border-slate-400/50" />
@@ -283,21 +298,17 @@ export default function PdfViewer({ url, onPageSize }) {
                     </div>
                 )}
                 {!loading && !error && (
-                    // min-h-full + flex centra la pagina cuando entra
-                    // entera (queda pareja arriba/abajo en vez de pegada
-                    // arriba con un hueco suelto), y si es mas alta que el
-                    // visor, este div simplemente crece con el contenido y
-                    // el padre (overflow-auto) hace scroll normal.
-                    <div className="flex min-h-full flex-col items-center justify-center">
-                        <canvas ref={canvasRef} className={cn("block shadow-2xl transition-opacity", pageRendering && "opacity-40")} />
-                        {pageRendering && (
-                            <div className="pointer-events-none sticky inset-x-0 top-1/2 flex justify-center">
-                                <span className="flex items-center gap-2 rounded-full bg-black/60 px-4 py-2 text-sm text-white">
-                                    <Spinner className="h-4 w-4 border-2" />
-                                    Cargando pagina...
-                                </span>
+                    <div className="mx-auto flex w-fit flex-col items-center gap-4">
+                        {Array.from({ length: numPages }, (_, i) => i + 1).map((n) => (
+                            <div key={n} ref={(el) => (pageWrapRefs.current[n] = el)} data-page={n} className="relative">
+                                <canvas ref={(el) => (canvasRefs.current[n] = el)} className="block shadow-2xl" />
+                                {renderedUpTo < n && (
+                                    <div className="absolute inset-0 flex items-center justify-center bg-slate-300/80">
+                                        <Spinner className="border-slate-400/50" />
+                                    </div>
+                                )}
                             </div>
-                        )}
+                        ))}
                     </div>
                 )}
             </div>
