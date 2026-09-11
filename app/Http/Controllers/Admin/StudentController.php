@@ -220,15 +220,6 @@ class StudentController extends Controller
      */
     private function enrollInCourse(User $student, Course $course): void
     {
-        if ($course->is_free || (float) $course->price <= 0) {
-            Enrollment::create([
-                'user_id' => $student->id,
-                'course_id' => $course->id,
-                'status' => 'active',
-            ]);
-            return;
-        }
-
         if ($course->billing_type === 'matricula_mensualidad') {
             $enrollment = Enrollment::create([
                 'user_id' => $student->id,
@@ -236,6 +227,15 @@ class StudentController extends Controller
                 'status' => 'active',
             ]);
             $course->generateInstallmentsFor($enrollment);
+            return;
+        }
+
+        if ($course->is_free || (float) $course->price <= 0) {
+            Enrollment::create([
+                'user_id' => $student->id,
+                'course_id' => $course->id,
+                'status' => 'active',
+            ]);
             return;
         }
 

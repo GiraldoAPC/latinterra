@@ -124,20 +124,12 @@ class StudentCourseController extends Controller
             return back()->with('error', "Este curso requiere que tengas al menos {$course->min_age} años.");
         }
 
-        if ($course->is_free || (float) $course->price <= 0) {
-            Enrollment::create([
-                'user_id' => $userId,
-                'course_id' => $course->id,
-                'status' => 'active',
-            ]);
-
-            return redirect()->route('aula.mis-cursos')->with('success', 'Te inscribiste al curso.');
-        }
-
         // Curso con matricula + mensualidades: se inscribe de una vez y se
         // generan las cuotas; si el curso exige pago al dia, el acceso a
         // las clases queda bloqueado hasta que se pague la matricula (ver
-        // Enrollment::hasBlockingDebt()).
+        // Enrollment::hasBlockingDebt()). Va antes del chequeo de gratis
+        // porque este tipo de curso no usa el campo "price" (usa
+        // enrollment_fee/monthly_fee), asi que price queda en 0.
         if ($course->billing_type === 'matricula_mensualidad') {
             $enrollment = Enrollment::create([
                 'user_id' => $userId,
@@ -147,6 +139,16 @@ class StudentCourseController extends Controller
             $course->generateInstallmentsFor($enrollment);
 
             return redirect()->route('aula.mis-cursos')->with('success', 'Te inscribiste al curso. Revisa tus cuotas pendientes en "Mis pagos".');
+        }
+
+        if ($course->is_free || (float) $course->price <= 0) {
+            Enrollment::create([
+                'user_id' => $userId,
+                'course_id' => $course->id,
+                'status' => 'active',
+            ]);
+
+            return redirect()->route('aula.mis-cursos')->with('success', 'Te inscribiste al curso.');
         }
 
         // Curso de pago unico: aun no hay pasarela integrada. Se deja la
