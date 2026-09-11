@@ -16,8 +16,14 @@ class AuthenticatedSessionController extends Controller
     /**
      * Display the login view.
      */
-    public function create(): Response
+    public function create(Request $request): Response|RedirectResponse
     {
+        // latin-terra.com ya no es el dominio de acceso al sistema, solo el
+        // sitio publico - el login vive en cursos.accesoverticalperu.com.
+        if ($request->getHost() === 'latin-terra.com') {
+            return redirect()->away('https://cursos.accesoverticalperu.com/login');
+        }
+
         return Inertia::render('Auth/Login', [
             'canResetPassword' => Route::has('password.request'),
             'status' => session('status'),
