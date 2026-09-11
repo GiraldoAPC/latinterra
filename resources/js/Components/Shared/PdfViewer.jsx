@@ -45,6 +45,12 @@ export default function PdfViewer({ url }) {
         setPageInput("1");
         setScale(1);
 
+        if (!url) {
+            setLoading(false);
+            setError(true);
+            return;
+        }
+
         import("pdfjs-dist").then((pdfjs) => {
             if (cancelled) return;
             pdfjs.GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/build/pdf.worker.min.mjs", import.meta.url).href;
