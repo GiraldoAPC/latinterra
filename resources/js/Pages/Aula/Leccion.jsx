@@ -462,25 +462,7 @@ function isPreviewable(material) {
  * Online viewer, which requires the file to be reachable at a public HTTPS
  * URL (won't render on localhost, works once the site is deployed).
  */
-// Chrome fijo del modal (header + barra de controles del PdfViewer + footer)
-// que se suma al alto del contenido para calcular el tamano final del
-// dialog - aproximado, solo para que el ajuste por aspect-ratio no se pase.
-const PDF_MODAL_CHROME = 116;
-
 function MaterialPreviewModal({ material, onClose }) {
-    const [pdfAspect, setPdfAspect] = useState(null);
-    const [viewportTick, setViewportTick] = useState(0);
-
-    useEffect(() => {
-        setPdfAspect(null);
-    }, [material?.id]);
-
-    useEffect(() => {
-        const onResize = () => setViewportTick((t) => t + 1);
-        window.addEventListener("resize", onResize);
-        return () => window.removeEventListener("resize", onResize);
-    }, []);
-
     if (!material) return null;
 
     const ext = fileExtension(material);
@@ -489,32 +471,9 @@ function MaterialPreviewModal({ material, onClose }) {
         ? material.url
         : `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(material.url)}`;
 
-    // El modal base siempre usa un ancho fijo (92vw), sin importar el
-    // contenido - para PDFs verticales eso dejaba mucho espacio vacio a los
-    // costados. Con el ancho/alto real de la pagina (avisado por PdfViewer
-    // via onPageSize) se calcula el tamano exacto del dialog para que
-    // quede ajustado al documento, respetando el maximo de pantalla.
-    let dialogStyle;
-    if (isPdf && pdfAspect) {
-        void viewportTick;
-        const maxW = window.innerWidth * 0.92;
-        const maxH = window.innerHeight * 0.92;
-        const availH = maxH - PDF_MODAL_CHROME;
-        let w = maxW;
-        let h = w / pdfAspect;
-        if (h > availH) {
-            h = availH;
-            w = h * pdfAspect;
-        }
-        dialogStyle = { width: `${Math.round(w)}px`, maxWidth: `${Math.round(w)}px`, height: `${Math.round(h + PDF_MODAL_CHROME)}px` };
-    }
-
     return (
         <Dialog open={!!material} onOpenChange={(open) => !open && onClose()}>
-            <DialogContent
-                className={cn("flex flex-col p-0", isPdf ? "max-h-[92vh] max-w-[92vw]" : "h-[85vh] max-w-4xl")}
-                style={dialogStyle}
-            >
+            <DialogContent className="flex h-[85vh] max-w-3xl flex-col p-0">
                 <DialogHeader className="border-b px-4 py-3">
                     <DialogTitle className="flex items-center gap-2 pr-6 text-base">
                         <FileText className="h-4 w-4 text-[#024A7D]" />
@@ -525,7 +484,7 @@ function MaterialPreviewModal({ material, onClose }) {
                 <div className="relative flex-1 bg-muted">
                     {isPdf ? (
                         <div className="absolute inset-0">
-                            <PdfViewer url={material.url} onPageSize={(w, h) => setPdfAspect(w / h)} />
+                            <PdfViewer url={material.url} />
                         </div>
                     ) : (
                         <iframe
@@ -544,9 +503,7 @@ function MaterialPreviewModal({ material, onClose }) {
                     )}
                     <a
                         href={material.url}
-                        target="_blank"
-                        rel="noreferrer"
-                        download
+                        download={material.original_name || true}
                         className="ml-auto inline-flex items-center gap-1.5 text-sm font-medium text-[#024A7D] hover:underline"
                     >
                         <Download className="h-3.5 w-3.5" />

@@ -17,9 +17,12 @@ function Spinner({ className }) {
  * colores de Acceso Vertical Peru, en vez de depender del visor nativo del
  * navegador (que no se puede re-estilizar por ser UI del propio Chrome).
  * pdf.js se carga lazy (solo cuando se abre un PDF) para no pesar el bundle
- * inicial del panel. La pagina se ajusta automaticamente al espacio
- * disponible del visor (recalcula al entrar/salir de pantalla completa o
- * redimensionar), hasta que el usuario haga zoom manual.
+ * inicial del panel.
+ *
+ * La pagina se ajusta al ANCHO disponible (no al alto), asi que si es mas
+ * alta que el visor hace scroll normal y suave como un lector cualquiera -
+ * el cambio de pagina solo pasa al llegar al borde de arriba/abajo y seguir
+ * scrolleando en esa direccion (ver handleWheel), no en cada tick de rueda.
  */
 export default function PdfViewer({ url, onPageSize }) {
     const containerRef = useRef(null);
@@ -37,6 +40,7 @@ export default function PdfViewer({ url, onPageSize }) {
     const [pageRendering, setPageRendering] = useState(false);
     const [error, setError] = useState(false);
     const [isFullscreen, setIsFullscreen] = useState(false);
+    const pendingEdgeRef = useRef(null); // "top" | "bottom" | null - a que borde ir tras cargar la pagina nueva
 
     useEffect(() => {
         const onChange = () => {
@@ -116,14 +120,13 @@ export default function PdfViewer({ url, onPageSize }) {
 
             let renderScale = scale;
             if (autoFit && viewportBoxRef.current) {
+                // Ajusta solo al ANCHO (menos el padding real, 16px por
+                // lado) - si la pagina queda mas alta que el visor, hace
+                // scroll vertical normal en vez de achicarse para entrar
+                // entera (eso era lo que dejaba todo muy chico y sin poder
+                // scrollear suave).
                 const box = viewportBoxRef.current.getBoundingClientRect();
-                // getBoundingClientRect incluye el padding (p-4 = 16px por
-                // lado = 32px por eje) - restarlo mal dejaba el canvas unos
-                // pixeles mas grande que el espacio real, generando scroll
-                // interno de sobra que bloqueaba el cambio de pagina con la
-                // rueda (ver handleWheel).
-                const fit = Math.min((box.width - 32) / base.width, (box.height - 32) / base.height);
-                renderScale = Math.max(0.25, fit);
+                renderScale = Math.max(0.25, (box.width - 32) / base.width);
                 setScale(renderScale);
             }
 
@@ -139,7 +142,18 @@ export default function PdfViewer({ url, onPageSize }) {
             task.promise
                 .catch(() => {})
                 .finally(() => {
-                    if (!cancelled) setPageRendering(false);
+                    if (!cancelled) {
+                        setPageRendering(false);
+                        // Al llegar por scroll al borde inferior y pasar a la
+                        // siguiente pagina, arranca arriba de esa; al pasar
+                        // a la anterior por el borde superior, arranca en su
+                        // borde inferior (como si vinieras "subiendo" desde ahi).
+                        const box = viewportBoxRef.current;
+                        if (box && pendingEdgeRef.current) {
+                            box.scrollTop = pendingEdgeRef.current === "top" ? 0 : box.scrollHeight;
+                            pendingEdgeRef.current = null;
+                        }
+                    }
                 });
         });
 
@@ -147,36 +161,41 @@ export default function PdfViewer({ url, onPageSize }) {
             cancelled = true;
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [page, numPages, resizeTick, autoFit, scale]);
+    }, [page, numPages, resizeTick, autoFit]);
 
-    const goToPage = (n) => {
+    const goToPage = (n, edge) => {
         const clamped = Math.min(Math.max(1, n), numPages || 1);
+        if (clamped === page) return;
+        pendingEdgeRef.current = edge ?? null;
         setPage(clamped);
         setPageInput(String(clamped));
     };
 
-    // Scroll de rueda/trackpad cambia de pagina, como un lector normal -
-    // solo cuando la pagina entra entera en el visor (sin scroll propio),
-    // que es el caso por defecto con el auto-ajuste. Si el usuario hizo
-    // zoom manual y el contenido ya tiene su propio scroll, se deja que
-    // la rueda haga scroll normal en vez de saltar de pagina.
+    // Rueda/trackpad: deja que el navegador scrollee normal dentro de la
+    // pagina. Solo cuando ya estas pegado al borde de arriba/abajo Y
+    // segues empujando en esa direccion, pasa a la pagina siguiente o
+    // anterior (arrancando del borde opuesto, como un lector continuo).
     const wheelLockRef = useRef(false);
     const handleWheel = (e) => {
         const box = viewportBoxRef.current;
-        if (box && box.scrollHeight > box.clientHeight + 10) return;
-        if (wheelLockRef.current || Math.abs(e.deltaY) < 15) return;
+        if (!box) return;
+        const atTop = box.scrollTop <= 1;
+        const atBottom = box.scrollTop + box.clientHeight >= box.scrollHeight - 1;
 
-        if (e.deltaY > 0 && page < numPages) {
-            goToPage(page + 1);
-        } else if (e.deltaY < 0 && page > 1) {
-            goToPage(page - 1);
+        if (e.deltaY > 0 && atBottom && page < numPages) {
+            if (wheelLockRef.current) return;
+            goToPage(page + 1, "top");
+        } else if (e.deltaY < 0 && atTop && page > 1) {
+            if (wheelLockRef.current) return;
+            goToPage(page - 1, "bottom");
         } else {
             return;
         }
+        e.preventDefault();
         wheelLockRef.current = true;
         setTimeout(() => {
             wheelLockRef.current = false;
-        }, 500);
+        }, 400);
     };
 
     const submitPageInput = () => {
@@ -195,7 +214,7 @@ export default function PdfViewer({ url, onPageSize }) {
                 <div className="flex items-center gap-1.5">
                     <button
                         type="button"
-                        onClick={() => goToPage(page - 1)}
+                        onClick={() => goToPage(page - 1, "bottom")}
                         disabled={page <= 1}
                         className="flex h-8 w-8 items-center justify-center rounded-md hover:bg-white/15 disabled:opacity-30"
                     >
@@ -211,7 +230,7 @@ export default function PdfViewer({ url, onPageSize }) {
                     <span className="text-sm text-white/80">/ {numPages || "-"}</span>
                     <button
                         type="button"
-                        onClick={() => goToPage(page + 1)}
+                        onClick={() => goToPage(page + 1, "top")}
                         disabled={page >= numPages}
                         className="flex h-8 w-8 items-center justify-center rounded-md hover:bg-white/15 disabled:opacity-30"
                     >
@@ -246,7 +265,11 @@ export default function PdfViewer({ url, onPageSize }) {
                 </div>
             </div>
 
-            <div ref={viewportBoxRef} onWheel={handleWheel} className="relative flex-1 overflow-auto p-4">
+            <div
+                ref={viewportBoxRef}
+                onWheel={handleWheel}
+                className="relative flex-1 overflow-auto overscroll-contain p-4"
+            >
                 {loading && (
                     <div className="flex h-full items-center justify-center gap-2 text-sm text-white/60">
                         <Spinner />
@@ -263,7 +286,7 @@ export default function PdfViewer({ url, onPageSize }) {
                     <>
                         <canvas ref={canvasRef} className={cn("mx-auto block shadow-2xl transition-opacity", pageRendering && "opacity-40")} />
                         {pageRendering && (
-                            <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                            <div className="pointer-events-none sticky inset-x-0 top-1/2 flex justify-center">
                                 <span className="flex items-center gap-2 rounded-full bg-black/60 px-4 py-2 text-sm text-white">
                                     <Spinner className="h-4 w-4 border-2" />
                                     Cargando pagina...
