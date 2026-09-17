@@ -22,6 +22,7 @@ import EditStudentModal from "@/Components/Admin/EditStudentModal";
 import NewStudentModal from "@/Components/Admin/NewStudentModal";
 import RegisterPaymentModal from "@/Components/Admin/RegisterPaymentModal";
 import ExtendInstallmentModal from "@/Components/Admin/ExtendInstallmentModal";
+import RegisterOrderPaymentModal from "@/Components/Admin/RegisterOrderPaymentModal";
 import SellProductModal from "@/Components/Admin/SellProductModal";
 import TicketModal from "@/Components/Shared/TicketModal";
 
@@ -113,6 +114,7 @@ export default function Show({ student, enrollments, orders, installments, other
     const [avatarUploading, setAvatarUploading] = useState(false);
     const [payingInstallment, setPayingInstallment] = useState(null);
     const [extendingInstallment, setExtendingInstallment] = useState(null);
+    const [payingOrder, setPayingOrder] = useState(null);
     const [viewingTicket, setViewingTicket] = useState(null);
     const [viewingSaleTicket, setViewingSaleTicket] = useState(null);
     const fullName = [student.last_name, student.name].filter(Boolean).join(" ") || student.name;
@@ -231,6 +233,7 @@ export default function Show({ student, enrollments, orders, installments, other
                                 onPayInstallment={(i) => setPayingInstallment(i)}
                                 onViewTicket={(i) => setViewingTicket(i)}
                                 onExtendInstallment={(i) => setExtendingInstallment(i)}
+                                onPayOrder={(o) => setPayingOrder(o)}
                             />
 
                             {otherPayments.length > 0 && (
@@ -292,6 +295,13 @@ export default function Show({ student, enrollments, orders, installments, other
                 onOpenChange={(v) => !v && setPayingInstallment(null)}
                 studentId={student.id}
                 installment={payingInstallment}
+            />
+
+            <RegisterOrderPaymentModal
+                open={!!payingOrder}
+                onOpenChange={(v) => !v && setPayingOrder(null)}
+                order={payingOrder}
+                onPaid={() => router.reload({ only: ["orders", "enrollments", "stats"] })}
             />
 
             <ExtendInstallmentModal

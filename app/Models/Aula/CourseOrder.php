@@ -16,6 +16,7 @@ class CourseOrder extends Model
         'course_id',
         'amount',
         'status',
+        'source',
         'payment_method',
         'payment_reference',
         'paid_at',

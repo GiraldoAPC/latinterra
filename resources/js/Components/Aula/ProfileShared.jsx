@@ -251,7 +251,7 @@ export function InstallmentsList({ installments, onPay, onViewTicket, onExtend }
     );
 }
 
-export function PagosTab({ orders, installments, onPayInstallment, onViewTicket, onExtendInstallment }) {
+export function PagosTab({ orders, installments, onPayInstallment, onViewTicket, onExtendInstallment, onPayOrder }) {
     const hasInstallments = installments && installments.length > 0;
 
     if (orders.length === 0 && !hasInstallments) {
@@ -291,6 +291,7 @@ export function PagosTab({ orders, installments, onPayInstallment, onViewTicket,
                                         <th className="px-4 py-3">Monto</th>
                                         <th className="px-4 py-3">Estado</th>
                                         <th className="px-4 py-3">Fecha</th>
+                                        <th className="px-4 py-3"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -306,6 +307,18 @@ export function PagosTab({ orders, installments, onPayInstallment, onViewTicket,
                                                     </span>
                                                 </td>
                                                 <td className="px-4 py-3 text-slate-500">{formatDate(o.created_at)}</td>
+                                                <td className="px-4 py-3 text-right">
+                                                    {o.status === "pending" && onPayOrder && (
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => onPayOrder(o)}
+                                                            className="inline-flex items-center gap-1 text-xs font-medium text-[#024A7D] hover:underline"
+                                                        >
+                                                            <Wallet className="h-3.5 w-3.5" />
+                                                            Registrar pago
+                                                        </button>
+                                                    )}
+                                                </td>
                                             </tr>
                                         );
                                     })}

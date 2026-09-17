@@ -240,11 +240,17 @@ class StudentController extends Controller
             return;
         }
 
+        // source=admin: no pasa por la cola de "Pedidos de cursos" (esa es
+        // para cuando el propio estudiante se auto-inscribe en linea y hay
+        // que verificar el pago). Aca el admin ya lo esta inscribiendo el
+        // mismo, asi que registra el pago directo desde el perfil del
+        // estudiante (ver payOrder / boton "Registrar pago" en Pagos).
         CourseOrder::create([
             'user_id' => $student->id,
             'course_id' => $course->id,
             'amount' => $course->price,
             'status' => 'pending',
+            'source' => 'admin',
         ]);
     }
 

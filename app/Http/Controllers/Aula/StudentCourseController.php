@@ -158,6 +158,7 @@ class StudentCourseController extends Controller
             'course_id' => $course->id,
             'amount' => $course->price,
             'status' => 'pending',
+            'source' => 'online',
         ]);
 
         return back()->with('success', 'Tu solicitud fue registrada. Nos contactaremos para coordinar el pago y activar tu acceso.');

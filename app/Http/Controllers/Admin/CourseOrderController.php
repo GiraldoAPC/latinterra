@@ -21,6 +21,7 @@ class CourseOrderController extends Controller
     public function index(Request $request): Response
     {
         $orders = CourseOrder::with(['user:id,name,persona_id,email', 'user.persona:id,last_name', 'course:id,title'])
+            ->where('source', 'online')
             ->when($request->status, fn ($q, $status) => $q->where('status', $status))
             ->orderByDesc('created_at')
             ->get()
@@ -43,9 +44,9 @@ class CourseOrderController extends Controller
             'orders' => $orders,
             'filters' => ['status' => $request->status],
             'stats' => [
-                'pending' => CourseOrder::where('status', 'pending')->count(),
-                'paid' => CourseOrder::where('status', 'paid')->count(),
-                'rejected' => CourseOrder::where('status', 'rejected')->count(),
+                'pending' => CourseOrder::where('source', 'online')->where('status', 'pending')->count(),
+                'paid' => CourseOrder::where('source', 'online')->where('status', 'paid')->count(),
+                'rejected' => CourseOrder::where('source', 'online')->where('status', 'rejected')->count(),
             ],
         ]);
     }
