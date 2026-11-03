@@ -25,7 +25,7 @@ Los certificados anteriores no tienen nota guardada: se muestra «No registrada�
 
 ## Siguientes bloques
 
-- Certificaciones presenciales: registro de participantes por QR/código de grupo, notas y firmas.
+- Certificaciones presenciales: continuar con notas y emisión de certificados; el registro por grupo ya está implementado.
 - Inventario: revisar cotización → venta, alertas de stock y auspicios al costo.
 - Roles: administración, estudiante, instructor y coordinador; permisos de gerencia/administración.
 - Pasarela y facturación SUNAT: etapas futuras según el checklist.
@@ -41,3 +41,20 @@ La migración específica se aplicó en la base local. Se verificó sintaxis PHP
 También se requiere la migración `2026_11_03_000002_add_certificate_signatories.php`, aplicada únicamente en local. Las imágenes usan el disco público de Laravel: el servidor necesita `public/storage` enlazado mediante `php artisan storage:link` y permisos de escritura en `storage`. Conservar las imágenes anteriores, ya que los certificados emitidos las referencian.
 
 Verificación reproducible sin PHPUnit: `php tests/manual/certificate-workflow.php`. Usa SQLite en memoria y un directorio temporal propio, sin alterar la base de datos configurada. Comprueba avisos, carga y conservación de firmas, validación y middleware de administrador. La compilación de producción está incluida; sigue pendiente revisar el PDF impreso y las firmas/QR desde un dispositivo real.
+
+## Certificaciones presenciales — registro de grupos
+
+- [x] Crear un grupo para un curso existente, con lugar, fecha/hora de Perú y cupo de 1 a 1000 participantes.
+- [x] Generar enlace exclusivo y QR descargable para el registro de ese grupo.
+- [x] Formulario público sin cuenta: documento, nombres, apellidos y contacto opcional, con confirmación de datos.
+- [x] Lista administrativa paginada y corrección de datos por administración.
+- [x] Rechazar duplicados dentro del grupo, respetar cupo con transacción/bloqueo de la fila del grupo y permitir el mismo participante en otros grupos.
+- [x] Cerrar/reabrir registro manualmente y establecer una fecha de cierre opcional. Reabrir no omite el cupo ni la fecha de cierre.
+- [x] El enlace público no expone listas, documentos ni contactos de otros participantes; las listas y correcciones requieren administrador.
+- [ ] Registrar notas/resultado de evaluación presencial y definir el criterio para certificar.
+- [ ] Emitir certificados presenciales con firmas, vigencia y verificación pública.
+- [ ] Vincular identidades existentes tras validación administrativa; el autorregistro solo llena la lista y no crea cuentas ni sobrescribe personas/usuarios.
+
+Acceso: Administración → Cursos → Capacitaciones presenciales (`/admin/cursos/presenciales`). La migración `2026_11_03_000003_create_in_person_sessions.php` crea dos tablas nuevas y se aplicó localmente. Ejecutar las migraciones al desplegar en producción. Los cursos con grupos registrados no pueden eliminarse; sí pueden despublicarse.
+
+Prueba reproducible: `php tests/manual/in-person-registration.php`, con SQLite en memoria. Comprueba horarios, registro, duplicados, cupo, cierre, validación, correcciones, aislamiento entre grupos, datos públicos, middleware y reversión de la migración. La simultaneidad real de múltiples conexiones MySQL y la lectura del QR en teléfono siguen pendientes de validación.

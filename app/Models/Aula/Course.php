@@ -68,6 +68,11 @@ class Course extends Model
         return $this->hasMany(Enrollment::class);
     }
 
+    public function inPersonSessions(): HasMany
+    {
+        return $this->hasMany(InPersonSession::class);
+    }
+
     public function orders(): HasMany
     {
         return $this->hasMany(CourseOrder::class);

@@ -125,6 +125,9 @@ Route::get('/parques-eolicos', function () {
 })->name('parqueseolicos.catalogo');
 
 
+Route::get('/presencial/registro/{token}', [\App\Http\Controllers\InPersonRegistrationController::class, 'show'])->where('token', '[A-Za-z0-9]{48}')->name('in-person.register');
+Route::post('/presencial/registro/{token}', [\App\Http\Controllers\InPersonRegistrationController::class, 'store'])->where('token', '[A-Za-z0-9]{48}')->middleware('throttle:120,1')->name('in-person.register.store');
+
 Route::get('/dashboard', function () {
     $user = \Illuminate\Support\Facades\Auth::user();
 
@@ -134,6 +137,11 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+    Route::get('/cursos/presenciales', [\App\Http\Controllers\Admin\InPersonSessionController::class, 'index'])->name('admin.in-person.index');
+    Route::post('/cursos/presenciales', [\App\Http\Controllers\Admin\InPersonSessionController::class, 'store'])->name('admin.in-person.store');
+    Route::get('/cursos/presenciales/{session}', [\App\Http\Controllers\Admin\InPersonSessionController::class, 'show'])->name('admin.in-person.show');
+    Route::post('/cursos/presenciales/{session}/registro', [\App\Http\Controllers\Admin\InPersonSessionController::class, 'updateRegistration'])->name('admin.in-person.registration');
+    Route::put('/cursos/presenciales/{session}/participantes/{participant}', [\App\Http\Controllers\Admin\InPersonSessionController::class, 'updateParticipant'])->name('admin.in-person.participant');
     Route::get('/', fn() => Inertia::render('Admin/Dashboard'))->name('admin');
 
     Route::get('/products', [\App\Http\Controllers\Admin\ProductController::class, 'index'])->name('admin.products');

@@ -84,6 +84,9 @@ class CourseController extends Controller
 
     public function destroy(Course $course): RedirectResponse
     {
+        if ($course->inPersonSessions()->exists()) {
+            return back()->with('error', 'Este curso tiene grupos presenciales registrados. No puede eliminarse; puedes despublicarlo.');
+        }
         $course->delete();
 
         return redirect()->route('admin.courses.index')->with('success', 'Curso eliminado.');

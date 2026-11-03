@@ -59,6 +59,7 @@ const NAV = [
             { href: "/admin/cursos", icon: GraduationCap, label: "Todos los cursos" },
             { href: "/admin/cursos/estudiantes", icon: Users, label: "Estudiantes" },
             { href: "/admin/cursos/certificados", icon: Award, label: "Certificados" },
+            { href: "/admin/cursos/presenciales", icon: ClipboardList, label: "Capacitaciones presenciales" },
             { href: "/admin/catalogos", icon: ListChecks, label: "Catalogos" },
         ],
     },
