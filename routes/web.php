@@ -183,7 +183,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/estudiantes/{student}/cuotas/{installment}/recibo-datos', [\App\Http\Controllers\Admin\StudentReportController::class, 'reciboPagoDatos'])->name('admin.students.installments.receipt-data');
     Route::post('/estudiantes/{student}/toggle-active', [\App\Http\Controllers\Admin\StudentController::class, 'toggleActive'])->name('admin.students.toggle-active');
     Route::post('/estudiantes/{student}/reset-password', [\App\Http\Controllers\Admin\StudentController::class, 'resetPassword'])->name('admin.students.reset-password');
-    Route::get('/cursos/certificados', fn() => Inertia::render('Admin/Cursos/Certificados'))->name('admin.cursos.certificados');
+    Route::get('/cursos/certificados', [\App\Http\Controllers\Admin\CertificateController::class, 'index'])->name('admin.cursos.certificados');
+    Route::post('/cursos/{course}/firmas', [\App\Http\Controllers\Admin\CertificateController::class, 'updateSignatories'])->name('admin.courses.signatories');
 
     // ===== Inventario: compras (movimientos) y proveedores =====
     Route::get('/inventario/movimientos', [\App\Http\Controllers\Admin\StockPurchaseController::class, 'index'])->name('admin.inventario.movimientos');

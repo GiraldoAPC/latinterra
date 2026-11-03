@@ -31,6 +31,7 @@ class Course extends Model
         'min_age',
         'access_duration_days',
         'prerequisite_course_id',
+        'certificate_signatories',
     ];
 
     protected $casts = [
@@ -44,6 +45,7 @@ class Course extends Model
         'payment_required' => 'boolean',
         'min_age' => 'integer',
         'access_duration_days' => 'integer',
+        'certificate_signatories' => 'array',
     ];
 
     public function modules(): HasMany

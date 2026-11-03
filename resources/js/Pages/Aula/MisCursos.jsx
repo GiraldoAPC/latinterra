@@ -22,6 +22,13 @@ export default function MisCursos({ enrollments }) {
             <Head title="Mis Cursos | Aula Virtual" />
             <StudentLayout title="Mis cursos">
                 <h1 className="mb-4 text-xl font-bold text-[#024A7D]">Mis cursos</h1>
+                {enrollments.filter((enrollment) => enrollment.certificate_notice).map((enrollment) => (
+                    <div key={`notice-${enrollment.id}`} role="status" className="mb-4 rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm text-amber-950">
+                        <strong>{enrollment.course.title}</strong>
+                        <p>{enrollment.certificate_notice.message}</p>
+                        <p>Vencimiento: {new Date(enrollment.certificate_notice.expires_at).toLocaleDateString('es-PE')}</p>
+                    </div>
+                ))}
 
                 {enrollments.length === 0 ? (
                     <Card>

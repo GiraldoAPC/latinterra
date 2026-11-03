@@ -22,6 +22,7 @@ class CertificateController extends Controller
         return Inertia::render('Aula/Certificado', [
             'certificate' => $certificate,
             'enrollment' => $enrollment,
+            'signatories' => $certificate->signatureImages(),
             'validity' => [
                 'expires_at' => $certificate->validityEndsAt()?->toIso8601String(),
                 'status' => $certificate->validityStatus(),

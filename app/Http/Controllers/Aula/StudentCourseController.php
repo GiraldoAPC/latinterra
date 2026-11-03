@@ -249,7 +249,7 @@ class StudentCourseController extends Controller
 
     public function myCourses(): Response
     {
-        $enrollments = Enrollment::with('course')
+        $enrollments = Enrollment::with('course', 'certificate')
             ->where('user_id', Auth::id())
             ->orderByDesc('created_at')
             ->get()
@@ -260,6 +260,7 @@ class StudentCourseController extends Controller
                     'course' => $e->course,
                     'progress' => $e->progressPercent(),
                     'has_certificate' => $e->isTrulyCompleted() && $e->certificate()->exists(),
+                    'certificate_notice' => $e->certificate?->renewalNotice(),
                 ];
             });
 
@@ -762,6 +763,7 @@ class StudentCourseController extends Controller
                 'issued_at' => $issuedAt,
                 'expires_at' => $issuedAt->copy()->addYearNoOverflow(),
                 'final_score' => $scores->isEmpty() ? null : round($scores->avg(), 2),
+                'signatories' => $enrollment->course->certificate_signatories,
             ]);
         }
     }
