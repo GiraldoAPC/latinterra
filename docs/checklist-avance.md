@@ -25,7 +25,7 @@ Los certificados anteriores no tienen nota guardada: se muestra «No registrada�
 
 ## Siguientes bloques
 
-- Certificaciones presenciales: continuar con notas y emisión de certificados; el registro por grupo ya está implementado.
+- Certificaciones presenciales: registro, evaluación y emisión implementados; falta validación operativa y definir recertificación/revocación.
 - Inventario: revisar cotización → venta, alertas de stock y auspicios al costo.
 - Roles: administración, estudiante, instructor y coordinador; permisos de gerencia/administración.
 - Pasarela y facturación SUNAT: etapas futuras según el checklist.
@@ -51,10 +51,20 @@ Verificación reproducible sin PHPUnit: `php tests/manual/certificate-workflow.p
 - [x] Rechazar duplicados dentro del grupo, respetar cupo con transacción/bloqueo de la fila del grupo y permitir el mismo participante en otros grupos.
 - [x] Cerrar/reabrir registro manualmente y establecer una fecha de cierre opcional. Reabrir no omite el cupo ni la fecha de cierre.
 - [x] El enlace público no expone listas, documentos ni contactos de otros participantes; las listas y correcciones requieren administrador.
-- [ ] Registrar notas/resultado de evaluación presencial y definir el criterio para certificar.
-- [ ] Emitir certificados presenciales con firmas, vigencia y verificación pública.
+- [x] Registrar nota presencial de 0 a 20 con máximo dos decimales y confirmar asistencia. Se usa mínima 13/20, igual que el criterio general del checklist.
+- [x] Emitir certificados presenciales con firmas del curso, vigencia anual y verificación pública por QR. Requiere asistencia confirmada, nota aprobatoria, capacitación iniciada y firmas con imágenes disponibles.
+- [x] Guardar copia del nombre, documento, curso, nota y firmas al emitir, y registrar el administrador que evaluó y emitió. El certificado emitido bloquea cambios de evaluación e identidad del participante; la revocación/reemisión sigue pendiente de definición.
+- [x] Impresión/guardado como PDF desde el grupo y listado de certificados presenciales con vigencia/avisos administrativos en «Certificados».
 - [ ] Vincular identidades existentes tras validación administrativa; el autorregistro solo llena la lista y no crea cuentas ni sobrescribe personas/usuarios.
 
 Acceso: Administración → Cursos → Capacitaciones presenciales (`/admin/cursos/presenciales`). La migración `2026_11_03_000003_create_in_person_sessions.php` crea dos tablas nuevas y se aplicó localmente. Ejecutar las migraciones al desplegar en producción. Los cursos con grupos registrados no pueden eliminarse; sí pueden despublicarse.
 
 Prueba reproducible: `php tests/manual/in-person-registration.php`, con SQLite en memoria. Comprueba horarios, registro, duplicados, cupo, cierre, validación, correcciones, aislamiento entre grupos, datos públicos, middleware y reversión de la migración. La simultaneidad real de múltiples conexiones MySQL y la lectura del QR en teléfono siguen pendientes de validación.
+
+### Evaluación y certificado presencial
+
+La migración `2026_11_03_000004_add_in_person_certification.php` agrega los campos de evaluación y una tabla de certificados presenciales independiente de las matrículas del aula virtual. Se aplicó en MySQL local. Es necesaria al publicar esta entrega en producción. No crea cuentas ni matrículas del aula virtual. Los códigos presenciales usan el prefijo `LT-P-` y la misma ruta pública de verificación.
+
+Desde el grupo: registrar nota/asistencia → guardar evaluación → emitir certificado → imprimir/guardar PDF. Las firmas se configuran en «Certificados». Repetir la emisión devuelve el mismo certificado, sin duplicarlo. El formato de impresión compartido se ajustó a A4 horizontal; la revisión visual en navegador y lectura de QR siguen pendientes.
+
+Verificación: `php tests/manual/in-person-certification.php` (25 comprobaciones en SQLite aislado) y `php tests/manual/in-person-registration.php` (23 comprobaciones). Cubren requisitos de emisión, límite de nota, archivos de firmas, copia de datos, emisión repetida, privacidad, protección de cambios, verificación de ambos tipos de certificado y middleware. La reversión de claves foráneas de la migración de evaluación requiere MySQL; SQLite no admite esa operación y las pruebas usan una base en memoria desechable.

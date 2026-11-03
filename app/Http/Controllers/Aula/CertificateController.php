@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Aula;
 use App\Http\Controllers\Controller;
 use App\Models\Aula\Certificate;
 use App\Models\Aula\Enrollment;
+use App\Models\Aula\InPersonCertificate;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -33,6 +34,7 @@ class CertificateController extends Controller
     public function verify(string $code): Response
     {
         $certificate = Certificate::where('code', $code)->with('enrollment.course', 'enrollment.user')->first();
+        $inPerson = $certificate ? null : InPersonCertificate::where('code', $code)->first();
 
         return Inertia::render('Aula/VerificarCertificado', [
             'certificate' => $certificate ? [
@@ -43,7 +45,7 @@ class CertificateController extends Controller
                 'final_score' => $certificate->final_score,
                 'student_name' => $certificate->enrollment->user->name,
                 'course_title' => $certificate->enrollment->course->title,
-            ] : null,
+            ] : $inPerson?->publicDetails(),
             'code' => $code,
         ]);
     }

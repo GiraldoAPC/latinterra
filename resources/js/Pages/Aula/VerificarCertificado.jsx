@@ -35,6 +35,7 @@ export default function VerificarCertificado({ certificate, code }) {
                                     <span>Curso</span>
                                     <strong>{certificate.course_title}</strong>
                                 </div>
+                                {certificate.modality && <div className="beal-modal__spec"><span>Modalidad</span><strong>{certificate.modality}</strong></div>}
                                 <div className="beal-modal__spec">
                                     <i className="fa-solid fa-calendar" aria-hidden="true" />
                                     <span>Emitido</span>

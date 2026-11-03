@@ -4,6 +4,7 @@ import { Button } from '@/Components/ui/button';
 import RegistrationQr from '@/Components/Shared/RegistrationQr';
 import { useState } from 'react';
 import InPersonParticipantEditor from '@/Components/Admin/InPersonParticipantEditor';
+import InPersonAssessmentForm from '@/Components/Admin/InPersonAssessmentForm';
 
 export default function Show({ session, participants }) {
     const [editingParticipant, setEditingParticipant] = useState(null);
@@ -34,13 +35,15 @@ export default function Show({ session, participants }) {
                 </div>
             </div>
             <h2 className="mb-3 text-lg font-semibold">Participantes registrados</h2>
+            <p className="mb-4 text-sm text-muted-foreground">Para certificar, guarda la nota mínima de 13/20 y confirma la asistencia. La capacitación debe haber comenzado y el curso debe tener sus firmas configuradas. <Link className="underline" href="/admin/cursos/certificados">Configurar firmas</Link></p>
             {editingParticipant && <InPersonParticipantEditor key={editingParticipant.id} sessionId={session.id} participant={editingParticipant} onClose={() => setEditingParticipant(null)} />}
             {!participants.data.length ? <p className="text-sm text-muted-foreground">El grupo todavía no tiene participantes.</p> : <div className="overflow-x-auto rounded-lg border bg-white">
-                <table className="w-full text-left text-sm"><thead><tr className="border-b"><th className="p-3">Participante</th><th className="p-3">Documento</th><th className="p-3">Contacto</th><th className="p-3">Acciones</th></tr></thead>
+                <table className="w-full text-left text-sm"><thead><tr className="border-b"><th className="p-3">Participante</th><th className="p-3">Documento</th><th className="p-3">Contacto</th><th className="p-3">Evaluación y certificado</th><th className="p-3">Acciones</th></tr></thead>
                     <tbody>{participants.data.map((participant) => <tr key={participant.id} className="border-b last:border-0">
                         <td className="p-3">{participant.last_name}, {participant.name}</td><td className="p-3">{participant.document_type.toUpperCase()} {participant.document_number}</td>
                         <td className="p-3"><div>{participant.email || 'Sin correo'}</div><div>{participant.phone || 'Sin teléfono'}</div></td>
-                        <td className="p-3"><Button size="sm" variant="outline" onClick={() => setEditingParticipant(participant)}>Corregir datos</Button></td>
+                        <td className="p-3"><InPersonAssessmentForm key={`${participant.id}:${participant.updated_at}`} sessionId={session.id} participant={participant} /></td>
+                        <td className="p-3"><Button size="sm" variant="outline" disabled={!!participant.certificate} onClick={() => setEditingParticipant(participant)}>Corregir datos</Button></td>
                     </tr>)}</tbody>
                 </table>
             </div>}

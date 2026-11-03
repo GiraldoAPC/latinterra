@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { BrowserQRCodeSvgWriter } from '@zxing/library';
 
-export default function CertificateTemplate({ name, course, code, issuedAt, expiresAt, score, status, signatories = [], preview = false }) {
+export default function CertificateTemplate({ name, course, code, issuedAt, expiresAt, score, status, signatories = [], documentLabel, modality, preview = false }) {
     const qrRef = useRef(null);
     const verifyUrl = `${window.location.origin}/certificado/verificar/${encodeURIComponent(code)}`;
     useEffect(() => {
@@ -19,8 +19,10 @@ export default function CertificateTemplate({ name, course, code, issuedAt, expi
                 <h1>CERTIFICADO</h1><p className="subtitle">DE FINALIZACIÓN</p>
                 <p>Se otorga el presente certificado a</p>
                 <h2>{name}</h2>
+                {documentLabel && <p>{documentLabel}</p>}
                 <p>Por haber completado satisfactoriamente el curso</p>
                 <h3>{course}</h3>
+                {modality && <p>{modality}</p>}
                 <p className="date">Emitido el {date}</p>
                 <p>
                     Nota: {score == null ? 'No registrada' : `${Number(score).toFixed(2)} / 20`}
@@ -63,16 +65,18 @@ export default function CertificateTemplate({ name, course, code, issuedAt, expi
                 @page { size:A4 landscape; margin:10mm; }
                 body * { visibility:hidden !important; }
                 #certificate-print, #certificate-print * { visibility:visible !important; }
-                #certificate-print { position:absolute; left:0; top:0; width:277mm; max-width:none; box-shadow:none; print-color-adjust:exact; -webkit-print-color-adjust:exact; }
-                .certificate-inner { padding:7mm 12mm 5mm; }
-                .certificate-sheet h1 { font-size:48px; }
-                .certificate-sheet h2 { font-size:32px; }
-                .certificate-sheet h3 { font-size:23px; }
-                .certificate-sheet p { margin:3mm 0; }
-                .certificate-sheet .subtitle { margin:2mm 0 5mm; }
-                .certificate-sheet .signatures { break-inside:avoid; margin:4mm 0; flex-wrap:nowrap; gap:3mm; }
+                #certificate-print { position:absolute; left:0; top:0; width:277mm; height:190mm; max-width:none; padding:4mm; box-shadow:none; print-color-adjust:exact; -webkit-print-color-adjust:exact; }
+                .certificate-inner { box-sizing:border-box; height:100%; padding:5mm 8mm; display:flex; flex-direction:column; align-items:center; justify-content:space-between; gap:1mm; }
+                .certificate-inner>img { width:42mm; height:12mm; margin:0 auto; }
+                .certificate-sheet h1 { font-size:38px; line-height:1.1; }
+                .certificate-sheet h2 { width:100%; font-size:27px; margin:0; padding:0 0 2mm; }
+                .certificate-sheet h3 { width:100%; font-size:20px; }
+                #certificate-print p { margin:0; font-size:11px; line-height:1.2; }
+                .certificate-sheet .signatures { width:100%; break-inside:avoid; margin:0; flex-wrap:nowrap; gap:3mm; }
                 .certificate-sheet .signatures>div { flex:1; min-width:0; width:auto; font-size:9px; overflow-wrap:anywhere; }
                 .certificate-sheet .signatures img { width:100%; height:12mm; }
+                .certificate-sheet footer { width:100%; padding-top:2mm; font-size:9px; }
+                .certificate-verification svg { width:20mm; height:20mm; }
             }
         `}</style>
     </>;

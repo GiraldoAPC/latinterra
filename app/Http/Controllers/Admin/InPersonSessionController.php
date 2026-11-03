@@ -7,6 +7,7 @@ use App\Models\Aula\Course;
 use App\Models\Aula\InPersonSession;
 use App\Models\Aula\InPersonParticipant;
 use App\Http\Requests\InPersonParticipantRequest;
+use App\Services\InPersonCertification;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -52,7 +53,7 @@ class InPersonSessionController extends Controller
     {
         return Inertia::render('Admin/Presenciales/Show', [
             'session' => $session->load('course:id,title')->loadCount('participants'),
-            'participants' => $session->participants()->orderBy('last_name')->orderBy('name')->paginate(30),
+            'participants' => $session->participants()->with('certificate')->orderBy('last_name')->orderBy('name')->paginate(30),
         ]);
     }
 
@@ -71,6 +72,9 @@ class InPersonSessionController extends Controller
         $data['document_number'] = strtoupper(trim($data['document_number']));
         DB::transaction(function () use ($session, $participant, $data) {
             InPersonSession::whereKey($session->id)->lockForUpdate()->firstOrFail();
+            if ($participant->certificate()->exists()) {
+                throw ValidationException::withMessages(['participant' => 'Este participante ya tiene un certificado. Sus datos no pueden modificarse.']);
+            }
             if ($session->participants()->where('document_type', $data['document_type'])
                 ->where('document_number', $data['document_number'])->whereKeyNot($participant->id)->exists()) {
                 throw ValidationException::withMessages(['document_number' => 'Este documento ya está registrado en el grupo.']);
@@ -79,5 +83,38 @@ class InPersonSessionController extends Controller
         });
 
         return back()->with('success', 'Datos del participante actualizados.');
+    }
+
+    public function assessParticipant(Request $request, InPersonSession $session, InPersonParticipant $participant, InPersonCertification $certification): RedirectResponse
+    {
+        $data = $request->validate([
+            'score' => ['nullable', 'numeric', 'between:0,20', 'decimal:0,2'],
+            'attendance_confirmed' => ['required', 'boolean'],
+        ]);
+        $certification->assess($session, $participant, isset($data['score']) ? (float) $data['score'] : null,
+            (bool) $data['attendance_confirmed'], $request->user()->id);
+
+        return back()->with('success', 'Evaluación presencial guardada.');
+    }
+
+    public function issueCertificate(Request $request, InPersonSession $session, InPersonParticipant $participant, InPersonCertification $certification): RedirectResponse
+    {
+        $certification->issue($session, $participant, $request->user()->id);
+
+        return redirect()->route('admin.in-person.certificate', [$session, $participant])->with('success', 'Certificado presencial disponible.');
+    }
+
+    public function certificate(InPersonSession $session, InPersonParticipant $participant): Response
+    {
+        abort_unless($participant->in_person_session_id === $session->id, 404);
+        $certificate = $participant->certificate()->firstOrFail();
+
+        return Inertia::render('Admin/Presenciales/Certificate', [
+            'sessionId' => $session->id,
+            'certificate' => $certificate->publicDetails() + [
+                'document_label' => strtoupper($certificate->document_type).' '.$certificate->document_number,
+                'signatories' => $certificate->signatureImages(),
+            ],
+        ]);
     }
 }

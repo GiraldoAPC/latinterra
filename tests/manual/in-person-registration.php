@@ -41,10 +41,14 @@ config(['database.default' => 'in_person_test', 'database.connections.in_person_
 $app['session']->start();
 $app['redirect']->setSession($app['session']->driver());
 Schema::create('courses', function (Blueprint $table) { $table->id(); $table->string('title'); $table->string('slug'); $table->timestamps(); });
+Schema::create('users', function (Blueprint $table) { $table->id(); });
 $migration = require __DIR__.'/../../database/migrations/2026_11_03_000003_create_in_person_sessions.php';
 $migration->up();
+$certificationMigration = require __DIR__.'/../../database/migrations/2026_11_03_000004_add_in_person_certification.php';
+$certificationMigration->up();
 Carbon::setTestNow('2026-11-03 12:00:00');
 
+$failure = null;
 try {
     $course = Course::create(['title' => 'Presencial', 'slug' => 'presencial']);
     $groupData = ['course_id' => $course->id, 'title' => 'Grupo 1', 'location' => 'Lima', 'starts_at' => '2026-11-05T09:00', 'registration_closes_at' => '2026-11-04T18:00', 'capacity' => 2];
@@ -95,8 +99,17 @@ try {
     check(in_array('admin', $adminRoute->gatherMiddleware(), true) && in_array('auth', $adminRoute->gatherMiddleware(), true), 'Participant list restricted to administrators');
     $publicRoute = app('router')->getRoutes()->getByName('in-person.register.store');
     check(in_array('throttle:120,1', $publicRoute->gatherMiddleware(), true), 'Public submission rate limited for shared group access');
+    // SQLite cannot drop foreign keys from an existing table; the temporary
+    // assessment columns disappear when the original participant table is dropped.
+    Schema::drop('in_person_certificates');
     $migration->down();
     check(!Schema::hasTable('in_person_sessions') && !Schema::hasTable('in_person_participants'), 'Migration rollback removes only new tables');
+} catch (Throwable $error) {
+    $failure = $error;
 } finally {
     Carbon::setTestNow();
+}
+if ($failure) {
+    fwrite(STDERR, $failure->getMessage().PHP_EOL);
+    exit(1);
 }

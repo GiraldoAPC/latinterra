@@ -142,6 +142,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/cursos/presenciales/{session}', [\App\Http\Controllers\Admin\InPersonSessionController::class, 'show'])->name('admin.in-person.show');
     Route::post('/cursos/presenciales/{session}/registro', [\App\Http\Controllers\Admin\InPersonSessionController::class, 'updateRegistration'])->name('admin.in-person.registration');
     Route::put('/cursos/presenciales/{session}/participantes/{participant}', [\App\Http\Controllers\Admin\InPersonSessionController::class, 'updateParticipant'])->name('admin.in-person.participant');
+    Route::put('/cursos/presenciales/{session}/participantes/{participant}/evaluacion', [\App\Http\Controllers\Admin\InPersonSessionController::class, 'assessParticipant'])->name('admin.in-person.assessment');
+    Route::post('/cursos/presenciales/{session}/participantes/{participant}/certificado', [\App\Http\Controllers\Admin\InPersonSessionController::class, 'issueCertificate'])->name('admin.in-person.issue');
+    Route::get('/cursos/presenciales/{session}/participantes/{participant}/certificado', [\App\Http\Controllers\Admin\InPersonSessionController::class, 'certificate'])->name('admin.in-person.certificate');
     Route::get('/', fn() => Inertia::render('Admin/Dashboard'))->name('admin');
 
     Route::get('/products', [\App\Http\Controllers\Admin\ProductController::class, 'index'])->name('admin.products');

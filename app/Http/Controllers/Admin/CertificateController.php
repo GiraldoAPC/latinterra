@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Aula\Certificate;
 use App\Models\Aula\Course;
+use App\Models\Aula\InPersonCertificate;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -27,13 +28,18 @@ class CertificateController extends Controller
                 ]),
             ]),
             'certificates' => Certificate::with('enrollment.user', 'enrollment.course')->orderByDesc('issued_at')
-                ->paginate(15)->through(fn ($certificate) => [
+                ->paginate(15)->withQueryString()->through(fn ($certificate) => [
                     'code' => $certificate->code,
                     'student' => $certificate->enrollment->user->name,
                     'course' => $certificate->enrollment->course->title,
                     'expires_at' => $certificate->validityEndsAt()?->toIso8601String(),
                     'status' => $certificate->validityStatus(),
                     'notice' => $certificate->renewalNotice(),
+                ]),
+            'inPersonCertificates' => InPersonCertificate::with('participant')->orderByDesc('issued_at')
+                ->paginate(15, ['*'], 'presencial_page')->withQueryString()->through(fn ($certificate) => $certificate->publicDetails() + [
+                    'print_url' => route('admin.in-person.certificate', [$certificate->participant->in_person_session_id, $certificate->in_person_participant_id]),
+                    'expiring' => $certificate->expires_at->lessThanOrEqualTo(now()->addDays(30)),
                 ]),
         ]);
     }
