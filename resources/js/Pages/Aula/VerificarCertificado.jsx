@@ -15,24 +15,25 @@ export default function VerificarCertificado({ certificate, code }) {
                 <div className="container" style={{ maxWidth: 560, margin: "0 auto", textAlign: "center" }}>
                     {certificate ? (
                         <>
-                            <i className="fa-solid fa-circle-check" style={{ fontSize: 48, color: "var(--lt-green)" }} aria-hidden="true" />
+                            <i className={`fa-solid ${certificate.status === 'valid' ? 'fa-circle-check' : 'fa-circle-exclamation'}`} style={{ fontSize: 48, color: certificate.status === 'valid' ? 'var(--lt-green)' : '#b45309' }} aria-hidden="true" />
                             <h1 style={{ fontSize: "1.4rem", fontWeight: 800, margin: "16px 0 6px" }}>
-                                Certificado valido
+                                {certificate.status === 'valid' ? 'Certificado vigente' : certificate.status === 'expired' ? 'Certificado vencido' : 'Vigencia no disponible'}
                             </h1>
                             <p style={{ color: "#64748b", marginBottom: 24 }}>
-                                Este certificado fue emitido por Latin Terra y es autentico.
+                                Certificado emitido por Acceso Vertical Perú.
+                                {certificate.status === 'expired' && ' Su vigencia ha terminado; consulta con administración para recertificarte.'}
                             </p>
 
                             <div className="beal-modal__specs" style={{ display: "block", padding: 20, textAlign: "left" }}>
                                 <div className="beal-modal__spec">
                                     <i className="fa-solid fa-user" aria-hidden="true" />
                                     <span>Alumno</span>
-                                    <strong>{certificate.enrollment.user.name}</strong>
+                                    <strong>{certificate.student_name}</strong>
                                 </div>
                                 <div className="beal-modal__spec">
                                     <i className="fa-solid fa-graduation-cap" aria-hidden="true" />
                                     <span>Curso</span>
-                                    <strong>{certificate.enrollment.course.title}</strong>
+                                    <strong>{certificate.course_title}</strong>
                                 </div>
                                 <div className="beal-modal__spec">
                                     <i className="fa-solid fa-calendar" aria-hidden="true" />
@@ -44,6 +45,14 @@ export default function VerificarCertificado({ certificate, code }) {
                                             day: "numeric",
                                         })}
                                     </strong>
+                                </div>
+                                <div className="beal-modal__spec">
+                                    <span>Vencimiento</span>
+                                    <strong>{certificate.expires_at ? new Date(certificate.expires_at).toLocaleDateString('es-PE') : 'No registrado'}</strong>
+                                </div>
+                                <div className="beal-modal__spec">
+                                    <span>Nota obtenida</span>
+                                    <strong>{certificate.final_score == null ? 'No registrada' : `${Number(certificate.final_score).toFixed(2)} / 20`}</strong>
                                 </div>
                                 <div className="beal-modal__spec">
                                     <i className="fa-solid fa-hashtag" aria-hidden="true" />

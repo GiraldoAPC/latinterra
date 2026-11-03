@@ -22,6 +22,10 @@ class CertificateController extends Controller
         return Inertia::render('Aula/Certificado', [
             'certificate' => $certificate,
             'enrollment' => $enrollment,
+            'validity' => [
+                'expires_at' => $certificate->validityEndsAt()?->toIso8601String(),
+                'status' => $certificate->validityStatus(),
+            ],
         ]);
     }
 
@@ -30,7 +34,15 @@ class CertificateController extends Controller
         $certificate = Certificate::where('code', $code)->with('enrollment.course', 'enrollment.user')->first();
 
         return Inertia::render('Aula/VerificarCertificado', [
-            'certificate' => $certificate,
+            'certificate' => $certificate ? [
+                'code' => $certificate->code,
+                'issued_at' => $certificate->issued_at?->toIso8601String(),
+                'expires_at' => $certificate->validityEndsAt()?->toIso8601String(),
+                'status' => $certificate->validityStatus(),
+                'final_score' => $certificate->final_score,
+                'student_name' => $certificate->enrollment->user->name,
+                'course_title' => $certificate->enrollment->course->title,
+            ] : null,
             'code' => $code,
         ]);
     }

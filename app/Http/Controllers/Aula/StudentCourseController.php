@@ -749,9 +749,19 @@ class StudentCourseController extends Controller
         $enrollment->update(['status' => 'completed', 'completed_at' => now()]);
 
         if (!$enrollment->certificate()->exists()) {
+            // Each evaluated module has equal weight; topic quizzes are excluded.
+            $examIds = $enrollment->course->modules
+                ->filter(fn ($module) => $module->exam && $module->exam->questions->isNotEmpty())
+                ->map(fn ($module) => $module->exam->id);
+            $scores = $enrollment->examAttempts()
+                ->whereIn('exam_id', $examIds)->where('passed', true)
+                ->get()->groupBy('exam_id')->map(fn ($attempts) => $attempts->max('score'));
+            $issuedAt = now();
             $enrollment->certificate()->create([
                 'code' => Certificate::generateUniqueCode(),
-                'issued_at' => now(),
+                'issued_at' => $issuedAt,
+                'expires_at' => $issuedAt->copy()->addYearNoOverflow(),
+                'final_score' => $scores->isEmpty() ? null : round($scores->avg(), 2),
             ]);
         }
     }

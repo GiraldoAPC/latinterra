@@ -1,4 +1,15 @@
-﻿export default function CertificateTemplate({ name, course, code, issuedAt, preview = false }) {
+import { useEffect, useRef } from 'react';
+import { BrowserQRCodeSvgWriter } from '@zxing/library';
+
+export default function CertificateTemplate({ name, course, code, issuedAt, expiresAt, score, status, preview = false }) {
+    const qrRef = useRef(null);
+    const verifyUrl = `${window.location.origin}/certificado/verificar/${encodeURIComponent(code)}`;
+    useEffect(() => {
+        const container = qrRef.current;
+        if (!container || preview) return;
+        container.replaceChildren(new BrowserQRCodeSvgWriter().write(verifyUrl, 92, 92));
+        return () => container.replaceChildren();
+    }, [verifyUrl, preview]);
     const date = new Date(issuedAt).toLocaleDateString('es-PE', { year: 'numeric', month: 'long', day: 'numeric' });
     return <>
         <article id="certificate-print" className="certificate-sheet">
@@ -11,12 +22,17 @@
                 <p>Por haber completado satisfactoriamente el curso</p>
                 <h3>{course}</h3>
                 <p className="date">Emitido el {date}</p>
+                <p>
+                    Nota: {score == null ? 'No registrada' : `${Number(score).toFixed(2)} / 20`}
+                    {expiresAt && <> · Vence el {new Date(expiresAt).toLocaleDateString('es-PE')}</>}
+                    {status && <> · {status === 'valid' ? 'Vigente' : status === 'expired' ? 'Vencido' : 'Vigencia no disponible'}</>}
+                </p>
                 <div className="signatures">
                     <div>Representante de la empresa<small>Firma institucional</small></div>
                     <div>Instructor responsable<small>Firma del instructor</small></div>
                 </div>
                 <footer><span>Código: <strong>{code}</strong></span>
-                    {preview ? <span>Datos de ejemplo · Firmas pendientes de configurar</span> : <a href={`/certificado/verificar/${encodeURIComponent(code)}`}>Verificar autenticidad</a>}
+                    {preview ? <span>Datos de ejemplo · Firmas pendientes de configurar</span> : <a className="certificate-verification" href={verifyUrl}><span ref={qrRef} aria-hidden="true" />Verificar autenticidad</a>}
                 </footer>
             </div>
         </article>
@@ -36,6 +52,8 @@
             .certificate-sheet small { display:block; color:#718491; margin-top:3px; }
             .certificate-sheet footer { border-top:1px solid #dce9ef; padding-top:14px; display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; font-size:10px; color:#607381; }
             .certificate-sheet footer a { text-decoration:underline; }
+            .certificate-verification { display:flex; align-items:center; gap:10px; }
+            .certificate-verification svg { width:92px; height:92px; }
             @media(max-width:640px) { .certificate-inner { padding:20px 14px; } .certificate-sheet .signatures { gap:20px; } }
             @media print {
                 @page { size:A4 landscape; margin:10mm; }
