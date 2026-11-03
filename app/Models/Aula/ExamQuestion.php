@@ -11,7 +11,7 @@ class ExamQuestion extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['exam_id', 'question', 'position'];
+    protected $fillable = ['exam_id', 'question', 'type', 'position'];
 
     public function exam(): BelongsTo
     {
@@ -21,5 +21,10 @@ class ExamQuestion extends Model
     public function options(): HasMany
     {
         return $this->hasMany(ExamQuestionOption::class)->orderBy('position');
+    }
+
+    public function isShortAnswer(): bool
+    {
+        return $this->type === 'short_answer';
     }
 }

@@ -2,7 +2,7 @@ import { Head, Link, usePage, router } from "@inertiajs/react";
 import PublicHeader from "@/Components/PublicHeader";
 import PublicFooter from "@/Components/PublicFooter";
 
-export default function CursoDetalle({ course, enrollment, pendingOrder }) {
+export default function CursoDetalle({ course, enrollment, pendingOrder, prerequisiteSatisfied = true }) {
     const { auth } = usePage().props;
     const isLoggedIn = !!auth?.user;
 
@@ -59,6 +59,14 @@ export default function CursoDetalle({ course, enrollment, pendingOrder }) {
                             </div>
                         </div>
 
+                        {course.prerequisite_course && (
+                            <p style={{ color: prerequisiteSatisfied ? "#64748b" : "#b91c1c", marginBottom: 20 }}>
+                                <i className="fa-solid fa-circle-info" aria-hidden="true" />{" "}
+                                Requiere haber completado <strong>{course.prerequisite_course.title}</strong> (con
+                                nosotros o convalidado con un certificado de otra institucion).
+                            </p>
+                        )}
+
                         <h2 className="beal-categories__title">Contenido del curso</h2>
                         {course.modules.map((m) => (
                             <div key={m.id} style={{ marginBottom: 12 }}>
@@ -105,10 +113,17 @@ export default function CursoDetalle({ course, enrollment, pendingOrder }) {
                                 </p>
                             )}
 
-                            {isLoggedIn && !enrollment && !pendingOrder && (
+                            {isLoggedIn && !enrollment && !pendingOrder && prerequisiteSatisfied && (
                                 <button className="btn btn-primary" onClick={enroll}>
                                     {course.is_free ? "Inscribirme gratis" : "Solicitar acceso"}
                                 </button>
+                            )}
+
+                            {isLoggedIn && !enrollment && !pendingOrder && !prerequisiteSatisfied && (
+                                <p style={{ color: "#b91c1c" }}>
+                                    Todavia no cumples el requisito previo de este curso. Si lo hiciste en otra
+                                    institucion, acercate con tu certificado para que lo validemos.
+                                </p>
                             )}
                         </div>
                     </div>

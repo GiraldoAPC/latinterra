@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Aula\Course;
+use App\Models\Aula\CourseEquivalency;
 use App\Models\Aula\CourseInstallment;
 use App\Models\Aula\CourseOrder;
 use App\Models\Aula\Enrollment;
@@ -184,7 +185,9 @@ class StudentController extends Controller
             $personaData['avatar'] = $request->file('avatar')->store('avatars', 'public');
         }
 
-        $student = DB::transaction(function () use ($personaData, $userData, $courseId) {
+        $enrolled = true;
+
+        $student = DB::transaction(function () use ($personaData, $userData, $courseId, &$enrolled) {
             $persona = Persona::create($personaData);
 
             $userData['persona_id'] = $persona->id;
@@ -202,14 +205,19 @@ class StudentController extends Controller
             if ($courseId) {
                 $course = Course::find($courseId);
                 if ($course) {
-                    $this->enrollInCourse($student, $course);
+                    $enrolled = $this->enrollInCourse($student, $course);
                 }
             }
 
             return $student;
         });
 
-        return redirect()->route('admin.students.show', $student)->with('success', 'Estudiante registrado.');
+        return redirect()->route('admin.students.show', $student)->with(
+            'success',
+            $enrolled
+                ? 'Estudiante registrado.'
+                : 'Estudiante registrado, pero no se le pudo inscribir en el curso: no cumple el requisito previo. Registra la convalidacion si corresponde.'
+        );
     }
 
     /**
@@ -218,9 +226,21 @@ class StudentController extends Controller
      * gratis -> inscripcion directa; matricula+mensualidad -> inscripcion
      * directa + genera las cuotas; pago unico -> queda como orden
      * pendiente hasta que se confirme el pago (ver Pedidos de cursos).
+     *
+     * Devuelve false (sin inscribir) si el curso tiene un requisito previo
+     * que el estudiante no cumple - para convalidar un certificado externo,
+     * primero hay que registrar la equivalencia (ver storeEquivalency()).
      */
-    private function enrollInCourse(User $student, Course $course): void
+    private function enrollInCourse(User $student, Course $course): bool
     {
+        if (Enrollment::where('user_id', $student->id)->where('course_id', $course->id)->exists()) {
+            return true;
+        }
+
+        if (!$course->prerequisiteSatisfiedBy($student->id)) {
+            return false;
+        }
+
         if ($course->billing_type === 'matricula_mensualidad') {
             $enrollment = Enrollment::create([
                 'user_id' => $student->id,
@@ -228,7 +248,7 @@ class StudentController extends Controller
                 'status' => 'active',
             ]);
             $course->generateInstallmentsFor($enrollment);
-            return;
+            return true;
         }
 
         if ($course->is_free || (float) $course->price <= 0) {
@@ -237,7 +257,7 @@ class StudentController extends Controller
                 'course_id' => $course->id,
                 'status' => 'active',
             ]);
-            return;
+            return true;
         }
 
         // source=admin: no pasa por la cola de "Pedidos de cursos" (esa es
@@ -252,6 +272,8 @@ class StudentController extends Controller
             'status' => 'pending',
             'source' => 'admin',
         ]);
+
+        return true;
     }
 
     public function show(User $student): Response
@@ -327,6 +349,21 @@ class StudentController extends Controller
                 'paid_at' => $p->paid_at,
             ]);
 
+        $equivalencies = CourseEquivalency::with('course', 'grantedBy')
+            ->where('user_id', $student->id)
+            ->orderByDesc('created_at')
+            ->get()
+            ->map(fn (CourseEquivalency $eq) => [
+                'id' => $eq->id,
+                'course' => ['id' => $eq->course->id, 'title' => $eq->course->title],
+                'issuing_institution' => $eq->issuing_institution,
+                'note' => $eq->note,
+                'score' => $eq->score,
+                'file_url' => $eq->file_url,
+                'granted_by' => $eq->grantedBy?->name,
+                'created_at' => $eq->created_at,
+            ]);
+
         $student->course_id = optional(
             Enrollment::where('user_id', $student->id)->orderByDesc('created_at')->first()
         )->course_id;
@@ -351,12 +388,76 @@ class StudentController extends Controller
             'courses' => Course::where('is_published', true)
                 ->orderBy('title')
                 ->get(['id', 'title', 'is_free', 'price', 'min_age']),
+            'equivalencies' => $equivalencies,
+            // Solo cursos en los que el estudiante NO esta inscrito y que
+            // todavia no tiene convalidados - no tiene sentido convalidar de
+            // nuevo uno que ya esta cursando o que ya quedo registrado.
+            'allCourses' => Course::whereNotIn('id', Enrollment::where('user_id', $student->id)->pluck('course_id'))
+                ->whereNotIn('id', $equivalencies->pluck('course.id'))
+                ->orderBy('title')
+                ->get(['id', 'title']),
             'stats' => [
                 'courses' => $enrollments->count(),
                 'completed' => $enrollments->where('status', 'completed')->count(),
                 'certificates' => $enrollments->whereNotNull('certificate')->count(),
             ],
         ]);
+    }
+
+    /**
+     * Registra una convalidacion: el admin ya verifico presencialmente que
+     * el certificado externo del estudiante equivale a este curso (ver
+     * checklist de requerimientos - Aula Virtual, audio 2 y 3). Esto
+     * satisface el requisito previo de cualquier otro curso que pida este
+     * curso como prerequisito.
+     */
+    public function storeEquivalency(Request $request, User $student): RedirectResponse
+    {
+        abort_unless($student->role === 'student', 404);
+
+        $data = $request->validate([
+            'course_id' => ['required', 'exists:courses,id'],
+            'issuing_institution' => ['nullable', 'string', 'max:180'],
+            'note' => ['nullable', 'string', 'max:1000'],
+            'score' => ['nullable', 'numeric', 'min:0', 'max:20'],
+            'file' => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:5120'],
+        ]);
+
+        $existing = CourseEquivalency::where('user_id', $student->id)->where('course_id', $data['course_id'])->first();
+
+        $filePath = $existing?->file_path;
+        if ($request->hasFile('file')) {
+            if ($filePath) {
+                Storage::disk('public')->delete($filePath);
+            }
+            $filePath = $request->file('file')->store('equivalencias', 'public');
+        }
+
+        CourseEquivalency::updateOrCreate(
+            ['user_id' => $student->id, 'course_id' => $data['course_id']],
+            [
+                'issuing_institution' => $data['issuing_institution'] ?? null,
+                'note' => $data['note'] ?? null,
+                'score' => $data['score'] ?? null,
+                'file_path' => $filePath,
+                'granted_by' => auth()->id(),
+            ]
+        );
+
+        return back()->with('success', 'Convalidacion registrada.');
+    }
+
+    public function destroyEquivalency(User $student, CourseEquivalency $equivalency): RedirectResponse
+    {
+        abort_unless($equivalency->user_id === $student->id, 404);
+
+        if ($equivalency->file_path) {
+            Storage::disk('public')->delete($equivalency->file_path);
+        }
+
+        $equivalency->delete();
+
+        return back()->with('success', 'Convalidacion eliminada.');
     }
 
     public function edit(User $student): Response
@@ -381,10 +482,11 @@ class StudentController extends Controller
 
         [$personaData, $userData] = $this->splitPersonaData($data);
 
+        $enrolled = true;
         if ($courseId && !Enrollment::where('user_id', $student->id)->where('course_id', $courseId)->exists()) {
             $course = Course::find($courseId);
             if ($course) {
-                $this->enrollInCourse($student, $course);
+                $enrolled = $this->enrollInCourse($student, $course);
             }
         }
 
@@ -411,7 +513,12 @@ class StudentController extends Controller
         // Siempre al perfil: si ya estabamos ahi (editando desde el propio
         // perfil) esto simplemente lo recarga con los datos nuevos; si se
         // edito desde la lista de estudiantes, esto lleva a su perfil.
-        return redirect()->route('admin.students.show', $student)->with('success', 'Estudiante actualizado.');
+        return redirect()->route('admin.students.show', $student)->with(
+            'success',
+            $enrolled
+                ? 'Estudiante actualizado.'
+                : 'Estudiante actualizado, pero no se le pudo inscribir en el curso: no cumple el requisito previo. Registra la convalidacion si corresponde.'
+        );
     }
 
     /** Registra el pago de una cuota (matricula o mensualidad) de un estudiante. */

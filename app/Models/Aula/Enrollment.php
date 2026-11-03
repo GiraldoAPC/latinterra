@@ -66,6 +66,20 @@ class Enrollment extends Model
             ->exists();
     }
 
+    /**
+     * True si el curso tiene un plazo de acceso configurado
+     * (access_duration_days), el estudiante todavia no termino, y ya paso
+     * ese plazo desde que se matriculo.
+     */
+    public function isAccessExpired(): bool
+    {
+        if (!$this->course->access_duration_days || $this->isTrulyCompleted()) {
+            return false;
+        }
+
+        return now()->greaterThan($this->created_at->addDays($this->course->access_duration_days));
+    }
+
     public function progressPercent(): int
     {
         $total = $this->course->totalLessons();
@@ -106,5 +120,23 @@ class Enrollment extends Model
     public function hasPassedExam(int $examId): bool
     {
         return $this->examAttempts()->where('exam_id', $examId)->where('passed', true)->exists();
+    }
+
+    /**
+     * True si aprobo el quiz de cada modulo que tiene uno configurado (los
+     * modulos sin quiz no cuentan). No hay examen final de curso aparte -
+     * ver checklist de requerimientos, Examenes - el curso se certifica
+     * solo con esto.
+     */
+    public function allModuleQuizzesPassed(): bool
+    {
+        return $this->course->modules
+            ->filter(fn (CourseModule $m) => $m->exam && $m->exam->questions->count() > 0)
+            ->every(fn (CourseModule $m) => $this->hasPassedExam($m->exam->id));
+    }
+
+    public function isReadyToCertify(): bool
+    {
+        return $this->allLessonsCompleted() && $this->allModuleQuizzesPassed();
     }
 }

@@ -14,6 +14,7 @@ class ExamAttemptAnswer extends Model
         'exam_attempt_id',
         'exam_question_id',
         'exam_question_option_id',
+        'answer_text',
         'is_correct',
     ];
 

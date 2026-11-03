@@ -5,6 +5,7 @@ import { Input } from "@/Components/ui/input";
 import { Textarea } from "@/Components/ui/textarea";
 import { Switch } from "@/Components/ui/switch";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/Components/ui/select";
+import SearchableCourseSelect from "@/Components/Admin/SearchableCourseSelect";
 import { cn } from "@/lib/utils";
 import { FileText, BadgeDollarSign, GraduationCap, Eye, ShieldAlert } from "lucide-react";
 
@@ -68,14 +69,15 @@ function ToggleRow({ id, label, hint, checked, onCheckedChange }) {
  *
  * Props: data, setData, errors, showPublish
  */
-export default function CourseInfoFields({ data, setData, errors = {}, showPublish = false }) {
+export default function CourseInfoFields({ data, setData, errors = {}, showPublish = false, courses = [] }) {
     return (
         <Card>
-            <CardContent className="space-y-4 p-4 sm:p-5">
-                {/* Datos generales */}
-                <div>
+            <CardContent className="p-4 sm:p-6">
+            <div className="grid grid-cols-1 gap-x-8 gap-y-5 md:grid-cols-2 lg:grid-cols-3">
+                {/* Datos generales - ancho completo */}
+                <div className="md:col-span-2 lg:col-span-3">
                     <SectionHeading icon={FileText} title="Datos generales" />
-                    <div className="space-y-3">
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                         <Field label="Titulo del curso" htmlFor="title" error={errors.title}>
                             <Input
                                 id="title"
@@ -93,20 +95,19 @@ export default function CourseInfoFields({ data, setData, errors = {}, showPubli
                                 placeholder="Aparece en la tarjeta del catalogo"
                             />
                         </Field>
-
-                        <Field label="Descripcion completa" htmlFor="description" error={errors.description}>
-                            <Textarea
-                                id="description"
-                                rows={3}
-                                value={data.description}
-                                onChange={(e) => setData("description", e.target.value)}
-                                placeholder="Objetivos, a quien va dirigido, requisitos..."
-                            />
-                        </Field>
                     </div>
+                    <Field label="Descripcion completa" htmlFor="description" error={errors.description} className="mt-3">
+                        <Textarea
+                            id="description"
+                            rows={3}
+                            value={data.description}
+                            onChange={(e) => setData("description", e.target.value)}
+                            placeholder="Objetivos, a quien va dirigido, requisitos..."
+                        />
+                    </Field>
                 </div>
 
-                <Separator />
+                <Separator className="md:col-span-2 lg:col-span-3" />
 
                 {/* Precio y acceso */}
                 <div>
@@ -219,8 +220,6 @@ export default function CourseInfoFields({ data, setData, errors = {}, showPubli
                     </div>
                 </div>
 
-                <Separator />
-
                 <div>
                     <SectionHeading icon={ShieldAlert} title="Restricciones" color="red" />
                     <Field
@@ -248,33 +247,61 @@ export default function CourseInfoFields({ data, setData, errors = {}, showPubli
                         Dejalo vacio si el curso no tiene restriccion de edad. Si pones un numero (ej. 18), el
                         sistema no permite inscribir a un estudiante mas joven a ese curso.
                     </p>
-                </div>
 
-                <Separator />
-
-                <div>
-                    <SectionHeading icon={GraduationCap} title="Evaluacion" color="amber" />
-                    <Field label="Nota minima para aprobar" htmlFor="passing_score" error={errors.passing_score}>
-                        <div className="relative max-w-xs">
+                    <Field
+                        label="Duracion de acceso"
+                        htmlFor="access_duration_days"
+                        error={errors.access_duration_days}
+                        className="mt-4 max-w-xs"
+                    >
+                        <div className="relative">
                             <Input
-                                id="passing_score"
+                                id="access_duration_days"
                                 type="number"
-                                min="0"
-                                max="100"
-                                className="pr-9"
-                                value={data.passing_score}
-                                onChange={(e) => setData("passing_score", e.target.value)}
+                                min="1"
+                                max="730"
+                                placeholder="Sin vencimiento"
+                                value={data.access_duration_days ?? ""}
+                                onChange={(e) => setData("access_duration_days", e.target.value)}
                             />
                             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-sm font-medium text-muted-foreground">
-                                %
+                                dias
                             </span>
                         </div>
                     </Field>
+                    <p className="mt-2 text-xs text-muted-foreground">
+                        Dejalo vacio si el curso no vence. Se cuenta desde la fecha de inscripcion del estudiante;
+                        al vencer, se bloquea el acceso a las clases hasta coordinar una extension.
+                    </p>
+
+                    <Field
+                        label="Curso requisito previo"
+                        htmlFor="prerequisite_course_id"
+                        error={errors.prerequisite_course_id}
+                        className="mt-4 max-w-xs"
+                    >
+                        <SearchableCourseSelect
+                            courses={courses}
+                            value={data.prerequisite_course_id}
+                            onChange={(v) => setData("prerequisite_course_id", v)}
+                        />
+                    </Field>
+                    <p className="mt-2 text-xs text-muted-foreground">
+                        El estudiante solo puede inscribirse si ya completo ese curso con nosotros o si un admin
+                        registro una convalidacion (certificado externo validado presencialmente) desde su perfil.
+                    </p>
                 </div>
 
-                {showPublish && (
-                    <>
-                        <Separator />
+                <div className="space-y-5">
+                    <div>
+                        <SectionHeading icon={GraduationCap} title="Evaluacion" color="amber" />
+                        <p className="text-xs text-muted-foreground">
+                            La nota minima para aprobar un quiz o examen es <strong>13/20</strong>, fija para todos
+                            los cursos (no se configura por curso).
+                        </p>
+                    </div>
+
+                    {showPublish && (
                         <div>
                             <SectionHeading icon={Eye} title="Visibilidad" color="violet" />
                             <ToggleRow
@@ -285,8 +312,9 @@ export default function CourseInfoFields({ data, setData, errors = {}, showPubli
                                 onCheckedChange={(v) => setData("is_published", v)}
                             />
                         </div>
-                    </>
-                )}
+                    )}
+                </div>
+            </div>
             </CardContent>
         </Card>
     );

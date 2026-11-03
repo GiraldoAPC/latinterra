@@ -190,12 +190,11 @@ function LessonMaterials({ lesson }) {
 const STEPS = [
     { id: 1, label: "Informacion general" },
     { id: 2, label: "Modulos y clases" },
-    { id: 3, label: "Examen final" },
-    { id: 4, label: "Revisar y publicar" },
+    { id: 3, label: "Revisar y publicar" },
 ];
 
-function CourseInfoForm({ course, onSaved }) {
-    const { data, setData, put, processing, errors } = useForm({
+function CourseInfoForm({ course, courses = [], onSaved }) {
+    const { data, setData, put, errors } = useForm({
         title: course.title,
         summary: course.summary ?? "",
         description: course.description ?? "",
@@ -207,8 +206,9 @@ function CourseInfoForm({ course, onSaved }) {
         duration_months: course.duration_months ?? "",
         payment_required: course.payment_required ?? true,
         min_age: course.min_age ?? "",
+        access_duration_days: course.access_duration_days ?? "",
+        prerequisite_course_id: course.prerequisite_course_id ?? "",
         is_published: course.is_published,
-        passing_score: String(course.passing_score),
     });
 
     const submit = (e) => {
@@ -221,14 +221,8 @@ function CourseInfoForm({ course, onSaved }) {
     };
 
     return (
-        <form onSubmit={submit} className="space-y-6">
-            <CourseInfoFields data={data} setData={setData} errors={errors} showPublish />
-
-            <div className="flex justify-end">
-                <Button type="submit" disabled={processing}>
-                    Guardar cambios
-                </Button>
-            </div>
+        <form id="course-info-form" onSubmit={submit} className="space-y-6">
+            <CourseInfoFields data={data} setData={setData} errors={errors} showPublish courses={courses} />
         </form>
     );
 }
@@ -486,10 +480,18 @@ function ModuleDescription({ courseModule }) {
     );
 }
 
-function ModuleCard({ courseModule, open, onToggle }) {
+const MODULE_ACCENTS = [
+    { badge: "bg-[#00ADEE]/15 text-[#024A7D]", ring: "ring-[#00ADEE]/30", bar: "bg-[#00ADEE]" },
+    { badge: "bg-amber-100 text-amber-700", ring: "ring-amber-300/50", bar: "bg-amber-400" },
+    { badge: "bg-violet-100 text-violet-700", ring: "ring-violet-300/50", bar: "bg-violet-400" },
+    { badge: "bg-emerald-100 text-emerald-700", ring: "ring-emerald-300/50", bar: "bg-emerald-400" },
+];
+
+function ModuleCard({ courseModule, index, open, onToggle }) {
     const [showNewLesson, setShowNewLesson] = useState(false);
     const [editingLessonId, setEditingLessonId] = useState(null);
     const [editingTitle, setEditingTitle] = useState(false);
+    const accent = MODULE_ACCENTS[(index - 1) % MODULE_ACCENTS.length];
 
     const deleteModule = () => {
         if (!confirm(`¿Eliminar el modulo "${courseModule.title}" y todas sus clases?`)) return;
@@ -506,7 +508,8 @@ function ModuleCard({ courseModule, open, onToggle }) {
     );
 
     return (
-        <Card className="overflow-hidden">
+        <Card className={cn("overflow-hidden transition-shadow", open && cn("ring-2", accent.ring))}>
+            <div className={cn("h-1", accent.bar)} />
             <CardHeader className="flex flex-row items-center justify-between space-y-0 py-3">
                 {editingTitle ? (
                     <EditModuleTitleForm
@@ -518,14 +521,24 @@ function ModuleCard({ courseModule, open, onToggle }) {
                         <button
                             type="button"
                             onClick={onToggle}
-                            className="flex flex-1 items-center gap-2 text-left"
+                            className="flex flex-1 items-center gap-3 text-left"
                         >
-                            <GripVertical className="h-4 w-4 shrink-0 text-muted-foreground" />
-                            <CardTitle className="text-base">{courseModule.title}</CardTitle>
-                            <span className="text-xs font-normal text-muted-foreground">
-                                {courseModule.lessons.length} clases
-                                {totalMinutes > 0 ? ` · ${totalMinutes} min` : ""}
+                            <span
+                                className={cn(
+                                    "flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-bold",
+                                    accent.badge
+                                )}
+                            >
+                                {index}
                             </span>
+                            <GripVertical className="h-4 w-4 shrink-0 text-muted-foreground" />
+                            <div className="min-w-0">
+                                <CardTitle className="truncate text-base">{courseModule.title}</CardTitle>
+                                <span className="text-xs font-normal text-muted-foreground">
+                                    {courseModule.lessons.length} clases
+                                    {totalMinutes > 0 ? ` · ${totalMinutes} min` : ""}
+                                </span>
+                            </div>
                             <ChevronDown
                                 className={cn(
                                     "ml-auto h-4 w-4 shrink-0 text-muted-foreground transition-transform",
@@ -583,6 +596,19 @@ function ModuleCard({ courseModule, open, onToggle }) {
                             </div>
 
                             <LessonMaterials lesson={lesson} />
+
+                            <div className="mt-2 border-t pt-2">
+                                <div className="mb-1.5 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                                    <ListChecks className="h-3.5 w-3.5" />
+                                    Quiz de la clase (opcional)
+                                </div>
+                                <ExamCard
+                                    compact
+                                    emptyHint="Sin preguntas. Si agregas al menos una, el alumno debera acertarlas todas para poder completar la clase."
+                                    postUrl={`/admin/clases/${lesson.id}/examen/preguntas`}
+                                    exam={lesson.exam}
+                                />
+                            </div>
                         </div>
                     )
                 )}
@@ -643,14 +669,44 @@ function NewModuleForm({ courseId }) {
     );
 }
 
+const QUESTION_TYPES = [
+    { value: "multiple_choice", label: "Opcion multiple" },
+    { value: "true_false", label: "Verdadero / Falso" },
+    { value: "short_answer", label: "Respuesta corta" },
+];
+
+const MULTIPLE_CHOICE_DEFAULT = [
+    { option_text: "", is_correct: true },
+    { option_text: "", is_correct: false },
+];
+
+const TRUE_FALSE_DEFAULT = [
+    { option_text: "Verdadero", is_correct: true },
+    { option_text: "Falso", is_correct: false },
+];
+
 function NewQuestionForm({ postUrl, onDone }) {
-    const { data, setData, post, processing, reset, errors } = useForm({
+    const { data, setData, post, transform, processing, reset, errors } = useForm({
         question: "",
-        options: [
-            { option_text: "", is_correct: true },
-            { option_text: "", is_correct: false },
-        ],
+        type: "multiple_choice",
+        options: MULTIPLE_CHOICE_DEFAULT,
+        correct_answer: "",
     });
+
+    transform((formData) =>
+        formData.type === "short_answer"
+            ? { ...formData, options: [{ option_text: formData.correct_answer, is_correct: true }] }
+            : formData
+    );
+
+    const changeType = (type) => {
+        setData({
+            ...data,
+            type,
+            options: type === "true_false" ? TRUE_FALSE_DEFAULT : MULTIPLE_CHOICE_DEFAULT,
+            correct_answer: "",
+        });
+    };
 
     const updateOption = (i, field, value) => {
         const options = [...data.options];
@@ -688,6 +744,27 @@ function NewQuestionForm({ postUrl, onDone }) {
     return (
         <form onSubmit={submit} className="space-y-3 rounded-md border p-4">
             <div>
+                <label className="text-sm font-medium">Tipo de pregunta</label>
+                <div className="mt-1 flex flex-wrap gap-2">
+                    {QUESTION_TYPES.map((t) => (
+                        <button
+                            key={t.value}
+                            type="button"
+                            onClick={() => changeType(t.value)}
+                            className={cn(
+                                "rounded-md border px-3 py-1.5 text-sm font-medium transition-colors",
+                                data.type === t.value
+                                    ? "border-[#00ADEE] bg-[#00ADEE]/10 text-[#024A7D]"
+                                    : "text-muted-foreground hover:bg-muted"
+                            )}
+                        >
+                            {t.label}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            <div>
                 <label className="text-sm font-medium">Pregunta</label>
                 <textarea
                     className="mt-1 w-full rounded-md border px-3 py-2 text-sm"
@@ -698,35 +775,61 @@ function NewQuestionForm({ postUrl, onDone }) {
                 {errors.question && <p className="text-xs text-destructive mt-1">{errors.question}</p>}
             </div>
 
-            <div className="space-y-2">
-                <label className="text-sm font-medium">Opciones (marca la correcta)</label>
-                {data.options.map((option, i) => (
-                    <div key={i} className="flex items-center gap-2">
-                        <input
-                            type="radio"
-                            name="correct_option"
-                            checked={option.is_correct}
-                            onChange={() => setCorrect(i)}
-                        />
-                        <input
-                            type="text"
-                            placeholder={`Opcion ${i + 1}`}
-                            className="flex-1 rounded-md border px-3 py-2 text-sm"
-                            value={option.option_text}
-                            onChange={(e) => updateOption(i, "option_text", e.target.value)}
-                        />
-                        {data.options.length > 2 && (
-                            <Button type="button" variant="ghost" size="icon" onClick={() => removeOption(i)}>
-                                <Trash2 className="h-4 w-4 text-destructive" />
-                            </Button>
-                        )}
-                    </div>
-                ))}
-                <Button type="button" variant="outline" size="sm" onClick={addOption}>
-                    <Plus className="h-4 w-4" />
-                    Agregar opcion
-                </Button>
-            </div>
+            {data.type === "short_answer" ? (
+                <div>
+                    <label className="text-sm font-medium">Respuesta correcta</label>
+                    <input
+                        type="text"
+                        placeholder="Ej: arnes"
+                        className="mt-1 w-full rounded-md border px-3 py-2 text-sm"
+                        value={data.correct_answer}
+                        onChange={(e) => setData("correct_answer", e.target.value)}
+                    />
+                    <p className="mt-1 text-xs text-muted-foreground">
+                        No distingue mayusculas ni acentos al corregir, pero debe coincidir con el texto exacto.
+                    </p>
+                </div>
+            ) : (
+                <div className="space-y-2">
+                    <label className="text-sm font-medium">
+                        {data.type === "true_false" ? "Marca la correcta" : "Opciones (marca la correcta)"}
+                    </label>
+                    {data.options.map((option, i) => (
+                        <div key={i} className="flex items-center gap-2">
+                            <input
+                                type="radio"
+                                name="correct_option"
+                                checked={option.is_correct}
+                                onChange={() => setCorrect(i)}
+                            />
+                            {data.type === "true_false" ? (
+                                <span className="flex-1 rounded-md border bg-muted/40 px-3 py-2 text-sm">
+                                    {option.option_text}
+                                </span>
+                            ) : (
+                                <input
+                                    type="text"
+                                    placeholder={`Opcion ${i + 1}`}
+                                    className="flex-1 rounded-md border px-3 py-2 text-sm"
+                                    value={option.option_text}
+                                    onChange={(e) => updateOption(i, "option_text", e.target.value)}
+                                />
+                            )}
+                            {data.type === "multiple_choice" && data.options.length > 2 && (
+                                <Button type="button" variant="ghost" size="icon" onClick={() => removeOption(i)}>
+                                    <Trash2 className="h-4 w-4 text-destructive" />
+                                </Button>
+                            )}
+                        </div>
+                    ))}
+                    {data.type === "multiple_choice" && (
+                        <Button type="button" variant="outline" size="sm" onClick={addOption}>
+                            <Plus className="h-4 w-4" />
+                            Agregar opcion
+                        </Button>
+                    )}
+                </div>
+            )}
 
             <Button type="submit" disabled={processing}>Guardar pregunta</Button>
         </form>
@@ -750,7 +853,12 @@ function ExamCard({ title, emptyHint, postUrl, exam, compact = false }) {
             {questions.map((q, idx) => (
                 <div key={q.id} className="rounded-md border p-3">
                     <div className="flex items-start justify-between gap-2">
-                        <div className="text-sm font-medium">{idx + 1}. {q.question}</div>
+                        <div className="text-sm font-medium">
+                            {idx + 1}. {q.question}
+                            <span className="ml-2 rounded-full bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
+                                {QUESTION_TYPES.find((t) => t.value === q.type)?.label ?? "Opcion multiple"}
+                            </span>
+                        </div>
                         <Button variant="ghost" size="icon" onClick={() => deleteQuestion(q)}>
                             <Trash2 className="h-4 w-4 text-destructive" />
                         </Button>
@@ -763,7 +871,7 @@ function ExamCard({ title, emptyHint, postUrl, exam, compact = false }) {
                                 ) : (
                                     <span className="h-4 w-4 inline-block" />
                                 )}
-                                {o.option_text}
+                                {q.type === "short_answer" && o.is_correct ? `Respuesta: ${o.option_text}` : o.option_text}
                             </li>
                         ))}
                     </ul>
@@ -797,7 +905,6 @@ function ExamCard({ title, emptyHint, postUrl, exam, compact = false }) {
 
 function ReviewStep({ course }) {
     const totalLessons = course.modules.reduce((sum, m) => sum + m.lessons.length, 0);
-    const totalQuestions = course.exam?.questions?.length ?? 0;
 
     const togglePublish = () => {
         router.put(
@@ -808,14 +915,19 @@ function ReviewStep({ course }) {
                 description: course.description ?? "",
                 price: String(course.price),
                 is_free: course.is_free,
-                passing_score: String(course.passing_score),
                 is_published: !course.is_published,
             },
             { preserveState: true, preserveScroll: true }
         );
     };
 
-    const canPublish = course.modules.length > 0 && totalLessons > 0 && totalQuestions > 0;
+    const canPublish = course.modules.length > 0 && totalLessons > 0;
+
+    const priceLabel = course.is_free
+        ? "Gratis"
+        : course.billing_type === "matricula_mensualidad"
+        ? `S/ ${Number(course.enrollment_fee ?? 0).toFixed(0)} + S/ ${Number(course.monthly_fee ?? 0).toFixed(0)}/mes`
+        : `S/ ${Number(course.price).toFixed(2)}`;
 
     return (
         <Card>
@@ -823,7 +935,7 @@ function ReviewStep({ course }) {
                 <CardTitle>Revisar y publicar</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+                <div className="grid grid-cols-3 gap-4">
                     <div className="rounded-md border p-3">
                         <div className="text-2xl font-semibold">{course.modules.length}</div>
                         <div className="text-xs text-muted-foreground">Modulos</div>
@@ -833,21 +945,14 @@ function ReviewStep({ course }) {
                         <div className="text-xs text-muted-foreground">Clases</div>
                     </div>
                     <div className="rounded-md border p-3">
-                        <div className="text-2xl font-semibold">{totalQuestions}</div>
-                        <div className="text-xs text-muted-foreground">Preguntas de examen</div>
-                    </div>
-                    <div className="rounded-md border p-3">
-                        <div className="text-2xl font-semibold">
-                            {course.is_free ? "Gratis" : `S/ ${Number(course.price).toFixed(2)}`}
-                        </div>
+                        <div className="text-xl font-semibold leading-tight">{priceLabel}</div>
                         <div className="text-xs text-muted-foreground">Precio</div>
                     </div>
                 </div>
 
                 {!canPublish && (
                     <p className="text-sm text-amber-600">
-                        Para publicar necesitas al menos un modulo con una clase y una
-                        pregunta en el examen final.
+                        Para publicar necesitas al menos un modulo con una clase.
                     </p>
                 )}
 
@@ -889,30 +994,27 @@ function ReviewStep({ course }) {
     );
 }
 
-export default function Edit({ course }) {
+export default function Edit({ course, courses = [] }) {
     const initialStep = Number(new URLSearchParams(window.location.search).get("step")) || 1;
     const [step, setStep] = useState(STEPS.some((s) => s.id === initialStep) ? initialStep : 1);
-    const [openModuleId, setOpenModuleId] = useState(() => course.modules[0]?.id ?? null);
+    // Todos cerrados al entrar - con varios modulos abiertos a la vez es
+    // facil editar o borrar algo del modulo equivocado sin darse cuenta.
+    const [openModuleId, setOpenModuleId] = useState(null);
 
     const goTo = (id) => setStep(id);
 
     const totalLessons = course.modules.reduce((sum, m) => sum + m.lessons.length, 0);
-    const totalQuestions = course.exam?.questions?.length ?? 0;
 
     const step1Valid = Boolean(course.title?.trim());
     const step2Valid = course.modules.length > 0 && totalLessons > 0;
-    const step3Valid = totalQuestions > 0;
 
     let completedUntil = 1;
     if (step1Valid) completedUntil = 2;
     if (step1Valid && step2Valid) completedUntil = 3;
-    if (step1Valid && step2Valid && step3Valid) completedUntil = 4;
 
     const nextBlockedReason =
         step === 2 && !step2Valid
             ? "Agrega al menos un modulo con una clase para continuar."
-            : step === 3 && !step3Valid
-            ? "Agrega al menos una pregunta al examen para continuar."
             : null;
 
     return (
@@ -928,14 +1030,15 @@ export default function Edit({ course }) {
 
                 <CourseStepper steps={STEPS} current={step} completedUntil={completedUntil} onStepClick={goTo} />
 
-                <div className="max-w-3xl">
-                    {step === 1 && <CourseInfoForm course={course} onSaved={() => goTo(2)} />}
+                <div className="max-w-full pb-20">
+                    {step === 1 && <CourseInfoForm course={course} courses={courses} onSaved={() => goTo(2)} />}
 
                     {step === 2 && (
                         <div className="space-y-4">
-                            {course.modules.map((m) => (
+                            {course.modules.map((m, idx) => (
                                 <ModuleCard
                                     key={m.id}
+                                    index={idx + 1}
                                     courseModule={m}
                                     open={openModuleId === m.id}
                                     onToggle={() =>
@@ -951,49 +1054,45 @@ export default function Edit({ course }) {
                         </div>
                     )}
 
-                    {step === 3 && (
-                        <ExamCard
-                            title="Examen final"
-                            emptyHint="Sin preguntas todavia. El alumno necesita al menos una pregunta para poder rendir el examen."
-                            postUrl={`/admin/cursos/${course.id}/examen/preguntas`}
-                            exam={course.exam}
-                        />
+                    {step === 3 && <ReviewStep course={course} />}
+                </div>
+
+                <div className="sticky bottom-0 -mx-4 mt-6 flex items-center justify-between gap-4 border-t bg-background/95 px-4 py-3 backdrop-blur md:-mx-6 md:px-6">
+                    <Button
+                        type="button"
+                        variant="outline"
+                        disabled={step === 1}
+                        onClick={() => goTo(step - 1)}
+                    >
+                        <ArrowLeft className="h-4 w-4" />
+                        Anterior
+                    </Button>
+
+                    {nextBlockedReason && (
+                        <p className="flex-1 text-right text-xs text-amber-600">
+                            {nextBlockedReason}
+                        </p>
                     )}
 
-                    {step === 4 && <ReviewStep course={course} />}
-
-                    <div className="mt-6 flex items-center justify-between gap-4">
+                    {step === 1 ? (
+                        <Button type="submit" form="course-info-form">
+                            Guardar y continuar
+                            <ArrowRight className="h-4 w-4" />
+                        </Button>
+                    ) : step < 3 ? (
                         <Button
                             type="button"
-                            variant="outline"
-                            disabled={step === 1}
-                            onClick={() => goTo(step - 1)}
+                            disabled={Boolean(nextBlockedReason)}
+                            onClick={() => goTo(step + 1)}
                         >
-                            <ArrowLeft className="h-4 w-4" />
-                            Anterior
+                            Siguiente
+                            <ArrowRight className="h-4 w-4" />
                         </Button>
-
-                        {nextBlockedReason && (
-                            <p className="flex-1 text-right text-xs text-amber-600">
-                                {nextBlockedReason}
-                            </p>
-                        )}
-
-                        {step < 4 ? (
-                            <Button
-                                type="button"
-                                disabled={Boolean(nextBlockedReason)}
-                                onClick={() => goTo(step + 1)}
-                            >
-                                Siguiente
-                                <ArrowRight className="h-4 w-4" />
-                            </Button>
-                        ) : (
-                            <Button type="button" asChild>
-                                <Link href="/admin/cursos">Finalizar</Link>
-                            </Button>
-                        )}
-                    </div>
+                    ) : (
+                        <Button type="button" asChild>
+                            <Link href="/admin/cursos">Finalizar</Link>
+                        </Button>
+                    )}
                 </div>
             </AdminLayout>
         </>

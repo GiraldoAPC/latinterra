@@ -44,10 +44,19 @@ class HandleInertiaRequests extends Middleware
             // redirect()->with(...) por todo el sistema; sin compartirlo aca
             // esos mensajes nunca llegaban al frontend (Inertia no los pasa
             // automaticamente, a diferencia de "errors" de validacion).
+            //
+            // Como closures: este metodo share() corre en el middleware,
+            // ANTES de que el controlador se ejecute. Si leemos la sesion
+            // aca de forma directa, un session()->forget() hecho dentro del
+            // controlador (ver StudentCourseController::accessBlockRedirect)
+            // llega demasiado tarde y el aviso viejo se muestra una vez mas.
+            // Con closures, Inertia recien las resuelve al armar la
+            // respuesta, despues del controlador.
             'flash' => [
-                'success' => $request->session()->get('success'),
-                'error' => $request->session()->get('error'),
-                'debt_block' => $request->session()->get('debt_block'),
+                'success' => fn () => $request->session()->get('success'),
+                'error' => fn () => $request->session()->get('error'),
+                'debt_block' => fn () => $request->session()->get('debt_block'),
+                'course_locked' => fn () => $request->session()->get('course_locked'),
             ],
         ];
     }

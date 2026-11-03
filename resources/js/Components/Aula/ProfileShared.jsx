@@ -4,7 +4,7 @@ import { Badge } from "@/Components/ui/badge";
 import { Button } from "@/Components/ui/button";
 import { AvatarPicker } from "@/Components/ui/avatar-picker";
 import { cn } from "@/lib/utils";
-import { GraduationCap, Award, CreditCard, Mail, Phone, Calendar, FileText, ClipboardList, Receipt, Wallet, CalendarClock } from "lucide-react";
+import { GraduationCap, Award, CreditCard, Mail, Phone, Calendar, FileText, ClipboardList, Receipt, Wallet, CalendarClock, SplitSquareHorizontal } from "lucide-react";
 
 // Piezas visuales compartidas entre el perfil del propio estudiante
 // (Aula/Perfil.jsx) y la vista de administracion de un estudiante
@@ -58,6 +58,7 @@ export const ORDER_STATUS = {
     pending: { label: "Pendiente", className: "bg-amber-100 text-amber-700" },
     paid: { label: "Pagado", className: "bg-[#00ADEE]/15 text-[#024A7D]" },
     rejected: { label: "Rechazado", className: "bg-red-100 text-red-700" },
+    split: { label: "Dividido en cuotas", className: "bg-violet-100 text-violet-700" },
 };
 
 export function AcademicoTab({ enrollments, courseHref, canContinue = true, adminReports = false, studentId }) {
@@ -141,7 +142,7 @@ export function AcademicoTab({ enrollments, courseHref, canContinue = true, admi
     );
 }
 
-const INSTALLMENT_TYPE_LABEL = { matricula: "Matricula", mensualidad: "Mensualidad" };
+const INSTALLMENT_TYPE_LABEL = { matricula: "Matricula", mensualidad: "Mensualidad", cuota: "Cuota" };
 
 /**
  * Cuotas (matricula + mensualidades) de cursos con esa modalidad de cobro.
@@ -251,7 +252,7 @@ export function InstallmentsList({ installments, onPay, onViewTicket, onExtend }
     );
 }
 
-export function PagosTab({ orders, installments, onPayInstallment, onViewTicket, onExtendInstallment, onPayOrder }) {
+export function PagosTab({ orders, installments, onPayInstallment, onViewTicket, onExtendInstallment, onPayOrder, onSplitOrder }) {
     const hasInstallments = installments && installments.length > 0;
 
     if (orders.length === 0 && !hasInstallments) {
@@ -308,16 +309,28 @@ export function PagosTab({ orders, installments, onPayInstallment, onViewTicket,
                                                 </td>
                                                 <td className="px-4 py-3 text-slate-500">{formatDate(o.created_at)}</td>
                                                 <td className="px-4 py-3 text-right">
-                                                    {o.status === "pending" && onPayOrder && (
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => onPayOrder(o)}
-                                                            className="inline-flex items-center gap-1 text-xs font-medium text-[#024A7D] hover:underline"
-                                                        >
-                                                            <Wallet className="h-3.5 w-3.5" />
-                                                            Registrar pago
-                                                        </button>
-                                                    )}
+                                                    <div className="flex items-center justify-end gap-3">
+                                                        {o.status === "pending" && onPayOrder && (
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => onPayOrder(o)}
+                                                                className="inline-flex items-center gap-1 text-xs font-medium text-[#024A7D] hover:underline"
+                                                            >
+                                                                <Wallet className="h-3.5 w-3.5" />
+                                                                Registrar pago
+                                                            </button>
+                                                        )}
+                                                        {o.status === "pending" && onSplitOrder && (
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => onSplitOrder(o)}
+                                                                className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-[#024A7D] hover:underline"
+                                                            >
+                                                                <SplitSquareHorizontal className="h-3.5 w-3.5" />
+                                                                Dividir en cuotas
+                                                            </button>
+                                                        )}
+                                                    </div>
                                                 </td>
                                             </tr>
                                         );

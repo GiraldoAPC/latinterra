@@ -7,6 +7,7 @@ use App\Models\Aula\CourseOrder;
 use App\Models\Aula\Enrollment;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -74,5 +75,49 @@ class CourseOrderController extends Controller
         $order->update(['status' => 'rejected']);
 
         return back()->with('success', 'Pedido rechazado.');
+    }
+
+    /**
+     * Caso especial: el curso es de pago unico, pero un estudiante puntual
+     * pidio pagar en partes (hasta 3 cuotas con fecha propia, no el
+     * cronograma automatico de matricula+mensualidad). El pedido original
+     * queda marcado "split" y se reemplaza por cuotas (CourseInstallment)
+     * en la inscripcion del estudiante, que recien ahora se crea/activa.
+     */
+    public function splitIntoInstallments(Request $request, CourseOrder $order): RedirectResponse
+    {
+        abort_unless($order->status === 'pending', 422, 'Este pedido ya no esta pendiente.');
+
+        $data = $request->validate([
+            'installments' => ['required', 'array', 'min:2', 'max:3'],
+            'installments.*.amount' => ['required', 'numeric', 'min:0.01'],
+            'installments.*.due_date' => ['required', 'date'],
+        ]);
+
+        $sum = round(collect($data['installments'])->sum('amount'), 2);
+        if ($sum !== round((float) $order->amount, 2)) {
+            return back()->withErrors(['installments' => "La suma de las cuotas (S/ {$sum}) debe ser igual al monto del pedido (S/ {$order->amount})."]);
+        }
+
+        DB::transaction(function () use ($order, $data) {
+            $enrollment = Enrollment::firstOrCreate(
+                ['user_id' => $order->user_id, 'course_id' => $order->course_id],
+                ['status' => 'active']
+            );
+
+            foreach ($data['installments'] as $i => $installment) {
+                $enrollment->installments()->create([
+                    'type' => 'cuota',
+                    'installment_number' => $i + 1,
+                    'amount' => $installment['amount'],
+                    'due_date' => $installment['due_date'],
+                    'status' => 'pending',
+                ]);
+            }
+
+            $order->update(['status' => 'split']);
+        });
+
+        return back()->with('success', 'Pago dividido en cuotas. El estudiante ya tiene acceso al curso.');
     }
 }

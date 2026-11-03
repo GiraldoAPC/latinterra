@@ -8,11 +8,10 @@ import { ArrowRight } from "lucide-react";
 const STEPS = [
     { id: 1, label: "Informacion general" },
     { id: 2, label: "Modulos y clases" },
-    { id: 3, label: "Examen final" },
-    { id: 4, label: "Revisar y publicar" },
+    { id: 3, label: "Revisar y publicar" },
 ];
 
-export default function Create() {
+export default function Create({ courses = [] }) {
     const { data, setData, post, processing, errors } = useForm({
         title: "",
         summary: "",
@@ -25,7 +24,8 @@ export default function Create() {
         duration_months: "",
         payment_required: true,
         min_age: "",
-        passing_score: "70",
+        access_duration_days: "",
+        prerequisite_course_id: "",
     });
 
     const submit = (e) => {
@@ -39,8 +39,8 @@ export default function Create() {
             <AdminLayout title="Nuevo curso">
                 <CourseStepper steps={STEPS} current={1} completedUntil={1} />
 
-                <form onSubmit={submit} className="max-w-2xl space-y-6">
-                    <CourseInfoFields data={data} setData={setData} errors={errors} />
+                <form onSubmit={submit} className="space-y-6">
+                    <CourseInfoFields data={data} setData={setData} errors={errors} courses={courses} />
 
                     <div className="flex justify-end">
                         <Button type="submit" disabled={processing}>

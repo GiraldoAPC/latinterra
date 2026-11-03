@@ -25,7 +25,9 @@ class CourseController extends Controller
 
     public function create(): Response
     {
-        return Inertia::render('Admin/Courses/Create');
+        return Inertia::render('Admin/Courses/Create', [
+            'courses' => Course::orderBy('title')->get(['id', 'title']),
+        ]);
     }
 
     public function store(Request $request): RedirectResponse
@@ -36,7 +38,6 @@ class CourseController extends Controller
             'description' => ['nullable', 'string'],
             'price' => ['required', 'numeric', 'min:0'],
             'is_free' => ['boolean'],
-            'passing_score' => ['required', 'numeric', 'min:0', 'max:100'],
         ]);
 
         $data['slug'] = $this->uniqueSlug($data['title']);
@@ -51,12 +52,13 @@ class CourseController extends Controller
     {
         $course->load([
             'modules.lessons.materials',
+            'modules.lessons.exam.questions.options',
             'modules.exam.questions.options',
-            'exam.questions.options',
         ]);
 
         return Inertia::render('Admin/Courses/Edit', [
             'course' => $course,
+            'courses' => Course::where('id', '!=', $course->id)->orderBy('title')->get(['id', 'title']),
         ]);
     }
 
@@ -69,7 +71,6 @@ class CourseController extends Controller
             'price' => ['required', 'numeric', 'min:0'],
             'is_free' => ['boolean'],
             'is_published' => ['boolean'],
-            'passing_score' => ['required', 'numeric', 'min:0', 'max:100'],
         ]);
 
         if ($data['title'] !== $course->title) {
@@ -97,6 +98,8 @@ class CourseController extends Controller
             'duration_months' => ['nullable', 'integer', 'min:1', 'max:60'],
             'payment_required' => ['boolean'],
             'min_age' => ['nullable', 'integer', 'min:0', 'max:99'],
+            'access_duration_days' => ['nullable', 'integer', 'min:1', 'max:730'],
+            'prerequisite_course_id' => ['nullable', 'exists:courses,id'],
         ];
     }
 

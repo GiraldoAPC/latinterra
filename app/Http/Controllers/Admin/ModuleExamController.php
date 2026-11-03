@@ -14,7 +14,8 @@ class ModuleExamController extends Controller
     {
         $data = $request->validate([
             'question' => ['required', 'string', 'max:1000'],
-            'options' => ['required', 'array', 'min:2'],
+            'type' => ['required', 'in:multiple_choice,true_false,short_answer'],
+            'options' => ['required', 'array', 'min:1'],
             'options.*.option_text' => ['required', 'string', 'max:255'],
             'options.*.is_correct' => ['nullable', 'boolean'],
         ]);
@@ -31,6 +32,7 @@ class ModuleExamController extends Controller
 
             $question = $exam->questions()->create([
                 'question' => $data['question'],
+                'type' => $data['type'],
                 'position' => $exam->questions()->max('position') + 1,
             ]);
 

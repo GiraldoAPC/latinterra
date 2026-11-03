@@ -11,7 +11,7 @@ class Exam extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['course_id', 'course_module_id', 'title', 'passing_score'];
+    protected $fillable = ['course_id', 'course_module_id', 'course_lesson_id', 'title', 'passing_score'];
 
     public function course(): BelongsTo
     {
@@ -23,6 +23,11 @@ class Exam extends Model
         return $this->belongsTo(CourseModule::class, 'course_module_id');
     }
 
+    public function lesson(): BelongsTo
+    {
+        return $this->belongsTo(CourseLesson::class, 'course_lesson_id');
+    }
+
     public function questions(): HasMany
     {
         return $this->hasMany(ExamQuestion::class)->orderBy('position');
@@ -31,5 +36,10 @@ class Exam extends Model
     public function isModuleQuiz(): bool
     {
         return $this->course_module_id !== null;
+    }
+
+    public function isLessonQuiz(): bool
+    {
+        return $this->course_lesson_id !== null;
     }
 }

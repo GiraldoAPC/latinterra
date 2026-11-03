@@ -4,6 +4,7 @@ namespace App\Models\Aula;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
@@ -28,6 +29,8 @@ class Course extends Model
         'duration_months',
         'payment_required',
         'min_age',
+        'access_duration_days',
+        'prerequisite_course_id',
     ];
 
     protected $casts = [
@@ -40,6 +43,7 @@ class Course extends Model
         'duration_months' => 'integer',
         'payment_required' => 'boolean',
         'min_age' => 'integer',
+        'access_duration_days' => 'integer',
     ];
 
     public function modules(): HasMany
@@ -67,9 +71,40 @@ class Course extends Model
         return $this->hasMany(CourseOrder::class);
     }
 
+    public function prerequisiteCourse(): BelongsTo
+    {
+        return $this->belongsTo(Course::class, 'prerequisite_course_id');
+    }
+
     public function totalLessons(): int
     {
         return $this->lessons()->count();
+    }
+
+    /**
+     * True si el estudiante puede inscribirse: el curso no tiene requisito
+     * previo, o ya completo/certifico ese curso requisito con nosotros, o
+     * tiene una convalidacion registrada (certificado externo validado
+     * presencialmente por un admin - ver CourseEquivalency).
+     */
+    public function prerequisiteSatisfiedBy(int $userId): bool
+    {
+        if (!$this->prerequisite_course_id) {
+            return true;
+        }
+
+        $completedHere = Enrollment::where('user_id', $userId)
+            ->where('course_id', $this->prerequisite_course_id)
+            ->where('status', 'completed')
+            ->exists();
+
+        if ($completedHere) {
+            return true;
+        }
+
+        return CourseEquivalency::where('user_id', $userId)
+            ->where('course_id', $this->prerequisite_course_id)
+            ->exists();
     }
 
     /**

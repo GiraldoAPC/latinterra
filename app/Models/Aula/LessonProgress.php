@@ -10,10 +10,11 @@ class LessonProgress extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['enrollment_id', 'course_lesson_id', 'completed_at'];
+    protected $fillable = ['enrollment_id', 'course_lesson_id', 'completed_at', 'video_watched_at'];
 
     protected $casts = [
         'completed_at' => 'datetime',
+        'video_watched_at' => 'datetime',
     ];
 
     public function enrollment(): BelongsTo

@@ -42,7 +42,7 @@ class StudentReportController extends Controller
         abort_unless($student->role === 'student', 404);
         abort_unless($enrollment->user_id === $student->id, 404);
 
-        $enrollment->load('course.modules.exam', 'course.exam');
+        $enrollment->load('course.modules.exam');
 
         $modules = $enrollment->course->modules->map(function ($module) use ($enrollment) {
             $exam = $module->exam;
@@ -57,9 +57,6 @@ class StudentReportController extends Controller
             ];
         });
 
-        $finalExam = $enrollment->course->exam;
-        $finalAttempt = $finalExam ? $enrollment->bestExamAttempt($finalExam->id) : null;
-
         return Inertia::render('Admin/Students/RecordNotas', [
             'student' => $student,
             'enrollment' => [
@@ -70,12 +67,6 @@ class StudentReportController extends Controller
                 'progress' => $enrollment->progressPercent(),
             ],
             'modules' => $modules,
-            'finalExam' => $finalExam ? [
-                'score' => $finalAttempt?->score,
-                'passed' => $finalAttempt?->passed,
-                'submitted_at' => $finalAttempt?->submitted_at,
-                'passing_score' => $enrollment->course->passing_score,
-            ] : null,
         ]);
     }
 

@@ -10,7 +10,6 @@ import {
     CirclePlay,
     ChevronDown,
     Clock,
-    GraduationCap,
     Lock,
     Play,
     Pause,
@@ -58,7 +57,7 @@ function formatTime(seconds) {
  * draws our own play/pause, progress bar, volume and fullscreen controls on
  * top. Also detects "video ended" to auto-mark the lesson as completed.
  */
-function YouTubePlayer({ videoId, onEnded }) {
+function YouTubePlayer({ videoId, onEnded, locked }) {
     const wrapperRef = useRef(null);
     const containerRef = useRef(null);
     const playerRef = useRef(null);
@@ -244,7 +243,11 @@ function YouTubePlayer({ videoId, onEnded }) {
     const progressPct = duration ? (current / duration) * 100 : 0;
 
     return (
-        <div ref={wrapperRef} className="group absolute inset-0 h-full w-full bg-black">
+        <div
+            ref={wrapperRef}
+            className="group absolute inset-0 h-full w-full select-none bg-black"
+            onContextMenu={(e) => e.preventDefault()}
+        >
             <div ref={containerRef} className="absolute inset-0 h-full w-full" />
 
             {/* Transparent overlay: intercepts clicks so YouTube's own UI never shows */}
@@ -295,10 +298,12 @@ function YouTubePlayer({ videoId, onEnded }) {
                     max={duration || 0}
                     step={0.1}
                     value={current}
-                    onChange={(e) => seek(Number(e.target.value))}
-                    className="lt-video-seek mb-1.5 w-full"
+                    onChange={(e) => !locked && seek(Number(e.target.value))}
+                    disabled={locked}
+                    className={cn("lt-video-seek mb-1.5 w-full", locked && "cursor-not-allowed opacity-70")}
                     style={{ "--progress": `${progressPct}%` }}
                     aria-label="Progreso del video"
+                    title={locked ? "Debes ver el video completo, sin adelantar ni retroceder" : undefined}
                 />
 
                 <div className="flex items-center gap-3">
@@ -481,7 +486,7 @@ function MaterialPreviewModal({ material, onClose }) {
                     </DialogTitle>
                 </DialogHeader>
 
-                <div className="relative flex-1 bg-muted">
+                <div className="relative flex-1 select-none bg-muted" onContextMenu={(e) => e.preventDefault()}>
                     {isPdf ? (
                         <div className="absolute inset-0">
                             <PdfViewer url={material.url} />
@@ -522,26 +527,44 @@ function moduleDuration(m) {
     return `${mins}m`;
 }
 
-export default function Leccion({ course, lesson, enrollment, completedLessonIds, allCompleted, passedModuleQuizIds = [] }) {
+export default function Leccion({
+    course,
+    lesson,
+    enrollment,
+    completedLessonIds,
+    videoWatchedLessonIds = [],
+    confirmedMaterialIds = [],
+    materialMinDwellSeconds = 12,
+    lessonQuizPassed = false,
+    passedModuleQuizIds = [],
+}) {
     const isCompleted = completedLessonIds.includes(lesson.id);
     const activeModuleId = course.modules.find((m) => m.lessons.some((l) => l.id === lesson.id))?.id;
     const [openModules, setOpenModules] = useState(() => new Set([activeModuleId]));
     const [previewMaterial, setPreviewMaterial] = useState(null);
 
     // Requisitos para poder completar la clase: ver el video hasta el final
-    // y, si tiene material adjunto (PDF/PPT/Word), abrirlo al menos una vez.
-    const [videoWatched, setVideoWatched] = useState(isCompleted);
-    const [viewedMaterialIds, setViewedMaterialIds] = useState(() => new Set());
+    // (sin poder adelantar) y, si tiene material adjunto (PDF/PPT/Word),
+    // permanecer en el al menos `materialMinDwellSeconds` - todo validado
+    // tambien del lado del servidor, esto solo refleja ese estado.
+    const [videoWatched, setVideoWatched] = useState(isCompleted || videoWatchedLessonIds.includes(lesson.id));
+    const [viewedMaterialIds, setViewedMaterialIds] = useState(() => new Set(confirmedMaterialIds));
+    const [openedMaterialIds, setOpenedMaterialIds] = useState(() => new Set());
+    const materialTimers = useRef({});
 
     useEffect(() => {
-        setVideoWatched(isCompleted);
-        setViewedMaterialIds(new Set());
+        setVideoWatched(isCompleted || videoWatchedLessonIds.includes(lesson.id));
+        setViewedMaterialIds(new Set(confirmedMaterialIds));
+        setOpenedMaterialIds(new Set());
+        Object.values(materialTimers.current).forEach(clearTimeout);
+        materialTimers.current = {};
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [lesson.id]);
 
     const lessonMaterials = lesson.materials ?? [];
     const allMaterialsViewed = lessonMaterials.every((m) => viewedMaterialIds.has(m.id));
-    const canComplete = videoWatched && allMaterialsViewed;
+    const lessonHasQuiz = (lesson.exam?.questions?.length ?? 0) > 0;
+    const canComplete = videoWatched && allMaterialsViewed && (!lessonHasQuiz || lessonQuizPassed);
 
     // Acceso secuencial: una clase solo se desbloquea cuando la anterior
     // (en el orden del temario) ya fue completada. Ademas, si el modulo al
@@ -592,30 +615,63 @@ export default function Leccion({ course, lesson, enrollment, completedLessonIds
     };
 
     const handleVideoEnded = () => {
-        if (isCompleted) return;
-        setVideoWatched(true);
-        // Auto-completa solo si ya no falta revisar ningun material.
-        if (allMaterialsViewed) {
-            router.post(`/aula/${course.slug}/clase/${lesson.id}/completar`);
-        }
+        if (isCompleted || videoWatched) return;
+        router.post(
+            `/aula/${course.slug}/clase/${lesson.id}/video-visto`,
+            {},
+            {
+                preserveScroll: true,
+                preserveState: true,
+                onSuccess: () => {
+                    setVideoWatched(true);
+                    // Auto-completa solo si ya no falta revisar ningun material
+                    // ni rendir el quiz de la clase (si tiene).
+                    if (allMaterialsViewed && (!lessonHasQuiz || lessonQuizPassed)) {
+                        router.post(`/aula/${course.slug}/clase/${lesson.id}/completar`);
+                    }
+                },
+            }
+        );
     };
 
-    const markMaterialViewed = (material) => {
-        setViewedMaterialIds((prev) => {
-            if (prev.has(material.id)) return prev;
-            const next = new Set(prev).add(material.id);
-            // Si el video ya termino y este era el ultimo material pendiente,
-            // completa la clase automaticamente.
-            if (!isCompleted && videoWatched && lessonMaterials.every((m) => next.has(m.id))) {
-                router.post(`/aula/${course.slug}/clase/${lesson.id}/completar`);
-            }
-            return next;
-        });
+    // Dispara el registro de apertura del material y, tras el tiempo minimo
+    // de permanencia, confirma que fue visto (el servidor vuelve a medir el
+    // tiempo real transcurrido, no confia solo en este timer del cliente).
+    const registerMaterialOpen = (material) => {
+        if (viewedMaterialIds.has(material.id) || openedMaterialIds.has(material.id)) return;
+
+        setOpenedMaterialIds((prev) => new Set(prev).add(material.id));
+        router.post(`/aula/material/${material.id}/abrir`, {}, { preserveScroll: true, preserveState: true });
+
+        materialTimers.current[material.id] = setTimeout(() => {
+            router.post(
+                `/aula/material/${material.id}/visto`,
+                {},
+                {
+                    preserveScroll: true,
+                    preserveState: true,
+                    onSuccess: () => {
+                        setViewedMaterialIds((prev) => {
+                            const next = new Set(prev).add(material.id);
+                            if (
+                                !isCompleted &&
+                                videoWatched &&
+                                lessonMaterials.every((m) => next.has(m.id)) &&
+                                (!lessonHasQuiz || lessonQuizPassed)
+                            ) {
+                                router.post(`/aula/${course.slug}/clase/${lesson.id}/completar`);
+                            }
+                            return next;
+                        });
+                    },
+                }
+            );
+        }, materialMinDwellSeconds * 1000);
     };
 
     const openMaterial = (material) => {
         setPreviewMaterial(material);
-        markMaterialViewed(material);
+        registerMaterialOpen(material);
     };
 
     const currentIndex = orderedLessons.findIndex((l) => l.id === lesson.id);
@@ -636,6 +692,7 @@ export default function Leccion({ course, lesson, enrollment, completedLessonIds
                                     key={lesson.id}
                                     videoId={lesson.youtube_video_id}
                                     onEnded={handleVideoEnded}
+                                    locked={!isCompleted && !videoWatched}
                                 />
 
                                 {prevLesson && (
@@ -666,6 +723,8 @@ export default function Leccion({ course, lesson, enrollment, completedLessonIds
                                         ? "La clase se marca como completada automaticamente al terminar el video."
                                         : !allMaterialsViewed
                                         ? "Revisa el material adjunto para completar la clase."
+                                        : lessonHasQuiz && !lessonQuizPassed
+                                        ? "Rinde el quiz de la clase para completarla."
                                         : null}
                                 </p>
                             )}
@@ -686,19 +745,26 @@ export default function Leccion({ course, lesson, enrollment, completedLessonIds
                                         <CircleCheck className="h-4 w-4" />
                                         {isCompleted ? "Clase completada" : "Marcar como completada"}
                                     </Button>
+                                    {!isCompleted && lessonHasQuiz && !lessonQuizPassed && (
+                                        videoWatched && allMaterialsViewed ? (
+                                            <Button asChild variant="secondary">
+                                                <Link href={`/aula/${course.slug}/clase/${lesson.id}/quiz`}>
+                                                    <ListChecks className="h-4 w-4" />
+                                                    Rendir quiz de la clase
+                                                </Link>
+                                            </Button>
+                                        ) : (
+                                            <Button variant="secondary" disabled>
+                                                <ListChecks className="h-4 w-4" />
+                                                Rendir quiz de la clase
+                                            </Button>
+                                        )
+                                    )}
                                     {currentModuleQuizPending && (
                                         <Button asChild variant="secondary">
                                             <Link href={`/aula/${course.slug}/modulo/${currentModule.id}/quiz`}>
                                                 <ListChecks className="h-4 w-4" />
                                                 Rendir quiz del modulo
-                                            </Link>
-                                        </Button>
-                                    )}
-                                    {allCompleted && (
-                                        <Button asChild variant="secondary">
-                                            <Link href={`/aula/${course.slug}/examen`}>
-                                                <GraduationCap className="h-4 w-4" />
-                                                Rendir examen final
                                             </Link>
                                         </Button>
                                     )}
@@ -735,7 +801,7 @@ export default function Leccion({ course, lesson, enrollment, completedLessonIds
                                                         rel="noreferrer"
                                                         download
                                                         title="Descargar"
-                                                        onClick={() => markMaterialViewed(m)}
+                                                        onClick={() => registerMaterialOpen(m)}
                                                         className="shrink-0 text-slate-400 hover:text-white"
                                                     >
                                                         <Download className="h-4 w-4" />

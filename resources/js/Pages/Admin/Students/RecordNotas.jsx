@@ -20,7 +20,7 @@ function StatusBadge({ passed }) {
     );
 }
 
-export default function RecordNotas({ student, enrollment, modules, finalExam }) {
+export default function RecordNotas({ student, enrollment, modules }) {
     const fullName = [student.last_name, student.name].filter(Boolean).join(" ") || student.name;
 
     return (
@@ -60,7 +60,7 @@ export default function RecordNotas({ student, enrollment, modules, finalExam })
                                 <thead>
                                     <tr className="border-b bg-muted/40 text-left text-xs uppercase tracking-wide text-muted-foreground">
                                         <th className="px-3 py-2">Modulo</th>
-                                        <th className="px-3 py-2">Nota</th>
+                                        <th className="px-3 py-2">Nota (0-20)</th>
                                         <th className="px-3 py-2">Resultado</th>
                                         <th className="px-3 py-2">Fecha</th>
                                     </tr>
@@ -69,7 +69,9 @@ export default function RecordNotas({ student, enrollment, modules, finalExam })
                                     {modules.map((m, i) => (
                                         <tr key={i} className="border-b last:border-0">
                                             <td className="px-3 py-2 font-medium text-[#024A7D]">{m.title}</td>
-                                            <td className="px-3 py-2">{m.has_exam ? (m.score ?? "—") : "Sin quiz"}</td>
+                                            <td className="px-3 py-2">
+                                                {m.has_exam ? (m.score !== null && m.score !== undefined ? `${m.score}/20` : "—") : "Sin quiz"}
+                                            </td>
                                             <td className="px-3 py-2">{m.has_exam ? <StatusBadge passed={m.passed} /> : "—"}</td>
                                             <td className="px-3 py-2 text-slate-500">{formatDate(m.submitted_at)}</td>
                                         </tr>
@@ -85,22 +87,6 @@ export default function RecordNotas({ student, enrollment, modules, finalExam })
                             </table>
                         </div>
 
-                        {finalExam && (
-                            <>
-                                <h2 className="mb-2 text-xs font-bold uppercase tracking-wide text-[#024A7D]">
-                                    Examen final
-                                </h2>
-                                <div className="mb-5 flex items-center justify-between rounded-md border px-4 py-3 text-sm">
-                                    <div>
-                                        <p className="font-medium text-[#024A7D]">
-                                            Nota: {finalExam.score ?? "—"} / Minimo para aprobar: {Number(finalExam.passing_score).toFixed(0)}
-                                        </p>
-                                        <p className="text-xs text-slate-500">Rendido el {formatDate(finalExam.submitted_at)}</p>
-                                    </div>
-                                    <StatusBadge passed={finalExam.passed} />
-                                </div>
-                            </>
-                        )}
 
                         <div className="mt-6 flex items-center justify-between rounded-md bg-slate-50 px-4 py-3 text-sm">
                             <span className="text-slate-500">Estado general del curso</span>

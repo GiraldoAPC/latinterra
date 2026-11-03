@@ -22,7 +22,7 @@ const DOCUMENT_TYPES = [
     { value: "factura", label: "Factura (simulada)" },
 ];
 
-const TYPE_LABELS = { matricula: "Matricula", mensualidad: "Mensualidad" };
+const TYPE_LABELS = { matricula: "Matricula", mensualidad: "Mensualidad", cuota: "Cuota" };
 
 /**
  * Registrar el pago de una cuota (matricula o mensualidad) con su metodo,

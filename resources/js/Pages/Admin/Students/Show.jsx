@@ -1,9 +1,14 @@
 import { useState } from "react";
-import { Head, Link, router } from "@inertiajs/react";
+import { Head, Link, router, useForm } from "@inertiajs/react";
 import AdminLayout from "@/Layouts/AdminLayout";
 import { Card, CardContent } from "@/Components/ui/card";
 import { Badge } from "@/Components/ui/badge";
 import { Button } from "@/Components/ui/button";
+import { Label } from "@/Components/ui/label";
+import { Input } from "@/Components/ui/input";
+import { Textarea } from "@/Components/ui/textarea";
+import SearchableCourseSelect from "@/Components/Admin/SearchableCourseSelect";
+import FileInput from "@/Components/Admin/FileInput";
 import {
     ArrowLeft,
     Pencil,
@@ -16,6 +21,9 @@ import {
     ShoppingCart,
     Receipt,
     ShoppingBag,
+    BadgeCheck,
+    Trash2,
+    Loader2,
 } from "lucide-react";
 import { ProfileHeader, AcademicoTab, PagosTab, formatDate } from "@/Components/Aula/ProfileShared";
 import EditStudentModal from "@/Components/Admin/EditStudentModal";
@@ -23,6 +31,7 @@ import NewStudentModal from "@/Components/Admin/NewStudentModal";
 import RegisterPaymentModal from "@/Components/Admin/RegisterPaymentModal";
 import ExtendInstallmentModal from "@/Components/Admin/ExtendInstallmentModal";
 import RegisterOrderPaymentModal from "@/Components/Admin/RegisterOrderPaymentModal";
+import SplitOrderModal from "@/Components/Admin/SplitOrderModal";
 import SellProductModal from "@/Components/Admin/SellProductModal";
 import TicketModal from "@/Components/Shared/TicketModal";
 
@@ -106,7 +115,189 @@ function InfoTab({ student, documentTypes, genderOptions, sctrOptions }) {
     );
 }
 
-export default function Show({ student, enrollments, orders, installments, otherPayments, stats, documentTypes, genderOptions, sctrOptions, courses }) {
+/**
+ * Convalidacion manual de un curso-requisito: la validacion del contenido
+ * la hace el admin en persona (ver checklist de requerimientos - Aula
+ * Virtual, audio 2 y 3); el escaneo del certificado y la nota obtenida son
+ * opcionales, solo de respaldo/referencia.
+ */
+function EquivalenciasCard({ studentId, equivalencies, allCourses }) {
+    const { data, setData, post, processing, errors, reset } = useForm({
+        course_id: "",
+        issuing_institution: "",
+        note: "",
+        score: "",
+        file: null,
+    });
+
+    const submit = (e) => {
+        e.preventDefault();
+        post(`/admin/estudiantes/${studentId}/convalidaciones`, {
+            preserveScroll: true,
+            forceFormData: true,
+            onSuccess: () => reset(),
+        });
+    };
+
+    const remove = (eq) => {
+        router.delete(`/admin/estudiantes/${studentId}/convalidaciones/${eq.id}`, { preserveScroll: true });
+    };
+
+    return (
+        <Card>
+            <CardContent className="space-y-4 p-4 sm:p-5">
+                <div className="flex items-center gap-2">
+                    <BadgeCheck className="h-4 w-4 text-[#024A7D]" />
+                    <h3 className="text-sm font-semibold text-[#024A7D]">Convalidaciones (certificados externos)</h3>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                    Si el estudiante curso o se certifico en otra institucion y ya validaste el certificado en
+                    persona, registralo aca para que cumpla el requisito previo de los cursos que lo pidan.
+                </p>
+
+                {equivalencies.length > 0 && (
+                    <ul className="space-y-1.5">
+                        {equivalencies.map((eq) => (
+                            <li
+                                key={eq.id}
+                                className="flex items-start justify-between gap-2 rounded-md border bg-muted/30 px-3 py-2 text-sm"
+                            >
+                                <div className="min-w-0">
+                                    <p className="font-medium text-[#024A7D]">
+                                        {eq.course.title}
+                                        {eq.score !== null && eq.score !== undefined && (
+                                            <span className="ml-1.5 text-xs font-normal text-muted-foreground">
+                                                (nota {Number.isInteger(Number(eq.score)) ? Number(eq.score) : Number(eq.score).toFixed(1)}/20)
+                                            </span>
+                                        )}
+                                    </p>
+                                    {eq.issuing_institution && (
+                                        <p className="text-xs font-medium text-muted-foreground">{eq.issuing_institution}</p>
+                                    )}
+                                    {eq.note && <p className="whitespace-pre-line text-xs text-muted-foreground">{eq.note}</p>}
+                                    {eq.file_url && (
+                                        <a
+                                            href={eq.file_url}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="inline-flex items-center gap-1 text-xs font-medium text-sky-600 hover:underline"
+                                        >
+                                            Ver certificado escaneado
+                                        </a>
+                                    )}
+                                    <p className="text-[11px] text-muted-foreground">
+                                        {formatDate(eq.created_at)}
+                                        {eq.granted_by ? ` · ${eq.granted_by}` : ""}
+                                    </p>
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={() => remove(eq)}
+                                    className="shrink-0 text-muted-foreground hover:text-destructive"
+                                    title="Eliminar convalidacion"
+                                >
+                                    <Trash2 className="h-4 w-4" />
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
+                )}
+
+                <form onSubmit={submit} className="space-y-3 border-t pt-3">
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                        <div>
+                            <Label className="text-xs text-muted-foreground">Curso convalidado</Label>
+                            <div className="mt-1">
+                                <SearchableCourseSelect
+                                    courses={allCourses}
+                                    value={data.course_id}
+                                    onChange={(v) => setData("course_id", v)}
+                                    placeholder="Selecciona el curso"
+                                    allowEmpty={false}
+                                />
+                            </div>
+                            {errors.course_id && <p className="mt-1 text-xs text-destructive">{errors.course_id}</p>}
+                        </div>
+                        <div>
+                            <Label className="text-xs text-muted-foreground">Empresa / institucion que emitio el certificado</Label>
+                            <Input
+                                className="mt-1"
+                                placeholder="Ej: Empresa XYZ"
+                                value={data.issuing_institution}
+                                onChange={(e) => setData("issuing_institution", e.target.value)}
+                            />
+                            {errors.issuing_institution && (
+                                <p className="mt-1 text-xs text-destructive">{errors.issuing_institution}</p>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                        <div>
+                            <Label className="text-xs text-muted-foreground">Calificacion obtenida (0-20, opcional)</Label>
+                            <Input
+                                className="mt-1"
+                                type="number"
+                                min="0"
+                                max="20"
+                                step="0.5"
+                                placeholder="Ej: 18"
+                                value={data.score}
+                                onChange={(e) => setData("score", e.target.value)}
+                            />
+                            {errors.score && <p className="mt-1 text-xs text-destructive">{errors.score}</p>}
+                        </div>
+                        <div>
+                            <Label className="text-xs text-muted-foreground">Certificado escaneado (opcional)</Label>
+                            <div className="mt-1">
+                                <FileInput
+                                    value={data.file}
+                                    onChange={(file) => setData("file", file)}
+                                    accept=".pdf,.jpg,.jpeg,.png"
+                                />
+                            </div>
+                            {errors.file && <p className="mt-1 text-xs text-destructive">{errors.file}</p>}
+                        </div>
+                    </div>
+
+                    <div>
+                        <Label className="text-xs text-muted-foreground">Nota (opcional)</Label>
+                        <Textarea
+                            className="mt-1"
+                            rows={3}
+                            placeholder="Detalle adicional: fecha del certificado, quien lo valido, contenido verificado, etc."
+                            value={data.note}
+                            onChange={(e) => setData("note", e.target.value)}
+                        />
+                        {errors.note && <p className="mt-1 text-xs text-destructive">{errors.note}</p>}
+                    </div>
+
+                    <div className="flex justify-end">
+                        <Button type="submit" disabled={processing || !data.course_id}>
+                            {processing && <Loader2 className="h-4 w-4 animate-spin" />}
+                            Registrar
+                        </Button>
+                    </div>
+                </form>
+            </CardContent>
+        </Card>
+    );
+}
+
+export default function Show({
+    student,
+    enrollments,
+    orders,
+    installments,
+    otherPayments,
+    stats,
+    documentTypes,
+    genderOptions,
+    sctrOptions,
+    courses,
+    equivalencies = [],
+    allCourses = [],
+}) {
     const [tab, setTab] = useState("info");
     const [showEdit, setShowEdit] = useState(false);
     const [showNew, setShowNew] = useState(false);
@@ -115,6 +306,7 @@ export default function Show({ student, enrollments, orders, installments, other
     const [payingInstallment, setPayingInstallment] = useState(null);
     const [extendingInstallment, setExtendingInstallment] = useState(null);
     const [payingOrder, setPayingOrder] = useState(null);
+    const [splittingOrder, setSplittingOrder] = useState(null);
     const [viewingTicket, setViewingTicket] = useState(null);
     const [viewingSaleTicket, setViewingSaleTicket] = useState(null);
     const fullName = [student.last_name, student.name].filter(Boolean).join(" ") || student.name;
@@ -202,7 +394,10 @@ export default function Show({ student, enrollments, orders, installments, other
                         />
                     )}
                     {tab === "academico" && (
-                        <AcademicoTab enrollments={enrollments} canContinue={false} adminReports studentId={student.id} />
+                        <div className="space-y-4">
+                            <AcademicoTab enrollments={enrollments} canContinue={false} adminReports studentId={student.id} />
+                            <EquivalenciasCard studentId={student.id} equivalencies={equivalencies} allCourses={allCourses} />
+                        </div>
                     )}
                     {tab === "pagos" && (
                         <div className="space-y-4">
@@ -234,6 +429,7 @@ export default function Show({ student, enrollments, orders, installments, other
                                 onViewTicket={(i) => setViewingTicket(i)}
                                 onExtendInstallment={(i) => setExtendingInstallment(i)}
                                 onPayOrder={(o) => setPayingOrder(o)}
+                                onSplitOrder={(o) => setSplittingOrder(o)}
                             />
 
                             {otherPayments.length > 0 && (
@@ -302,6 +498,13 @@ export default function Show({ student, enrollments, orders, installments, other
                 onOpenChange={(v) => !v && setPayingOrder(null)}
                 order={payingOrder}
                 onPaid={() => router.reload({ only: ["orders", "enrollments", "stats"] })}
+            />
+
+            <SplitOrderModal
+                open={!!splittingOrder}
+                onOpenChange={(v) => !v && setSplittingOrder(null)}
+                order={splittingOrder}
+                onSplit={() => router.reload({ only: ["orders", "installments", "enrollments", "stats"] })}
             />
 
             <ExtendInstallmentModal

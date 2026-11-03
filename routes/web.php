@@ -173,6 +173,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::post('/estudiantes/{student}/foto', [\App\Http\Controllers\Admin\StudentController::class, 'updateAvatar'])->name('admin.students.avatar');
     Route::post('/estudiantes/{student}/cuotas/{installment}/pagar', [\App\Http\Controllers\Admin\StudentController::class, 'payInstallment'])->name('admin.students.installments.pay');
     Route::post('/estudiantes/{student}/cuotas/{installment}/ampliar', [\App\Http\Controllers\Admin\StudentController::class, 'extendInstallment'])->name('admin.students.installments.extend');
+    Route::post('/estudiantes/{student}/convalidaciones', [\App\Http\Controllers\Admin\StudentController::class, 'storeEquivalency'])->name('admin.students.equivalencies.store');
+    Route::delete('/estudiantes/{student}/convalidaciones/{equivalency}', [\App\Http\Controllers\Admin\StudentController::class, 'destroyEquivalency'])->name('admin.students.equivalencies.destroy');
     Route::post('/estudiantes/{student}/ventas', [\App\Http\Controllers\Admin\OtherPaymentController::class, 'sellToStudent'])->name('admin.students.sell');
     Route::get('/productos/buscar', [\App\Http\Controllers\Admin\ProductController::class, 'search'])->name('admin.products.search');
     Route::get('/estudiantes/{student}/matricula/{enrollment}', [\App\Http\Controllers\Admin\StudentReportController::class, 'matricula'])->name('admin.students.matricula');
@@ -197,6 +199,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/ventas/pedidos', [\App\Http\Controllers\Admin\CourseOrderController::class, 'index'])->name('admin.ventas.pedidos');
     Route::post('/ventas/pedidos/{order}/confirmar', [\App\Http\Controllers\Admin\CourseOrderController::class, 'confirm'])->name('admin.ventas.pedidos.confirm');
     Route::post('/ventas/pedidos/{order}/rechazar', [\App\Http\Controllers\Admin\CourseOrderController::class, 'reject'])->name('admin.ventas.pedidos.reject');
+    Route::post('/ventas/pedidos/{order}/dividir-cuotas', [\App\Http\Controllers\Admin\CourseOrderController::class, 'splitIntoInstallments'])->name('admin.ventas.pedidos.split');
 
     // ===== Ventas: otros pagos (producto u otro concepto ajeno al curso) =====
     Route::get('/ventas/otros-pagos', [\App\Http\Controllers\Admin\OtherPaymentController::class, 'index'])->name('admin.ventas.otros-pagos');
@@ -236,12 +239,12 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::post('/clases/{lesson}/materiales', [\App\Http\Controllers\Admin\CourseLessonMaterialController::class, 'store'])->name('admin.lessons.materials.store');
     Route::delete('/materiales/{material}', [\App\Http\Controllers\Admin\CourseLessonMaterialController::class, 'destroy'])->name('admin.lessons.materials.destroy');
 
-    Route::post('/cursos/{course}/examen/preguntas', [\App\Http\Controllers\Admin\ExamController::class, 'storeQuestion'])->name('admin.exam.questions.store');
     Route::put('/examen/preguntas/{question}', [\App\Http\Controllers\Admin\ExamController::class, 'updateQuestion'])->name('admin.exam.questions.update');
     Route::delete('/examen/preguntas/{question}', [\App\Http\Controllers\Admin\ExamController::class, 'destroyQuestion'])->name('admin.exam.questions.destroy');
 
     // ===== Aula virtual: quiz por modulo (reusa update/destroy de arriba, las preguntas son el mismo modelo) =====
     Route::post('/modulos/{module}/examen/preguntas', [\App\Http\Controllers\Admin\ModuleExamController::class, 'storeQuestion'])->name('admin.module-exam.questions.store');
+    Route::post('/clases/{lesson}/examen/preguntas', [\App\Http\Controllers\Admin\LessonExamController::class, 'storeQuestion'])->name('admin.lesson-exam.questions.store');
 });
 
 
@@ -278,8 +281,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/aula/{course:slug}/continuar', [StudentCourseController::class, 'continueCourse'])->name('aula.continuar');
     Route::get('/aula/{course:slug}/clase/{lesson}', [StudentCourseController::class, 'lesson'])->name('aula.leccion');
     Route::post('/aula/{course:slug}/clase/{lesson}/completar', [StudentCourseController::class, 'completeLesson'])->name('aula.leccion.completar');
-    Route::get('/aula/{course:slug}/examen', [StudentCourseController::class, 'examShow'])->name('aula.examen');
-    Route::post('/aula/{course:slug}/examen', [StudentCourseController::class, 'examSubmit'])->name('aula.examen.enviar');
+    Route::get('/aula/{course:slug}/clase/{lesson}/quiz', [StudentCourseController::class, 'lessonQuizShow'])->name('aula.leccion.quiz');
+    Route::post('/aula/{course:slug}/clase/{lesson}/quiz', [StudentCourseController::class, 'lessonQuizSubmit'])->name('aula.leccion.quiz.enviar');
+    Route::post('/aula/{course:slug}/clase/{lesson}/video-visto', [StudentCourseController::class, 'markVideoWatched'])->name('aula.leccion.video-visto');
+    Route::post('/aula/material/{material}/abrir', [StudentCourseController::class, 'openMaterial'])->name('aula.material.abrir');
+    Route::post('/aula/material/{material}/visto', [StudentCourseController::class, 'confirmMaterialViewed'])->name('aula.material.visto');
     Route::get('/aula/{course:slug}/modulo/{module}/quiz', [StudentCourseController::class, 'moduleQuizShow'])->name('aula.modulo.quiz');
     Route::post('/aula/{course:slug}/modulo/{module}/quiz', [StudentCourseController::class, 'moduleQuizSubmit'])->name('aula.modulo.quiz.enviar');
     Route::get('/aula/certificado/{enrollment}', [CertificateController::class, 'show'])->name('certificado.ver');

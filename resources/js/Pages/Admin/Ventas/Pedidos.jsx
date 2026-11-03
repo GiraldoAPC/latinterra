@@ -27,6 +27,7 @@ const STATUS = {
     pending: { label: "Pendiente", className: "bg-amber-100 text-amber-700" },
     paid: { label: "Pagado", className: "bg-[#00ADEE]/15 text-[#024A7D]" },
     rejected: { label: "Rechazado", className: "bg-red-100 text-red-700" },
+    split: { label: "Dividido en cuotas", className: "bg-violet-100 text-violet-700" },
 };
 
 function formatDate(value) {

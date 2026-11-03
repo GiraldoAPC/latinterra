@@ -36,11 +36,10 @@ export default function MisCursos({ enrollments }) {
                 ) : (
                     <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
                         {enrollments.map((e) => {
-                            // "Completado" solo cuando aprobo el examen final
-                            // (enrollment.status), no solo por ver todas las
-                            // clases (e.progress solo mide avance de video).
+                            // "Completado" solo cuando aprobo el quiz de cada
+                            // modulo (enrollment.status), no solo por ver
+                            // todas las clases (e.progress solo mide avance).
                             const isCertified = e.status === "completed";
-                            const allLessonsDone = e.progress >= 100;
 
                             return (
                                 <Card
@@ -111,11 +110,6 @@ export default function MisCursos({ enrollments }) {
                                                     <ArrowRight className="h-3.5 w-3.5" />
                                                 </Link>
                                             </Button>
-                                            {allLessonsDone && !isCertified && (
-                                                <Button asChild size="sm" variant="secondary">
-                                                    <Link href={`/aula/${e.course.slug}/examen`}>Examen</Link>
-                                                </Button>
-                                            )}
                                             {e.has_certificate && (
                                                 <Button asChild size="sm" variant="outline">
                                                     <Link href={`/aula/certificado/${e.id}`}>
