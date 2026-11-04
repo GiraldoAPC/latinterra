@@ -101,6 +101,7 @@ class ModuleExamRunner
     private function lockEnrollment(Enrollment $enrollment, Exam $exam): void
     {
         $locked = Enrollment::whereKey($enrollment->id)->lockForUpdate()->firstOrFail();
+        abort_if($locked->isTrulyCompleted(), 403, 'El curso ya está completado y cerrado.');
         abort_unless((int) $locked->course_id === (int) $exam->course_id && in_array($locked->status, ['active', 'completed'], true) && $exam->isModuleQuiz(), 403);
     }
 

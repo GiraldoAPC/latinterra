@@ -111,12 +111,14 @@ export default function MisCursos({ enrollments }) {
                                         </div>
 
                                         <div className="mt-4 flex flex-wrap items-center gap-2">
+                                            {!isCertified && (
                                             <Button asChild size="sm">
                                                 <Link href={`/aula/${e.course.slug}/continuar`}>
-                                                    {isCertified ? "Revisar" : "Continuar"}
+                                                    Continuar
                                                     <ArrowRight className="h-3.5 w-3.5" />
                                                 </Link>
                                             </Button>
+                                            )}
                                             {e.has_certificate && (
                                                 <Button asChild size="sm" variant="outline">
                                                     <Link href={`/aula/certificado/${e.id}`}>
@@ -126,6 +128,9 @@ export default function MisCursos({ enrollments }) {
                                                 </Button>
                                             )}
                                         </div>
+                                        {isCertified && (
+                                            <p className="mt-3 text-xs text-slate-500">Curso finalizado. El acceso al contenido está cerrado.</p>
+                                        )}
                                     </CardContent>
                                 </Card>
                             );

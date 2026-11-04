@@ -63,6 +63,7 @@ Schema::create('course_modules', function (Blueprint $table) { $table->id(); $ta
 Schema::create('course_lessons', function (Blueprint $table) { $table->id(); $table->unsignedBigInteger('course_module_id'); });
 Schema::create('exams', function (Blueprint $table) { $table->id(); $table->unsignedBigInteger('course_module_id'); });
 Schema::create('enrollments', function (Blueprint $table) { $table->id(); $table->unsignedBigInteger('user_id'); $table->unsignedBigInteger('course_id'); });
+Schema::create('certificates', function (Blueprint $table) { $table->id(); $table->unsignedBigInteger('enrollment_id'); });
 Schema::create('lesson_progress', function (Blueprint $table) { $table->id(); $table->unsignedBigInteger('enrollment_id'); $table->unsignedBigInteger('course_lesson_id'); $table->timestamp('completed_at')->nullable(); });
 Schema::create('exam_attempts', function (Blueprint $table) { $table->id(); $table->unsignedBigInteger('enrollment_id'); $table->unsignedBigInteger('exam_id'); $table->decimal('score', 5, 2); });
 $migration = require __DIR__.'/../../database/migrations/2026_11_03_000007_add_staff_roles_and_course_assignments.php';

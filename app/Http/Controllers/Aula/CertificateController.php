@@ -15,7 +15,7 @@ class CertificateController extends Controller
     public function show(Enrollment $enrollment): Response
     {
         abort_unless($enrollment->user_id === Auth::id(), 403);
-        abort_unless($enrollment->isTrulyCompleted(), 403, 'Este curso todavia no esta completado con el contenido actual.');
+        abort_unless($enrollment->isTrulyCompleted(), 403, 'Este curso todavía no está completado.');
 
         $certificate = $enrollment->certificate()->firstOrFail();
         $enrollment->load('course', 'user');

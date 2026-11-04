@@ -68,6 +68,7 @@ foreach ([
     '2026_09_01_030006_create_lesson_progress_table', '2026_09_01_030007_create_exams_table',
     '2026_09_01_030008_create_exam_questions_table', '2026_09_01_030009_create_exam_question_options_table',
     '2026_09_01_030010_create_exam_attempts_table', '2026_09_01_030011_create_exam_attempt_answers_table',
+    '2026_09_01_030012_create_certificates_table',
     '2026_09_01_030014_create_course_lesson_materials_table', '2026_09_01_030015_add_module_exam_support_to_exams_table',
     '2026_09_01_030016_add_description_to_course_modules_table',
     '2026_10_04_030044_add_video_watched_at_to_lesson_progress_table',

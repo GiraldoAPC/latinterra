@@ -82,6 +82,10 @@ class Enrollment extends Model
 
     public function progressPercent(): int
     {
+        if ($this->isTrulyCompleted()) {
+            return 100;
+        }
+
         $total = $this->course->totalLessons();
         if ($total === 0) {
             return 0;
@@ -97,16 +101,10 @@ class Enrollment extends Model
         return $this->progressPercent() >= 100;
     }
 
-    /**
-     * True only when the enrollment was marked completed AND the current
-     * course content is still 100% finished. If the admin adds new
-     * modules/lessons after a student was certified, progress recalculates
-     * below 100% and the certificate/completed state must stop showing
-     * until the student finishes the new content and re-passes the exam.
-     */
+    /** Completion is permanent; later content edits do not reopen a certified course. */
     public function isTrulyCompleted(): bool
     {
-        return $this->status === 'completed' && $this->allLessonsCompleted();
+        return $this->status === 'completed' || $this->certificate()->exists();
     }
 
     public function bestExamAttempt(?int $examId = null): ?ExamAttempt

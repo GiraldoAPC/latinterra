@@ -50,6 +50,14 @@ class StudentCourseController extends Controller
         ?CourseLesson $lesson = null,
         ?CourseModule $module = null
     ): ?RedirectResponse {
+        if ($enrollment->isTrulyCompleted()) {
+            return redirect()->route('aula.mis-cursos')->with('course_locked', [
+                'reason' => 'completed',
+                'course' => $course->title,
+                'message' => 'Ya completaste este curso. El contenido está cerrado; puedes consultar tu certificado en Mis cursos.',
+            ]);
+        }
+
         $reviewingCompletedLesson = $lesson && $enrollment->lessonProgress()
             ->where('course_lesson_id', $lesson->id)
             ->whereNotNull('completed_at')
@@ -277,6 +285,12 @@ class StudentCourseController extends Controller
         $enrollment = Enrollment::where('user_id', Auth::id())
             ->where('course_id', $course->id)
             ->firstOrFail();
+
+        abort_unless(in_array($enrollment->status, ['active', 'completed'], true), 403);
+        // Check closure before the fallback that allows reviewing earlier lessons.
+        if ($enrollment->isTrulyCompleted() || $enrollment->isAccessExpired()) {
+            return $this->accessBlockRedirect($enrollment, $course);
+        }
 
         $course->load('modules.lessons');
 

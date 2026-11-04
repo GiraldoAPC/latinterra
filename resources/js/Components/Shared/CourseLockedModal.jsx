@@ -19,7 +19,7 @@ export default function CourseLockedModal() {
                     <span className="flex h-14 w-14 items-center justify-center rounded-full bg-amber-100">
                         <Lock className="h-7 w-7 text-amber-600" />
                     </span>
-                    <DialogTitle className="mt-3 text-lg">Acceso vencido</DialogTitle>
+                    <DialogTitle className="mt-3 text-lg">{courseLocked.reason === "completed" ? "Curso finalizado" : "Acceso vencido"}</DialogTitle>
                 </DialogHeader>
 
                 <p className="text-sm text-muted-foreground">
