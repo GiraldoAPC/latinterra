@@ -40,7 +40,7 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate();
 
         $user = Auth::user();
-        $home = $user->isAdmin() ? '/admin' : '/aula-virtual/mis-cursos';
+        $home = $user->homePath();
 
         return redirect()->intended($home);
     }

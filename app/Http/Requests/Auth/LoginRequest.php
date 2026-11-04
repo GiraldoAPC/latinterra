@@ -46,7 +46,7 @@ class LoginRequest extends FormRequest
         $identifier = $this->string('email')->trim()->toString();
         $field = filter_var($identifier, FILTER_VALIDATE_EMAIL) ? 'email' : 'dni';
 
-        if (! Auth::attempt([$field => $identifier, 'password' => $this->string('password')], $this->boolean('remember'))) {
+        if (! Auth::attempt([$field => $identifier, 'password' => $this->string('password'), 'is_active' => true], $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([

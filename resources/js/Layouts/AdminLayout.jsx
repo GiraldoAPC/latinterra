@@ -59,6 +59,7 @@ const NAV = [
             { href: "/admin/cursos", icon: GraduationCap, label: "Todos los cursos" },
             { href: "/admin/cursos/estudiantes", icon: Users, label: "Estudiantes" },
             { href: "/admin/cursos/certificados", icon: Award, label: "Certificados" },
+            { href: "/academico", icon: GraduationCap, label: "Panel académico" },
             { href: "/admin/cursos/presenciales", icon: ClipboardList, label: "Capacitaciones presenciales" },
             { href: "/admin/catalogos", icon: ListChecks, label: "Catalogos" },
         ],
@@ -447,7 +448,7 @@ export default function AdminLayout({ title = "Admin", children }) {
                                             {auth?.user?.name || "Usuario"}
                                         </span>
                                         <span className="block text-xs text-muted-foreground">
-                                            Administrador
+                                            {auth.user.role === 'manager' ? 'Gerencia' : 'Administración'}
                                         </span>
                                     </span>
                                 </Button>

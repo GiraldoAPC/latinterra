@@ -131,9 +131,7 @@ Route::post('/presencial/registro/{token}', [\App\Http\Controllers\InPersonRegis
 Route::get('/dashboard', function () {
     $user = \Illuminate\Support\Facades\Auth::user();
 
-    return $user->isAdmin()
-        ? redirect('/admin')
-        : redirect('/aula-virtual/mis-cursos');
+    return redirect($user->homePath());
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
@@ -169,7 +167,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::post('/quotes/{quote}/correo', [\App\Http\Controllers\Admin\QuoteController::class, 'email'])->middleware('throttle:10,1')->name('admin.quotes.email');
     Route::get('/inventario/auspicios', [\App\Http\Controllers\Admin\StockSponsorshipController::class, 'index'])->name('admin.sponsorships');
     Route::post('/inventario/auspicios', [\App\Http\Controllers\Admin\StockSponsorshipController::class, 'store'])->name('admin.sponsorships.store');
-    Route::get('/users', fn() => Inertia::render('Admin/Users/Index'))->name('admin.users');
+    Route::get('/users', [\App\Http\Controllers\Admin\RoleController::class, 'index'])->name('admin.users');
     Route::get('/settings', [\App\Http\Controllers\Admin\SettingController::class, 'index'])->name('admin.settings');
     Route::put('/settings', [\App\Http\Controllers\Admin\SettingController::class, 'update'])->name('admin.settings.update');
 
@@ -239,7 +237,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/clientes/buscar', [\App\Http\Controllers\Admin\ClientController::class, 'search'])->name('admin.clientes.search');
 
     // ===== Usuarios: roles y permisos (pendiente de implementar) =====
-    Route::get('/usuarios/roles', fn() => Inertia::render('Admin/Usuarios/Roles'))->name('admin.usuarios.roles');
+    Route::get('/usuarios/roles', [\App\Http\Controllers\Admin\RoleController::class, 'index'])->name('admin.usuarios.roles');
+    Route::post('/usuarios/personal', [\App\Http\Controllers\Admin\RoleController::class, 'store'])->name('admin.staff.store');
+    Route::put('/usuarios/roles/{user}', [\App\Http\Controllers\Admin\RoleController::class, 'update'])->name('admin.roles.update');
 
     // ===== Aula virtual: gestion de cursos =====
     Route::get('/cursos', [\App\Http\Controllers\Admin\CourseController::class, 'index'])->name('admin.courses.index');
@@ -313,3 +313,9 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__ . '/auth.php';
+
+Route::middleware(['auth', 'academic'])->prefix('academico')->group(function () {
+    Route::get('/', [\App\Http\Controllers\AcademicController::class, 'index'])->name('academic.index');
+    Route::get('/cursos/{course}', [\App\Http\Controllers\AcademicController::class, 'show'])->name('academic.show');
+    Route::put('/cursos/{course}/instructores', [\App\Http\Controllers\AcademicController::class, 'assign'])->name('academic.assign');
+});

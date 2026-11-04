@@ -10,7 +10,7 @@ class EnsureUserIsAdmin
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (!$request->user() || !$request->user()->isAdmin()) {
+        if (!$request->user() || !$request->user()->isAdmin() || !$request->user()->is_active) {
             abort(403, 'No tienes permiso para acceder a esta seccion.');
         }
 

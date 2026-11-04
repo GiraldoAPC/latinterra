@@ -166,7 +166,24 @@ class User extends Authenticatable
 
     public function isAdmin(): bool
     {
-        return $this->role === 'admin';
+        return in_array($this->role, ['admin', 'manager'], true);
+    }
+
+    public const ROLES = ['admin' => 'Administración', 'manager' => 'Gerencia', 'instructor' => 'Instructor', 'coordinator' => 'Coordinador', 'student' => 'Estudiante'];
+
+    public function hasAcademicAccess(): bool
+    {
+        return $this->isAdmin() || in_array($this->role, ['instructor', 'coordinator'], true);
+    }
+
+    public function canCoordinate(): bool
+    {
+        return $this->isAdmin() || $this->role === 'coordinator';
+    }
+
+    public function homePath(): string
+    {
+        return $this->isAdmin() ? '/admin' : ($this->hasAcademicAccess() ? '/academico' : '/aula-virtual/mis-cursos');
     }
 
     public function enrollments(): HasMany

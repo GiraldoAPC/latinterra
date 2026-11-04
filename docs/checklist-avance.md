@@ -27,7 +27,7 @@ Los certificados anteriores no tienen nota guardada: se muestra «No registrada�
 
 - Certificaciones presenciales: registro, evaluación y emisión implementados; falta validación operativa y definir recertificación/revocación.
 - Inventario: cotización → venta, alertas de stock y auspicios al costo implementados; pendiente validación operativa.
-- Roles: administración, estudiante, instructor y coordinador; permisos de gerencia/administración.
+- Roles: administración, gerencia, estudiante, instructor y coordinador implementados con asignación de cursos; pendiente validación operativa de los permisos.
 - Pasarela y facturación SUNAT: etapas futuras según el checklist.
 
 ## Publicación
@@ -99,3 +99,24 @@ Publicación de esta entrega: ejecutar `composer install --no-dev --optimize-aut
 El envío real depende del correo saliente del servidor (`MAIL_MAILER`, `MAIL_HOST`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD`, `MAIL_ENCRYPTION`, `MAIL_FROM_ADDRESS`, `MAIL_FROM_NAME`). Usa un transporte real como SMTP; los modos `log` y `array` no se reportan como entrega. Si cambian las variables de entorno, actualizar la caché de configuración. No se verificó SMTP de producción ni se modificaron sus credenciales.
 
 Pruebas: `php tests/manual/quote-delivery.php` (22 comprobaciones sin SMTP real), además de las 38 de inventario. Archivos de muestra generados en `storage/app/previews/cotizacion-modelo.pdf` y `cotizacion-multipagina.pdf` (datos ficticios, no versionados).
+
+## Roles y permisos
+
+- [x] Roles disponibles: `admin` (administración), `manager` (gerencia), `instructor`, `coordinator` (coordinador) y `student` (estudiante). Cada cuenta mantiene un solo rol, como el modelo existente.
+- [x] Administración y gerencia acceden al panel administrativo completo, incluidos pagos, ampliación de cuotas, anulación de ventas y gestión de cuentas. Estos roles son los únicos con esas facultades; no se otorgaron a instructores/coordinadores.
+- [x] Crear cuentas de personal con contraseña inicial confirmada y almacenada como hash; buscar cuentas y cambiar rol/estado desde «Usuarios → Roles y permisos».
+- [x] Registro de auditoría en `user_role_changes` de altas y cambios realizados desde esta gestión. No se registran contraseñas en la auditoría.
+- [x] Se bloquean los cambios del propio rol/estado y la desactivación/democión de la última cuenta administradora activa.
+- [x] Instructor: panel académico con sus cursos asignados, nombres de alumnos, porcentaje de avance y mejor nota por módulo.
+- [x] Coordinador: consulta académica de todos los cursos y asignación/retiro de instructores activos. Administración y gerencia también pueden coordinar desde ese panel.
+- [x] Datos del panel académico limitados al seguimiento: no incluye pagos, contactos ni datos médicos del estudiante. No permite editar contenidos o notas.
+- [x] Desactivación de cuentas: impide nuevas sesiones y termina sesiones existentes al siguiente acceso web. El cambio de rol/asignación se comprueba en las solicitudes posteriores.
+- [ ] Validación operativa con usuarios de cada rol y múltiples conexiones concurrentes para cambios de privilegios.
+- [ ] Ampliar facultades académicas (edición de contenidos, evaluación docente y capacitación presencial) una vez definido el alcance. Esta entrega habilita seguimiento de aula virtual y asignación, sin conceder funciones administrativas adicionales.
+- [ ] Otros roles como vendedor o encargado de inventario: pendientes de definición del negocio, según el checklist.
+
+Accesos: `/admin/usuarios/roles` para cuentas y permisos; `/academico` para coordinación/instructores. Las cuentas existentes no cambiaron de rol ni se crearon cuentas reales de personal automáticamente. Se conservan las credenciales actuales de los administradores.
+
+La migración `2026_11_03_000007_add_staff_roles_and_course_assignments.php` agrega tablas de asignación y auditoría; se aplicó en MySQL local. Al desplegar, ejecutar `php artisan migrate --force` antes de usar las nuevas pantallas.
+
+Prueba reproducible: `php tests/manual/roles-workflow.php` (33 comprobaciones en SQLite en memoria). Verifica acceso por rol, aislamiento de cursos, retiro de asignación, ausencia de datos financieros en el seguimiento, protección de última cuenta administradora, auditoría, creación y autenticación de personal y revocación de sesiones. Compilación de producción y sintaxis PHP verificadas.

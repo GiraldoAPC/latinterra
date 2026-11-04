@@ -13,6 +13,11 @@ class Course extends Model
 {
     use HasFactory;
 
+    public function instructors(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(\App\Models\User::class, 'course_instructors')->withTimestamps();
+    }
+
     protected $fillable = [
         'title',
         'slug',

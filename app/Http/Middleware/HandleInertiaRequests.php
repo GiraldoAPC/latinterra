@@ -37,7 +37,7 @@ class HandleInertiaRequests extends Middleware
             ],
             // Solo para el panel admin - evita una consulta de mas en cada
             // pagina publica, que nunca necesita este dato.
-            'settings' => $request->user()?->role === 'admin'
+            'settings' => $request->user()?->isAdmin()
                 ? ['warehouseMode' => Setting::bool('warehouse_mode')]
                 : null,
             'inventoryAlerts' => fn () => $request->user()?->isAdmin() ? [
