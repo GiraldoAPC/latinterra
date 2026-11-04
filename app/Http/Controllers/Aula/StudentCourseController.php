@@ -21,6 +21,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Services\StudentLearningPayload;
+use Illuminate\Validation\ValidationException;
 
 class StudentCourseController extends Controller
 {
@@ -175,7 +177,7 @@ class StudentCourseController extends Controller
         }
 
         return Inertia::render('Aula/CursoDetalle', [
-            'course' => $course,
+            'course' => app(StudentLearningPayload::class)->publicCourse($course),
             'enrollment' => $enrollment,
             'pendingOrder' => $pendingOrder,
             'prerequisiteSatisfied' => $prerequisiteSatisfied,
@@ -312,7 +314,7 @@ class StudentCourseController extends Controller
             ->where('course_id', $course->id)
             ->firstOrFail();
 
-        if ($redirect = $this->accessBlockRedirect($enrollment, $course, $lesson)) {
+        if ($redirect = $this->lessonAccessRedirect($enrollment, $course, $lesson)) {
             return $redirect;
         }
 
@@ -328,30 +330,6 @@ class StudentCourseController extends Controller
             ->whereNotNull('confirmed_at')
             ->pluck('course_lesson_material_id');
 
-        $orderedLessons = $course->modules->flatMap->lessons->values();
-        $index = $orderedLessons->search(fn ($l) => $l->id === $lesson->id);
-
-        if ($index > 0) {
-            $previous = $orderedLessons[$index - 1];
-            if (!$completedLessonIds->contains($previous->id)) {
-                return redirect()
-                    ->route('aula.leccion', [$course, $previous])
-                    ->with('error', 'Completa la clase anterior antes de continuar.');
-            }
-        }
-
-        // Si algun modulo anterior tiene un quiz configurado y aun no fue
-        // aprobado, no se puede avanzar a este modulo: se redirige al quiz.
-        $moduleIndex = $course->modules->search(fn ($m) => $m->id === $lesson->course_module_id);
-        foreach ($course->modules->slice(0, $moduleIndex) as $priorModule) {
-            if ($priorModule->exam && $priorModule->exam->questions->count() > 0
-                && !$enrollment->hasPassedExam($priorModule->exam->id)) {
-                return redirect()
-                    ->route('aula.modulo.quiz', [$course, $priorModule])
-                    ->with('error', 'Debes aprobar el quiz del modulo anterior para continuar.');
-            }
-        }
-
         $passedModuleQuizIds = $course->modules
             ->filter(fn ($m) => $m->exam && $m->exam->questions->count() > 0)
             ->filter(fn ($m) => $enrollment->hasPassedExam($m->exam->id))
@@ -362,8 +340,8 @@ class StudentCourseController extends Controller
         $lessonQuizPassed = $lessonHasQuiz && $enrollment->hasPassedExam($lesson->exam->id);
 
         return Inertia::render('Aula/Leccion', [
-            'course' => $course,
-            'lesson' => $lesson,
+            'course' => app(StudentLearningPayload::class)->course($course),
+            'lesson' => app(StudentLearningPayload::class)->lesson($lesson),
             'enrollment' => [
                 'id' => $enrollment->id,
                 'progress' => $enrollment->progressPercent(),
@@ -378,10 +356,8 @@ class StudentCourseController extends Controller
     }
 
     /**
-     * Confirma, del lado del servidor, que el video de la leccion se vio
-     * completo. El frontend deshabilita el scrubbing de la barra mientras no
-     * este marcado, asi que la unica forma de llegar aca es dejando correr
-     * el video hasta el final.
+     * Records the player's end event after validating course access/sequence.
+     * Measuring actual watched duration requires a separate server-side protocol.
      */
     public function markVideoWatched(Course $course, CourseLesson $lesson): RedirectResponse
     {
@@ -389,6 +365,8 @@ class StudentCourseController extends Controller
             ->where('course_id', $course->id)
             ->firstOrFail();
 
+        if ($redirect = $this->lessonAccessRedirect($enrollment, $course, $lesson)) return $redirect;
+        abort_unless($lesson->youtube_video_id, 404);
         $enrollment->lessonProgress()->updateOrCreate(
             ['course_lesson_id' => $lesson->id],
             ['video_watched_at' => now()]
@@ -404,6 +382,7 @@ class StudentCourseController extends Controller
             ->where('course_id', $lesson->module->course_id)
             ->firstOrFail();
 
+        if ($redirect = $this->lessonAccessRedirect($enrollment, $lesson->module->course, $lesson)) return $redirect;
         LessonMaterialView::firstOrCreate(
             ['enrollment_id' => $enrollment->id, 'course_lesson_material_id' => $material->id],
             ['opened_at' => now()]
@@ -419,6 +398,7 @@ class StudentCourseController extends Controller
             ->where('course_id', $lesson->module->course_id)
             ->firstOrFail();
 
+        if ($redirect = $this->lessonAccessRedirect($enrollment, $lesson->module->course, $lesson)) return $redirect;
         $view = LessonMaterialView::where('enrollment_id', $enrollment->id)
             ->where('course_lesson_material_id', $material->id)
             ->first();
@@ -439,33 +419,21 @@ class StudentCourseController extends Controller
      * ilimitados. Requiere haber visto el video y los materiales, igual
      * que completar la clase.
      */
-    public function lessonQuizShow(Course $course, CourseLesson $lesson): Response
+    public function lessonQuizShow(Course $course, CourseLesson $lesson): Response|RedirectResponse
     {
         $enrollment = Enrollment::where('user_id', Auth::id())
             ->where('course_id', $course->id)
             ->firstOrFail();
 
+        if ($redirect = $this->lessonAccessRedirect($enrollment, $course, $lesson)) return $redirect;
         $lesson->load('exam.questions.options', 'materials');
+        $this->assertLessonContentReady($enrollment, $lesson);
 
         abort_unless($lesson->exam && $lesson->exam->questions->count() > 0, 404, 'Esta clase no tiene quiz configurado.');
 
-        if ($lesson->youtube_video_id) {
-            $progress = $enrollment->lessonProgress()->where('course_lesson_id', $lesson->id)->first();
-            abort_unless($progress && $progress->video_watched_at, 403, 'Tienes que terminar de ver el video antes de rendir el quiz.');
-        }
-
-        $materialIds = $lesson->materials->pluck('id');
-        if ($materialIds->isNotEmpty()) {
-            $confirmedCount = LessonMaterialView::where('enrollment_id', $enrollment->id)
-                ->whereIn('course_lesson_material_id', $materialIds)
-                ->whereNotNull('confirmed_at')
-                ->count();
-            abort_unless($confirmedCount >= $materialIds->count(), 403, 'Tienes que revisar todos los materiales antes de rendir el quiz.');
-        }
-
         return Inertia::render('Aula/LeccionQuiz', [
-            'course' => $course,
-            'lesson' => $lesson,
+            'course' => app(StudentLearningPayload::class)->course($course),
+            'lesson' => app(StudentLearningPayload::class)->lesson($lesson, true),
             'lastAttempt' => $enrollment->bestExamAttempt($lesson->exam->id),
         ]);
     }
@@ -476,15 +444,20 @@ class StudentCourseController extends Controller
             ->where('course_id', $course->id)
             ->firstOrFail();
 
+        if ($redirect = $this->lessonAccessRedirect($enrollment, $course, $lesson)) return $redirect;
+        $this->assertLessonContentReady($enrollment, $lesson);
         $exam = $lesson->exam;
         abort_unless($exam, 404, 'Esta clase no tiene quiz configurado.');
+        if ($enrollment->hasPassedExam($exam->id)) {
+            return redirect()->route('aula.leccion.quiz', [$course, $lesson])->with('success', 'Ya aprobaste este quiz.');
+        }
 
         $data = $request->validate([
-            'answers' => ['required', 'array'],
-            'answers.*' => ['required'],
+            'answers' => ['present', 'array', 'max:500'],
         ]);
 
         $questions = $exam->questions()->with('options')->get();
+        $this->assertExamAnswers($questions, $data['answers']);
 
         $result = DB::transaction(function () use ($enrollment, $exam, $questions, $data) {
             $attempt = ExamAttempt::create([
@@ -534,7 +507,7 @@ class StudentCourseController extends Controller
             ->where('course_id', $course->id)
             ->firstOrFail();
 
-        if ($redirect = $this->accessBlockRedirect($enrollment, $course, module: $module)) {
+        if ($redirect = $this->moduleAccessRedirect($enrollment, $course, $module)) {
             return $redirect;
         }
 
@@ -549,8 +522,8 @@ class StudentCourseController extends Controller
         abort_unless($module->exam && $module->exam->questions->count() > 0, 404, 'Este modulo no tiene quiz configurado.');
 
         return Inertia::render('Aula/ModuloQuiz', [
-            'course' => $course,
-            'module' => $module,
+            'course' => app(StudentLearningPayload::class)->course($course),
+            'module' => app(StudentLearningPayload::class)->module($module),
             'lastAttempt' => $enrollment->bestExamAttempt($module->exam->id),
             'attemptCount' => $enrollment->examAttempts()->where('exam_id', $module->exam->id)->count(),
         ]);
@@ -562,19 +535,22 @@ class StudentCourseController extends Controller
             ->where('course_id', $course->id)
             ->firstOrFail();
 
-        if ($redirect = $this->accessBlockRedirect($enrollment, $course, module: $module)) {
+        if ($redirect = $this->moduleAccessRedirect($enrollment, $course, $module)) {
             return $redirect;
         }
 
         $exam = $module->exam;
         abort_unless($exam, 404, 'Este modulo no tiene quiz configurado.');
+        if ($enrollment->hasPassedExam($exam->id)) {
+            return redirect()->route('aula.modulo.quiz', [$course, $module])->with('success', 'Ya aprobaste este examen.');
+        }
 
         $data = $request->validate([
-            'answers' => ['required', 'array'],
-            'answers.*' => ['required'],
+            'answers' => ['present', 'array', 'max:500'],
         ]);
 
         $questions = $exam->questions()->with('options')->get();
+        $this->assertExamAnswers($questions, $data['answers']);
         $module->load('lessons.materials', 'lessons.exam');
 
         $result = DB::transaction(function () use ($enrollment, $exam, $questions, $data, $module) {
@@ -664,9 +640,12 @@ class StudentCourseController extends Controller
 
         $selectedOptionId = is_numeric($submitted) ? (int) $submitted : null;
         $selectedOption = $question->options->firstWhere('id', $selectedOptionId);
+        if ($submitted !== null && $submitted !== '' && !$selectedOption) {
+            throw ValidationException::withMessages(['answers' => 'La opción seleccionada no pertenece a la pregunta.']);
+        }
 
         return [
-            'option_id' => $selectedOptionId,
+            'option_id' => $selectedOption?->id,
             'answer_text' => null,
             'is_correct' => (bool) ($selectedOption?->is_correct),
         ];
@@ -701,25 +680,8 @@ class StudentCourseController extends Controller
             ->where('course_id', $course->id)
             ->firstOrFail();
 
-        if ($lesson->youtube_video_id) {
-            $progress = $enrollment->lessonProgress()->where('course_lesson_id', $lesson->id)->first();
-            if (!$progress || !$progress->video_watched_at) {
-                return back()->with('error', 'Tienes que terminar de ver el video antes de completar la clase.');
-            }
-        }
-
-        $materialIds = $lesson->materials()->pluck('id');
-        if ($materialIds->isNotEmpty()) {
-            $confirmedCount = LessonMaterialView::where('enrollment_id', $enrollment->id)
-                ->whereIn('course_lesson_material_id', $materialIds)
-                ->whereNotNull('confirmed_at')
-                ->count();
-
-            if ($confirmedCount < $materialIds->count()) {
-                return back()->with('error', 'Tienes que revisar todos los materiales antes de completar la clase.');
-            }
-        }
-
+        if ($redirect = $this->lessonAccessRedirect($enrollment, $course, $lesson)) return $redirect;
+        $this->assertLessonContentReady($enrollment, $lesson);
         if ($lesson->exam && $lesson->exam->questions()->count() > 0 && !$enrollment->hasPassedExam($lesson->exam->id)) {
             return back()->with('error', 'Tienes que aprobar el quiz de la clase antes de completarla.');
         }
@@ -732,6 +694,81 @@ class StudentCourseController extends Controller
         $this->certifyIfReady($enrollment);
 
         return back()->with('success', 'Clase completada.');
+    }
+
+    private function lessonAccessRedirect(Enrollment $enrollment, Course $course, CourseLesson $lesson): ?RedirectResponse
+    {
+        abort_unless($lesson->module && (int) $lesson->module->course_id === (int) $course->id, 404);
+        abort_unless(in_array($enrollment->status, ['active', 'completed'], true), 403);
+        if ($redirect = $this->accessBlockRedirect($enrollment, $course, $lesson)) return $redirect;
+        $course->load('modules.lessons.exam.questions', 'modules.exam.questions');
+        $done = $enrollment->lessonProgress()->whereNotNull('completed_at')->pluck('course_lesson_id');
+        foreach ($course->modules as $module) {
+            if ($module->id === $lesson->course_module_id) {
+                foreach ($module->lessons as $previous) {
+                    if ($previous->id === $lesson->id) return null;
+                    if (!$done->contains($previous->id)) {
+                        return redirect()->route('aula.leccion', [$course, $previous])->with('error', 'Completa las clases anteriores antes de continuar.');
+                    }
+                }
+                abort(404);
+            }
+            foreach ($module->lessons as $previous) {
+                if (!$done->contains($previous->id)) {
+                    return redirect()->route('aula.leccion', [$course, $previous])->with('error', 'Completa las clases anteriores antes de continuar.');
+                }
+            }
+            if ($module->exam && $module->exam->questions->isNotEmpty() && !$enrollment->hasPassedExam($module->exam->id)) {
+                return redirect()->route('aula.modulo.quiz', [$course, $module])->with('error', 'Aprueba el examen del módulo anterior antes de continuar.');
+            }
+        }
+        abort(404);
+    }
+
+    private function moduleAccessRedirect(Enrollment $enrollment, Course $course, CourseModule $module): ?RedirectResponse
+    {
+        abort_unless((int) $module->course_id === (int) $course->id, 404);
+        abort_unless(in_array($enrollment->status, ['active', 'completed'], true), 403);
+        if ($redirect = $this->accessBlockRedirect($enrollment, $course, module: $module)) return $redirect;
+        $course->load('modules.lessons.exam.questions', 'modules.exam.questions');
+        $done = $enrollment->lessonProgress()->whereNotNull('completed_at')->pluck('course_lesson_id');
+        foreach ($course->modules as $prior) {
+            foreach ($prior->lessons as $lesson) {
+                if (!$done->contains($lesson->id)) {
+                    return redirect()->route('aula.leccion', [$course, $lesson])->with('error', 'Completa las clases del módulo antes de rendir el examen.');
+                }
+            }
+            if ($prior->id === $module->id) return null;
+            if ($prior->exam && $prior->exam->questions->isNotEmpty() && !$enrollment->hasPassedExam($prior->exam->id)) {
+                return redirect()->route('aula.modulo.quiz', [$course, $prior])->with('error', 'Aprueba el examen del módulo anterior antes de continuar.');
+            }
+        }
+        abort(404);
+    }
+
+    private function assertLessonContentReady(Enrollment $enrollment, CourseLesson $lesson): void
+    {
+        if ($lesson->youtube_video_id) {
+            abort_unless($enrollment->lessonProgress()->where('course_lesson_id', $lesson->id)->whereNotNull('video_watched_at')->exists(),
+                403, 'Termina de ver el video antes de continuar.');
+        }
+        $materials = $lesson->materials()->pluck('id');
+        if ($materials->isNotEmpty()) {
+            $count = LessonMaterialView::where('enrollment_id', $enrollment->id)->whereIn('course_lesson_material_id', $materials)->whereNotNull('confirmed_at')->count();
+            abort_unless($count >= $materials->count(), 403, 'Revisa todos los materiales antes de continuar.');
+        }
+    }
+
+    private function assertExamAnswers(\Illuminate\Support\Collection $questions, array $answers): void
+    {
+        abort_if($questions->isEmpty(), 404, 'Este examen no tiene preguntas.');
+        $ids = $questions->pluck('id')->map(fn ($id) => (string) $id)->all();
+        foreach ($answers as $id => $answer) {
+            if (!in_array((string) $id, $ids, true) || ($answer !== null && !is_string($answer) && !is_int($answer))
+                || (is_string($answer) && mb_strlen($answer) > 2000)) {
+                throw ValidationException::withMessages(['answers' => 'Las respuestas contienen una pregunta o un valor no válido.']);
+            }
+        }
     }
 
     /**

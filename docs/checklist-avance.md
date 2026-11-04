@@ -6,6 +6,10 @@ Fuente: Checklist_de_requerimientos_con_respuestas.docx. Este registro distingue
 
 El código incluye requisitos previos y convalidaciones registradas por administración, plazo de acceso por curso, seguimiento de videos/materiales, preguntas por tema, evaluación por módulo, nota mínima 13 y pagos manuales con división en cuotas. Falta una revisión funcional completa de estos flujos contra el documento antes de dar el bloque por cerrado.
 
+Primera corrección tras la revisión: las pantallas del alumno usan datos explícitos que excluyen indicadores de respuesta correcta, claves de texto corto, videos/materiales de clases futuras y configuración interna de firmas. Los envíos de evaluación y avance comparten comprobaciones de curso, secuencia, matrícula activa, deuda y vencimiento. Las respuestas solo pueden referirse a preguntas/opciones del examen; los envíos ordinarios posteriores a una aprobación no revierten su progreso.
+
+Prueba: `php tests/manual/learning-access.php` (31 comprobaciones en SQLite aislado). Esta entrega no agrega migraciones ni modifica los datos de corrección que usa administración. Sigue pendiente el límite de intentos, selección aleatoria, tiempo de examen en servidor, seguimiento por diapositiva, comprobación de duración real de video y cierre del curso certificado. Ver `docs/revision-pendientes-checklist.md` para el detalle actualizado.
+
 ## Certificación con aula virtual — bloque actual
 
 - [x] Modelo imprimible y vista previa administrativa.
