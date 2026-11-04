@@ -66,6 +66,8 @@ Schema::create('sale_items', function (Blueprint $table) {
 });
 $migration = require __DIR__.'/../../database/migrations/2026_11_03_000005_add_quotes_and_sponsorships.php';
 $migration->up();
+$emailMigration = require __DIR__.'/../../database/migrations/2026_11_03_000006_add_quote_email_fields.php';
+$emailMigration->up();
 $failure = null;
 try {
     Carbon::setTestNow('2026-11-03 12:00:00');
@@ -150,6 +152,7 @@ try {
         $middleware = app('router')->getRoutes()->getByName($name)->gatherMiddleware();
         check(in_array('auth', $middleware, true) && in_array('admin', $middleware, true), "$name requires administrator");
     }
+    $emailMigration->down();
     $migration->down();
     check(!Schema::hasTable('quotes') && !Schema::hasTable('stock_sponsorships'), 'Inventory migration rollback removes only new tables');
 } catch (Throwable $error) {

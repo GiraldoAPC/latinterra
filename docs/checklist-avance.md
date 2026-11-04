@@ -73,6 +73,7 @@ Verificación: `php tests/manual/in-person-certification.php` (25 comprobaciones
 
 - [x] Se conserva el flujo existente compra → almacén → transferencia → ventas. Requiere activar «Modo almacén» en Configuración; no se modificó la preferencia existente.
 - [x] Cotización comercial imprimible/PDF con destinatario, documento opcional, productos, precios, cantidades, condiciones y fecha de vigencia opcional.
+- [x] Descarga directa del PDF generado en el servidor y envío por correo con ese formato adjunto, destinatario editable y mensaje opcional. Guarda destinatario y fecha del último envío exitoso; los fallos de transporte muestran un error y no actualizan ese registro.
 - [x] Aprobar/cancelar cotizaciones y convertir una aprobada y vigente en venta al confirmar el pago. Aprobar no reserva stock. La conversión verifica existencias bajo bloqueo y usa el precio cotizado, con costo promedio actual guardado por renglón.
 - [x] La conversión registra un ticket interno en Ventas y no se duplica al repetir la solicitud. La integración de boleta/factura en este nuevo flujo queda pendiente; las ventas directas conservan sus opciones existentes.
 - [x] Alertas en la campana de todo el panel administrativo: productos activos con control de stock y cantidad de ventas menor o igual al mínimo (5 si no está configurado). Muestra hasta cinco productos y el total de alertas; si hay existencias en almacén, sugiere revisar una transferencia.
@@ -86,3 +87,15 @@ Verificación: `php tests/manual/in-person-certification.php` (25 comprobaciones
 Accesos: `/admin/quotes` (Ventas → Cotizaciones), `/admin/inventario/auspicios` (Inventario → Auspicios) y campana del panel. La migración `2026_11_03_000005_add_quotes_and_sponsorships.php` se aplicó en MySQL local; producción sigue pendiente de despliegue y `php artisan migrate --force`.
 
 Prueba reproducible: `php tests/manual/inventory-workflow.php` (38 comprobaciones con SQLite en memoria). Incluye valoración de auspicios, ubicación de salida, requisitos de costo, solicitudes repetidas, totales de cotización calculados en servidor, estados, vencimiento en horario de Perú, venta y reversión de transacciones fallidas, alertas, acceso administrativo y reversión de la migración. La compilación de producción está incluida.
+
+### Descarga y envío de cotizaciones
+
+En el detalle de cada cotización: «Descargar PDF» entrega un archivo directamente; «Enviar cotización por correo» recibe correo y mensaje y adjunta el PDF generado a partir de los datos guardados. El correo del cliente también puede guardarse al crear la cotización. El envío no aprueba ni convierte la cotización en venta. Ambos accesos requieren administrador, y el envío tiene un límite de diez solicitudes por minuto.
+
+Se agregó `dompdf/dompdf` como dependencia de producción, una plantilla PDF A4 con soporte de múltiples páginas y una plantilla de correo. No se cargan recursos remotos ni se ejecutan scripts del documento. Las pruebas revisan el PDF real, acentos, documento largo y correo simulado, sin enviar mensajes a destinatarios reales.
+
+Publicación de esta entrega: ejecutar `composer install --no-dev --optimize-autoloader`, `php artisan migrate --force` y desplegar los archivos compilados incluidos. La migración `2026_11_03_000006_add_quote_email_fields.php` se aplicó en local. El directorio `storage/framework/cache/dompdf` debe poder escribirse (se crea al generar el PDF).
+
+El envío real depende del correo saliente del servidor (`MAIL_MAILER`, `MAIL_HOST`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD`, `MAIL_ENCRYPTION`, `MAIL_FROM_ADDRESS`, `MAIL_FROM_NAME`). Usa un transporte real como SMTP; los modos `log` y `array` no se reportan como entrega. Si cambian las variables de entorno, actualizar la caché de configuración. No se verificó SMTP de producción ni se modificaron sus credenciales.
+
+Pruebas: `php tests/manual/quote-delivery.php` (22 comprobaciones sin SMTP real), además de las 38 de inventario. Archivos de muestra generados en `storage/app/previews/cotizacion-modelo.pdf` y `cotizacion-multipagina.pdf` (datos ficticios, no versionados).

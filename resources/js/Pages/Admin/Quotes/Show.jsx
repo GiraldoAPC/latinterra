@@ -5,15 +5,20 @@ import { Button } from '@/Components/ui/button';
 export default function Show({ quote, expired }) {
     const action = useForm({});
     const payment = useForm({ payment_method: 'efectivo', payment_reference: '' });
+    const email = useForm({ recipient_email: quote.emailed_to ?? quote.buyer_email ?? '', message: '' });
     const labels = { draft: 'Pendiente de aprobación', approved: 'Aprobada', sold: 'Convertida en venta', cancelled: 'Cancelada' };
     return <>
         <Head title={`Cotización ${quote.code}`} />
         <AdminLayout title="Cotización">
-            <div className="mb-5 flex flex-wrap gap-3 print:hidden"><Button variant="outline" asChild><Link href="/admin/quotes">Volver a cotizaciones</Link></Button><Button onClick={() => window.print()}>Imprimir / Guardar PDF</Button></div>
+            <div className="mb-5 flex flex-wrap gap-3 print:hidden"><Button variant="outline" asChild><Link href="/admin/quotes">Volver a cotizaciones</Link></Button>
+                <Button asChild><a href={`/admin/quotes/${quote.id}/pdf`}>Descargar PDF</a></Button>
+                <Button variant="outline" onClick={() => window.print()}>Imprimir</Button>
+            </div>
             <article id="quote-print" className="rounded-xl border bg-white p-6 sm:p-9">
                 <img src="/assets/img/logo-oficial.png" alt="Latin Terra" className="mb-6 h-14 max-w-56 object-contain" />
                 <h1 className="text-2xl font-bold text-[#024A7D]">Cotización {quote.code}</h1>
                 <p className="mt-3 font-semibold">{quote.buyer_name}</p>{quote.buyer_document && <p className="text-sm">Documento: {quote.buyer_document}</p>}
+                {quote.buyer_email && <p className="text-sm">Correo: {quote.buyer_email}</p>}
                 <p className="mt-2 text-sm">Emitida: {new Date(quote.created_at).toLocaleDateString('es-PE', { timeZone: 'America/Lima' })}</p>
                 <p className="text-sm">Vigencia: {quote.valid_until ? String(quote.valid_until).slice(0, 10).split('-').reverse().join('/') : 'Sin fecha límite'}</p>
                 <p className="mt-2 text-sm font-semibold">{labels[quote.status]}{expired && !['sold', 'cancelled'].includes(quote.status) ? ' · Vencida' : ''}</p>
@@ -22,6 +27,19 @@ export default function Show({ quote, expired }) {
                 {quote.notes && <p className="mt-5 whitespace-pre-wrap text-sm">{quote.notes}</p>}
             </article>
             <section className="mt-6 space-y-4 print:hidden">
+                <form className="space-y-3 rounded-lg border bg-white p-5" onSubmit={(event) => {
+                    event.preventDefault();
+                    email.post(`/admin/quotes/${quote.id}/correo`, { preserveScroll: true });
+                }}>
+                    <h2 className="font-semibold">Enviar cotización por correo</h2>
+                    <p className="text-sm text-muted-foreground">Se adjuntará el PDF de esta cotización.</p>
+                    <label className="block text-sm">Correo del destinatario<input required type="email" maxLength={255} className="mt-1 block w-full rounded-md border p-2" value={email.data.recipient_email} onChange={(event) => email.setData('recipient_email', event.target.value)} /></label>
+                    <label className="block text-sm">Mensaje (opcional)<textarea maxLength={2000} className="mt-1 block w-full rounded-md border p-2" value={email.data.message} onChange={(event) => email.setData('message', event.target.value)} /></label>
+                    {Object.entries(email.errors).map(([key, message]) => <p key={key} role="alert" className="text-sm text-red-700">{message}</p>)}
+                    <Button disabled={email.processing}>{email.processing ? 'Enviando…' : 'Enviar cotización'}</Button>
+                    {email.recentlySuccessful && <p role="status" className="text-sm text-green-700">Cotización enviada con el PDF adjunto.</p>}
+                    {quote.emailed_at && <p className="text-xs text-muted-foreground">Último envío: {quote.emailed_to} · {new Date(quote.emailed_at).toLocaleString('es-PE', { timeZone: 'America/Lima' })} (Perú)</p>}
+                </form>
                 <p className="text-sm text-muted-foreground">Aprobar no reserva ni descuenta stock. Al confirmar el pago se verifica el stock de ventas y se emite un ticket interno.</p>
                 <div className="flex flex-wrap gap-3">{quote.status === 'draft' && !expired && <Button disabled={action.processing} onClick={() => action.post(`/admin/quotes/${quote.id}/aprobar`)}>Registrar aprobación</Button>}
                     {['draft', 'approved'].includes(quote.status) && <Button variant="outline" disabled={action.processing || payment.processing} onClick={() => action.post(`/admin/quotes/${quote.id}/cancelar`)}>Cancelar cotización</Button>}

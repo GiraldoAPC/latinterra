@@ -3,7 +3,7 @@ import AdminLayout from '@/Layouts/AdminLayout';
 import { Button } from '@/Components/ui/button';
 
 export default function Index({ quotes, products }) {
-    const form = useForm({ buyer_name: '', buyer_document: '', valid_until: '', notes: '', items: [] });
+    const form = useForm({ buyer_name: '', buyer_document: '', buyer_email: '', valid_until: '', notes: '', items: [] });
     const inputClass = 'mt-1 block w-full rounded-md border p-2';
     const change = (index, values) => form.setData('items', form.data.items.map((item, i) => i === index ? { ...item, ...values } : item));
     const labels = { draft: 'Pendiente', approved: 'Aprobada', sold: 'Vendida', cancelled: 'Cancelada' };
@@ -18,6 +18,7 @@ export default function Index({ quotes, products }) {
                 <div className="grid gap-4 md:grid-cols-3">
                     <label className="text-sm">Cliente / destinatario<input required maxLength={180} className={inputClass} value={form.data.buyer_name} onChange={(event) => form.setData('buyer_name', event.target.value)} /></label>
                     <label className="text-sm">Documento (opcional)<input maxLength={30} className={inputClass} value={form.data.buyer_document} onChange={(event) => form.setData('buyer_document', event.target.value)} /></label>
+                    <label className="text-sm">Correo del cliente (opcional)<input type="email" maxLength={255} className={inputClass} value={form.data.buyer_email} onChange={(event) => form.setData('buyer_email', event.target.value)} /></label>
                     <label className="text-sm">Válida hasta (opcional)<input type="date" className={inputClass} value={form.data.valid_until} onChange={(event) => form.setData('valid_until', event.target.value)} /></label>
                 </div>
                 {form.data.items.map((item, i) => <div key={i} className="grid items-end gap-3 rounded-lg border p-3 md:grid-cols-[2fr_1fr_1fr_auto]">

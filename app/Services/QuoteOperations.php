@@ -37,6 +37,7 @@ class QuoteOperations
             return Quote::create([
                 'code' => 'COT-'.strtoupper(Str::random(12)), 'buyer_name' => $data['buyer_name'],
                 'buyer_document' => $data['buyer_document'] ?? null, 'valid_until' => $data['valid_until'] ?? null,
+                'buyer_email' => $data['buyer_email'] ?? null,
                 'notes' => $data['notes'] ?? null, 'items' => $items, 'amount' => $totalCents / 100,
                 'registered_by' => $adminId, 'status' => 'draft',
             ]);

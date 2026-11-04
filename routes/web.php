@@ -165,6 +165,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::post('/quotes/{quote}/aprobar', [\App\Http\Controllers\Admin\QuoteController::class, 'approve'])->name('admin.quotes.approve');
     Route::post('/quotes/{quote}/cancelar', [\App\Http\Controllers\Admin\QuoteController::class, 'cancel'])->name('admin.quotes.cancel');
     Route::post('/quotes/{quote}/vender', [\App\Http\Controllers\Admin\QuoteController::class, 'sell'])->name('admin.quotes.sell');
+    Route::get('/quotes/{quote}/pdf', [\App\Http\Controllers\Admin\QuoteController::class, 'download'])->name('admin.quotes.pdf');
+    Route::post('/quotes/{quote}/correo', [\App\Http\Controllers\Admin\QuoteController::class, 'email'])->middleware('throttle:10,1')->name('admin.quotes.email');
     Route::get('/inventario/auspicios', [\App\Http\Controllers\Admin\StockSponsorshipController::class, 'index'])->name('admin.sponsorships');
     Route::post('/inventario/auspicios', [\App\Http\Controllers\Admin\StockSponsorshipController::class, 'store'])->name('admin.sponsorships.store');
     Route::get('/users', fn() => Inertia::render('Admin/Users/Index'))->name('admin.users');
