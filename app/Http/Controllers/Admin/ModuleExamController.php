@@ -10,6 +10,17 @@ use Illuminate\Support\Facades\DB;
 
 class ModuleExamController extends Controller
 {
+    public function settings(Request $request, CourseModule $module): RedirectResponse
+    {
+        $data = $request->validate(['max_attempts' => ['required', 'integer', 'min:1', 'max:20'],
+            'question_limit' => ['required', 'integer', 'in:10,15,20'],
+            'duration_minutes' => ['required', 'integer', 'min:1', 'max:180']]);
+        $exam = $module->exam()->firstOrCreate(['course_module_id' => $module->id],
+            ['course_id' => $module->course_id, 'title' => 'Quiz: '.$module->title, 'passing_score' => 13]);
+        $exam->update($data);
+        return back()->with('success', 'Configuración guardada. Los intentos en curso conservan sus preguntas y vencimiento.');
+    }
+
     public function storeQuestion(Request $request, CourseModule $module): RedirectResponse
     {
         $data = $request->validate([

@@ -23,6 +23,7 @@ use Inertia\Inertia;
 use Inertia\Response;
 use App\Services\StudentLearningPayload;
 use Illuminate\Validation\ValidationException;
+use App\Services\ModuleExamRunner;
 
 class StudentCourseController extends Controller
 {
@@ -521,12 +522,54 @@ class StudentCourseController extends Controller
         abort_unless($moduleLessonsCompleted, 403, 'Debes completar todas las clases del modulo antes de rendir el quiz.');
         abort_unless($module->exam && $module->exam->questions->count() > 0, 404, 'Este modulo no tiene quiz configurado.');
 
+        $runner = app(ModuleExamRunner::class);
+        $session = $runner->pending($enrollment, $module->exam);
+        if ($session && now()->greaterThanOrEqualTo($session->expires_at)) {
+            $attempt = $runner->finish($enrollment, $module->exam, $session->token, []);
+            if ($attempt->passed) {
+                $this->certifyIfReady($enrollment);
+                return redirect()->route('aula.modulo.quiz', [$course, $module]);
+            }
+            return $this->failedModuleRedirect($enrollment, $course, $module, true);
+        }
+        $count = $enrollment->examAttempts()->where('exam_id', $module->exam->id)->count();
+        $payload = app(StudentLearningPayload::class)->module($module);
+        $payload['exam']['questions'] = $session ? $session->publicQuestions() : [];
         return Inertia::render('Aula/ModuloQuiz', [
             'course' => app(StudentLearningPayload::class)->course($course),
-            'module' => app(StudentLearningPayload::class)->module($module),
+            'module' => $payload,
             'lastAttempt' => $enrollment->bestExamAttempt($module->exam->id),
-            'attemptCount' => $enrollment->examAttempts()->where('exam_id', $module->exam->id)->count(),
+            'attemptCount' => $count + ($session ? 1 : 0),
+            'maxAttempts' => $module->exam->max_attempts ?? 6,
+            'durationMinutes' => $module->exam->duration_minutes ?? 20,
+            'questionLimit' => min($module->exam->question_limit ?? 20, $module->exam->questions->count()),
+            'attempt' => $session ? ['token' => $session->token, 'expires_at' => $session->expires_at->toIso8601String(),
+                'server_now' => now()->toIso8601String(), 'answers' => $session->saved_answers ?? []] : null,
         ]);
+    }
+
+    public function moduleQuizStart(Course $course, CourseModule $module): RedirectResponse
+    {
+        $enrollment = Enrollment::where('user_id', Auth::id())->where('course_id', $course->id)->firstOrFail();
+        if ($redirect = $this->moduleAccessRedirect($enrollment, $course, $module)) return $redirect;
+        abort_unless($module->exam, 404);
+        $session = app(ModuleExamRunner::class)->start($enrollment, $module->exam);
+        if ($session->completed_at) {
+            $result = ExamAttempt::findOrFail($session->exam_attempt_id);
+            if (!$result->passed) return $this->failedModuleRedirect($enrollment, $course, $module, true);
+            $this->certifyIfReady($enrollment);
+        }
+        return redirect()->route('aula.modulo.quiz', [$course, $module]);
+    }
+
+    public function moduleQuizSave(Request $request, Course $course, CourseModule $module): \Illuminate\Http\JsonResponse|RedirectResponse
+    {
+        $enrollment = Enrollment::where('user_id', Auth::id())->where('course_id', $course->id)->firstOrFail();
+        if ($redirect = $this->moduleAccessRedirect($enrollment, $course, $module)) return $redirect;
+        abort_unless($module->exam, 404);
+        $data = $request->validate(['attempt_token' => ['required', 'uuid'], 'answers' => ['present', 'array', 'max:500']]);
+        $saved = app(ModuleExamRunner::class)->save($enrollment, $module->exam, $data['attempt_token'], $data['answers']);
+        return response()->json(['saved' => $saved]);
     }
 
     public function moduleQuizSubmit(Request $request, Course $course, CourseModule $module): RedirectResponse
@@ -546,59 +589,15 @@ class StudentCourseController extends Controller
         }
 
         $data = $request->validate([
+            'attempt_token' => ['required', 'uuid'],
             'answers' => ['present', 'array', 'max:500'],
         ]);
 
-        $questions = $exam->questions()->with('options')->get();
-        $this->assertExamAnswers($questions, $data['answers']);
         $module->load('lessons.materials', 'lessons.exam');
-
-        $result = DB::transaction(function () use ($enrollment, $exam, $questions, $data, $module) {
-            $attempt = ExamAttempt::create([
-                'enrollment_id' => $enrollment->id,
-                'exam_id' => $exam->id,
-                'submitted_at' => now(),
-            ]);
-
-            $correctCount = 0;
-
-            foreach ($questions as $question) {
-                $graded = $this->gradeQuestion($question, $data['answers'][$question->id] ?? null);
-
-                if ($graded['is_correct']) {
-                    $correctCount++;
-                }
-
-                $attempt->answers()->create([
-                    'exam_question_id' => $question->id,
-                    'exam_question_option_id' => $graded['option_id'],
-                    'answer_text' => $graded['answer_text'],
-                    'is_correct' => $graded['is_correct'],
-                ]);
-            }
-
-            $total = max($questions->count(), 1);
-            $score = round(($correctCount / $total) * 20, 1);
-            $passed = $score >= self::PASSING_SCORE;
-
-            $attempt->update(['score' => $score, 'passed' => $passed]);
-
-            if (!$passed) {
-                $this->resetModuleProgress($enrollment, $module);
-            }
-
-            return $attempt;
-        });
+        $result = app(ModuleExamRunner::class)->finish($enrollment, $exam, $data['attempt_token'], $data['answers']);
 
         if (!$result->passed) {
-            // Las clases del modulo quedaron sin completar (resetModuleProgress) -
-            // ya no se puede volver a la pagina del quiz (exige el modulo
-            // completo), asi que se manda a repasar desde la primera clase.
-            $firstLesson = $module->lessons->first();
-
-            return redirect()
-                ->route('aula.leccion', [$course, $firstLesson])
-                ->with('error', 'No alcanzaste la nota minima (13/20). El modulo se reinicia: repasa las clases y los temas antes de volver a intentar el quiz.');
+            return $this->failedModuleRedirect($enrollment, $course, $module);
         }
 
         $this->certifyIfReady($enrollment);
@@ -608,15 +607,17 @@ class StudentCourseController extends Controller
             ->with('success', '¡Aprobaste el quiz! Ya puedes continuar con el siguiente modulo.');
     }
 
-    /**
-     * Al reprobar el examen de un modulo, el modulo entero se reinicia -
-     * checklist de requerimientos, Examenes audio 12: "regresa otra vez
-     * desde el inicio del modulo, lo vuelve a recorrer". Se borra el
-     * progreso de las clases (video/materiales/completada) y la aprobacion
-     * de los quices de tema de ese modulo, para este enrollment. El
-     * intento fallido del examen de modulo en si no se toca (queda como
-     * historial para el contador de intentos).
-     */
+    private function failedModuleRedirect(Enrollment $enrollment, Course $course, CourseModule $module, bool $expired = false): RedirectResponse
+    {
+        $limit = $module->exam->max_attempts ?? 6;
+        if ($enrollment->examAttempts()->where('exam_id', $module->exam->id)->count() >= $limit) {
+            return redirect()->route('aula.mis-cursos')->with('error', "Agotaste los {$limit} intentos del examen de {$module->title}. Contacta con administración.");
+        }
+        return redirect()->route('aula.leccion', [$course, $module->lessons()->first()])
+            ->with('error', $expired ? 'El tiempo terminó. Repasa el módulo antes de volver a intentar el examen.'
+                : 'No alcanzaste 13/20. Repasa el módulo antes de volver a intentar el examen.');
+    }
+
     /**
      * Corrige una pregunta segun su tipo (opcion multiple / verdadero-falso
      * comparten la misma forma - una opcion elegida por id; respuesta corta
@@ -649,29 +650,6 @@ class StudentCourseController extends Controller
             'answer_text' => null,
             'is_correct' => (bool) ($selectedOption?->is_correct),
         ];
-    }
-
-    private function resetModuleProgress(Enrollment $enrollment, CourseModule $module): void
-    {
-        $lessonIds = $module->lessons->pluck('id');
-        $materialIds = $module->lessons->flatMap->materials->pluck('id');
-        $lessonExamIds = $module->lessons->pluck('exam.id')->filter()->values();
-
-        LessonProgress::where('enrollment_id', $enrollment->id)
-            ->whereIn('course_lesson_id', $lessonIds)
-            ->delete();
-
-        if ($materialIds->isNotEmpty()) {
-            LessonMaterialView::where('enrollment_id', $enrollment->id)
-                ->whereIn('course_lesson_material_id', $materialIds)
-                ->delete();
-        }
-
-        if ($lessonExamIds->isNotEmpty()) {
-            ExamAttempt::where('enrollment_id', $enrollment->id)
-                ->whereIn('exam_id', $lessonExamIds)
-                ->delete();
-        }
     }
 
     public function completeLesson(Course $course, CourseLesson $lesson): RedirectResponse

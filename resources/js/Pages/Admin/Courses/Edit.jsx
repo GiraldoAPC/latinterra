@@ -3,6 +3,7 @@ import { useState } from "react";
 import AdminLayout from "@/Layouts/AdminLayout";
 import CourseStepper from "@/Components/Admin/CourseStepper";
 import CourseInfoFields from "@/Components/Admin/CourseInfoFields";
+import ModuleExamSettings from '@/Components/Admin/ModuleExamSettings';
 import { Button } from "@/Components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/Components/ui/card";
 import { Badge } from "@/Components/ui/badge";
@@ -633,6 +634,7 @@ function ModuleCard({ courseModule, index, open, onToggle }) {
                         postUrl={`/admin/modulos/${courseModule.id}/examen/preguntas`}
                         exam={courseModule.exam}
                     />
+                    <ModuleExamSettings module={courseModule} />
                 </div>
             </CardContent>
             )}

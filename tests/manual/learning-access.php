@@ -43,9 +43,10 @@ function invalid(callable $action, string $message): void
     try { $action(); throw new RuntimeException($message.' (accepted unexpectedly)'); }
     catch (ValidationException $error) { check(isset($error->errors()['answers']), $message); }
 }
-function testRequest(array $answers = []): Request
+function testRequest(array $answers = [], ?string $token = null): Request
 {
     $request = Request::create('/', 'POST', ['answers' => $answers]);
+    if ($token) $request->merge(['attempt_token' => $token]);
     $request->setLaravelSession(app('session')->driver());
     $request->headers->set('X-Inertia', 'true');
     app()->instance('request', $request);
@@ -80,6 +81,7 @@ foreach ([
 }
 Schema::table('courses', fn (Blueprint $table) => $table->boolean('payment_required')->default(false));
 Schema::create('course_installments', function (Blueprint $table) { $table->id(); $table->unsignedBigInteger('enrollment_id'); $table->string('status'); $table->date('due_date'); });
+(require __DIR__.'/../../database/migrations/2026_11_03_000008_add_module_exam_sessions.php')->up();
 $failure = null;
 try {
     Carbon::setTestNow('2026-11-03 12:00:00');
@@ -141,15 +143,19 @@ try {
     check(LessonProgress::where('course_lesson_id', $lesson->id)->whereNotNull('completed_at')->exists(), 'Valid completion still succeeds');
     $controller->openMaterial($futureMaterial->fresh()); Carbon::setTestNow(now()->addSeconds(12)); $controller->confirmMaterialViewed($futureMaterial->fresh());
     $controller->completeLesson($course->fresh(), $second->fresh()); testRequest();
+    $controller->moduleQuizStart($course->fresh(), $module->fresh());
+    $token = App\Models\Aula\ModuleExamSession::whereNull('completed_at')->firstOrFail()->token;
     $moduleView = props($controller->moduleQuizShow($course->fresh(), $module->fresh()));
     check(!str_contains(json_encode($moduleView), 'is_correct') && count($moduleView['module']['exam']['questions'][0]['options']) === 2, 'Module quiz displays choices without correction flags');
     $controller->markVideoWatched($course->fresh(), $third->fresh());
     check(!LessonProgress::where('course_lesson_id', $third->id)->exists(), 'Previous module exam blocks next-module progress');
-    $controller->moduleQuizSubmit(testRequest([]), $course->fresh(), $module->fresh());
+    $controller->moduleQuizSubmit(testRequest([], $token), $course->fresh(), $module->fresh());
     check((float) ExamAttempt::where('exam_id', $exam->id)->first()->score === 0.0, 'Unanswered exam is graded as zero instead of failing validation');
     check(LessonProgress::whereIn('course_lesson_id', [$lesson->id, $second->id])->count() === 0 && !ExamAttempt::where('exam_id', $topic->id)->exists(), 'Failed module still resets classes and topic approval');
     foreach ([$lesson, $second] as $item) LessonProgress::create(['enrollment_id' => $enrollment->id, 'course_lesson_id' => $item->id, 'video_watched_at' => now(), 'completed_at' => now()]);
-    $controller->moduleQuizSubmit(testRequest([$mq->id => $mc->id]), $course->fresh(), $module->fresh());
+    $controller->moduleQuizStart($course->fresh(), $module->fresh());
+    $token = App\Models\Aula\ModuleExamSession::whereNull('completed_at')->firstOrFail()->token;
+    $controller->moduleQuizSubmit(testRequest([$mq->id => $mc->id], $token), $course->fresh(), $module->fresh());
     check(ExamAttempt::where('exam_id', $exam->id)->where('passed', true)->exists(), 'Valid completed module can pass');
     $before = ExamAttempt::count();
     $controller->moduleQuizSubmit(testRequest([$mq->id => $wrong->id]), $course->fresh(), $module->fresh());

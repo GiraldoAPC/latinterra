@@ -267,6 +267,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 
     // ===== Aula virtual: quiz por modulo (reusa update/destroy de arriba, las preguntas son el mismo modelo) =====
     Route::post('/modulos/{module}/examen/preguntas', [\App\Http\Controllers\Admin\ModuleExamController::class, 'storeQuestion'])->name('admin.module-exam.questions.store');
+    Route::put('/modulos/{module}/examen/configuracion', [\App\Http\Controllers\Admin\ModuleExamController::class, 'settings'])->name('admin.module-exam.settings');
     Route::post('/clases/{lesson}/examen/preguntas', [\App\Http\Controllers\Admin\LessonExamController::class, 'storeQuestion'])->name('admin.lesson-exam.questions.store');
 });
 
@@ -310,6 +311,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/aula/material/{material}/abrir', [StudentCourseController::class, 'openMaterial'])->name('aula.material.abrir');
     Route::post('/aula/material/{material}/visto', [StudentCourseController::class, 'confirmMaterialViewed'])->name('aula.material.visto');
     Route::get('/aula/{course:slug}/modulo/{module}/quiz', [StudentCourseController::class, 'moduleQuizShow'])->name('aula.modulo.quiz');
+    Route::post('/aula/{course:slug}/modulo/{module}/quiz/iniciar', [StudentCourseController::class, 'moduleQuizStart'])->name('aula.modulo.quiz.iniciar');
+    Route::put('/aula/{course:slug}/modulo/{module}/quiz/respuestas', [StudentCourseController::class, 'moduleQuizSave'])->name('aula.modulo.quiz.guardar');
     Route::post('/aula/{course:slug}/modulo/{module}/quiz', [StudentCourseController::class, 'moduleQuizSubmit'])->name('aula.modulo.quiz.enviar');
     Route::get('/aula/certificado/{enrollment}', [CertificateController::class, 'show'])->name('certificado.ver');
 });

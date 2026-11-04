@@ -10,7 +10,13 @@ Prueba: `php tests/manual/learning-access.php`, con SQLite en memoria, cubre 31 
 
 Esto no comprueba tiempo real de reproducción ni lectura por página: esos puntos siguen pendientes, junto con intentos, sorteo y tiempo de examen en servidor. Los materiales existentes siguen servidos desde almacenamiento público; migrarlos a descargas privadas autenticadas requiere una entrega adicional si se necesita impedir acceso directo al archivo mediante una URL conocida. Las pruebas de simultaneidad de envíos y la validación de producción también siguen pendientes.
 
-Las secciones siguientes conservan los hallazgos de la revisión original para mantener el contexto.
+### Segunda corrección aplicada
+
+Los hallazgos originales 3, 4 y 5 ahora tienen implementación: límite configurable con seis intentos iniciales, muestra aleatoria persistida de preguntas/opciones y vencimiento de veinte minutos controlado por servidor. Hay inicio explícito, reanudación, guardado de respuestas y corrección de las respuestas recibidas a tiempo. Los envíos tardíos no reemplazan respuestas guardadas y los reenvíos no duplican el resultado. Las condiciones se configuran por módulo en la edición administrativa del curso.
+
+La migración `2026_11_03_000008_add_module_exam_sessions.php` se aplicó localmente; requiere despliegue y migración en producción. La suite `php tests/manual/module-exams.php` pasa 59 comprobaciones, incluidas las 31 de acceso. Se conserva como pendiente probar conexiones concurrentes y escenarios de conectividad real.
+
+El siguiente bloque de correcciones es seguimiento por diapositiva, duración real del video y cierre del curso certificado. Las secciones siguientes conservan los hallazgos de la revisión original para mantener el contexto.
 
 ## Prioridad 1: completar y corregir aula/exámenes
 

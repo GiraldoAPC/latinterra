@@ -8,7 +8,24 @@ El código incluye requisitos previos y convalidaciones registradas por administ
 
 Primera corrección tras la revisión: las pantallas del alumno usan datos explícitos que excluyen indicadores de respuesta correcta, claves de texto corto, videos/materiales de clases futuras y configuración interna de firmas. Los envíos de evaluación y avance comparten comprobaciones de curso, secuencia, matrícula activa, deuda y vencimiento. Las respuestas solo pueden referirse a preguntas/opciones del examen; los envíos ordinarios posteriores a una aprobación no revierten su progreso.
 
-Prueba: `php tests/manual/learning-access.php` (31 comprobaciones en SQLite aislado). Esta entrega no agrega migraciones ni modifica los datos de corrección que usa administración. Sigue pendiente el límite de intentos, selección aleatoria, tiempo de examen en servidor, seguimiento por diapositiva, comprobación de duración real de video y cierre del curso certificado. Ver `docs/revision-pendientes-checklist.md` para el detalle actualizado.
+Prueba: `php tests/manual/learning-access.php` (31 comprobaciones en SQLite aislado). La primera corrección no agregó migraciones ni cambió las claves de administración. La segunda entrega, descrita a continuación, incorpora intentos, sorteo y tiempo de examen en servidor. Sigue pendiente seguimiento por diapositiva, comprobación de duración real de video y cierre del curso certificado. Ver `docs/revision-pendientes-checklist.md` para el detalle actualizado.
+
+### Segunda corrección: intentos y tiempo de examen de módulo
+
+- [x] Inicio explícito: abrir la pantalla no consume un intento ni entrega el banco de preguntas.
+- [x] Máximo inicial de seis intentos por examen/matrícula. Se cuentan los intentos históricos y los abandonados que vencen. Los exámenes de tema mantienen intentos ilimitados.
+- [x] Selección aleatoria de 10, 15 o 20 preguntas, con opciones mezcladas. Si el banco es menor, se usa completo.
+- [x] Preguntas, opciones y claves de corrección congeladas por intento en el servidor. Recargar/reabrir reanuda el mismo intento y no vuelve a sortear ni reinicia el plazo.
+- [x] Duración inicial de veinte minutos, vencimiento guardado en servidor y cronómetro general en pantalla.
+- [x] Guardado automático de respuestas. Al vencer se corrigen las recibidas antes del límite; las respuestas nuevas fuera de plazo no se aceptan. El intento vencido se finaliza al recibir el envío o al volver a abrirlo, sin requerir un proceso programado.
+- [x] Envíos repetidos de un intento finalizado devuelven el resultado existente. Las sesiones se limitan a su matrícula/examen y no exponen claves al alumno.
+- [x] Al desaprobar se reinicia el módulo, se conserva el historial de intentos y se informa si se agotó el cupo.
+- [x] Condiciones configurables desde la edición del curso, dentro de cada módulo: máximo de intentos (1–20), preguntas (10/15/20), duración (1–180 minutos). La configuración inicial elegida es seis intentos y veinte minutos; cambios de duración/banco solo afectan nuevos intentos. El máximo se aplica en cada nuevo inicio y puede ampliarse por administración.
+- [ ] Verificación de simultaneidad real con múltiples conexiones MySQL y de conexiones intermitentes en dispositivos reales.
+
+La migración `2026_11_03_000008_add_module_exam_sessions.php` agrega configuración a `exams` y la tabla de sesiones; se aplicó en MySQL local. Esta entrega sí requiere `php artisan migrate --force` en producción antes de usar el nuevo código. Incluye los archivos compilados.
+
+Prueba: `php tests/manual/module-exams.php` (59 comprobaciones en SQLite en memoria, incluidas las 31 de la primera corrección). Cubre reanudación, selección persistida, claves ocultas, guardado, vencimiento exacto, respuestas tardías, cambios de banco/configuración, intentos históricos, límite agotado, envío repetido, aislamiento entre matrículas y requisitos de avance. Sintaxis PHP y compilación verificadas.
 
 ## Certificación con aula virtual — bloque actual
 
