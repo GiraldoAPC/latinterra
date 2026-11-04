@@ -40,6 +40,11 @@ class HandleInertiaRequests extends Middleware
             'settings' => $request->user()?->role === 'admin'
                 ? ['warehouseMode' => Setting::bool('warehouse_mode')]
                 : null,
+            'inventoryAlerts' => fn () => $request->user()?->isAdmin() ? [
+                'count' => \App\Models\Ventas\Product::active()->lowStock()->count(),
+                'products' => \App\Models\Ventas\Product::active()->lowStock()->orderBy('stock')->limit(5)
+                    ->get(['id', 'name', 'stock', 'stock_warehouse', 'min_stock']),
+            ] : null,
             // Los controladores usan back()->with('success'|'error', ...) /
             // redirect()->with(...) por todo el sistema; sin compartirlo aca
             // esos mensajes nunca llegaban al frontend (Inertia no los pasa

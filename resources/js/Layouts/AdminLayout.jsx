@@ -73,6 +73,7 @@ const NAV = [
             { href: "/admin/brands", icon: Layers, label: "Marcas" },
             { href: "/admin/inventario/movimientos", icon: ClipboardList, label: "Movimientos" },
             { href: "/admin/inventario/proveedores", icon: Truck, label: "Proveedores" },
+            { href: "/admin/inventario/auspicios", icon: ShoppingBag, label: "Auspicios" },
         ],
     },
     {
@@ -306,7 +307,7 @@ function currentPageLabel(url) {
 }
 
 export default function AdminLayout({ title = "Admin", children }) {
-    const { auth } = usePage().props;
+    const { auth, inventoryAlerts } = usePage().props;
     const { url } = usePage();
     const [collapsed, setCollapsed] = useState(false);
     const showLoader = useGlobalLoader();
@@ -410,6 +411,7 @@ export default function AdminLayout({ title = "Admin", children }) {
                                     className="relative shrink-0 md:ml-1"
                                 >
                                     <Bell className="h-5 w-5" />
+                                    {!!inventoryAlerts?.count && <span className="absolute -right-1 -top-1 rounded-full bg-red-600 px-1.5 text-[10px] text-white">{inventoryAlerts.count}</span>}
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end" className="w-72">
@@ -417,9 +419,14 @@ export default function AdminLayout({ title = "Admin", children }) {
                                     Notificaciones
                                 </DropdownMenuLabel>
                                 <DropdownMenuSeparator />
-                                <div className="px-2 py-6 text-center text-sm text-muted-foreground">
-                                    No hay notificaciones nuevas.
-                                </div>
+                                {!inventoryAlerts?.count ? <div className="px-2 py-6 text-center text-sm text-muted-foreground">Sin alertas de stock.</div> : <div className="space-y-2 p-2">
+                                    <p className="text-xs font-medium">Productos con stock de ventas bajo</p>
+                                    {inventoryAlerts.products.map((product) => <Link key={product.id} href="/admin/products" className="block rounded p-2 text-xs hover:bg-slate-100">
+                                        <strong>{product.name}</strong><p>Ventas: {product.stock} · Mínimo: {product.min_stock ?? 5}</p>
+                                        <p>{product.stock_warehouse > 0 ? `Almacén: ${product.stock_warehouse}. Revisa una transferencia a ventas.` : 'Revisa la reposición del producto.'}</p>
+                                    </Link>)}
+                                    <Link className="block text-xs underline" href="/admin/products">Ver todos los productos</Link>
+                                </div>}
                             </DropdownMenuContent>
                         </DropdownMenu>
 

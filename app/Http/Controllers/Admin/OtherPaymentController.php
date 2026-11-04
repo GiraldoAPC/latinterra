@@ -283,6 +283,10 @@ class OtherPaymentController extends Controller
                 ? Product::whereKey($item['product_id'])->lockForUpdate()->first()
                 : null;
 
+            if ($product && $product->tracksStock() && $item['qty'] > $product->stock) {
+                throw \Illuminate\Validation\ValidationException::withMessages(['items' => "Stock insuficiente para {$product->name}. Revisa las cantidades."]);
+            }
+
             SaleItem::create([
                 'other_payment_id' => $payment->id,
                 'product_id' => $item['product_id'],
@@ -294,7 +298,7 @@ class OtherPaymentController extends Controller
             ]);
 
             if ($product && $product->tracksStock()) {
-                $product->decrement('stock', min($item['qty'], $product->stock));
+                $product->decrement('stock', $item['qty']);
             }
         }
 

@@ -41,8 +41,8 @@ class ProductController extends Controller
 
     public function destroy(Product $product): RedirectResponse
     {
-        if ($product->stockPurchases()->exists()) {
-            return back()->withErrors(['product' => 'No se puede eliminar: tiene compras registradas. Desactivalo en su lugar.']);
+        if ($product->stockPurchases()->exists() || \App\Models\Inventario\StockSponsorship::where('product_id', $product->id)->exists()) {
+            return back()->withErrors(['product' => 'No se puede eliminar: tiene compras o auspicios registrados. Desactivalo en su lugar.']);
         }
 
         $product->delete();

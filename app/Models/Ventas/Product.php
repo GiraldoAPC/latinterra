@@ -19,6 +19,9 @@ class Product extends Model
         'price' => 'decimal:2',
         'avg_cost' => 'decimal:2',
         'is_active' => 'boolean',
+        'stock' => 'integer',
+        'stock_warehouse' => 'integer',
+        'min_stock' => 'integer',
     ];
 
     public function category(): BelongsTo
@@ -54,6 +57,11 @@ class Product extends Model
     public function tracksStock(): bool
     {
         return $this->stock !== null;
+    }
+
+    public function scopeLowStock($query)
+    {
+        return $query->whereNotNull('stock')->whereRaw('stock <= COALESCE(min_stock, 5)');
     }
 
     public function isLowStock(): bool

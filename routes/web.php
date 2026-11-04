@@ -159,7 +159,14 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::post('/brands', [\App\Http\Controllers\Admin\BrandController::class, 'store'])->name('admin.brands.store');
     Route::put('/brands/{brand}', [\App\Http\Controllers\Admin\BrandController::class, 'update'])->name('admin.brands.update');
     Route::delete('/brands/{brand}', [\App\Http\Controllers\Admin\BrandController::class, 'destroy'])->name('admin.brands.destroy');
-    Route::get('/quotes', fn() => Inertia::render('Admin/Quotes/Index'))->name('admin.quotes');
+    Route::get('/quotes', [\App\Http\Controllers\Admin\QuoteController::class, 'index'])->name('admin.quotes');
+    Route::post('/quotes', [\App\Http\Controllers\Admin\QuoteController::class, 'store'])->name('admin.quotes.store');
+    Route::get('/quotes/{quote}', [\App\Http\Controllers\Admin\QuoteController::class, 'show'])->name('admin.quotes.show');
+    Route::post('/quotes/{quote}/aprobar', [\App\Http\Controllers\Admin\QuoteController::class, 'approve'])->name('admin.quotes.approve');
+    Route::post('/quotes/{quote}/cancelar', [\App\Http\Controllers\Admin\QuoteController::class, 'cancel'])->name('admin.quotes.cancel');
+    Route::post('/quotes/{quote}/vender', [\App\Http\Controllers\Admin\QuoteController::class, 'sell'])->name('admin.quotes.sell');
+    Route::get('/inventario/auspicios', [\App\Http\Controllers\Admin\StockSponsorshipController::class, 'index'])->name('admin.sponsorships');
+    Route::post('/inventario/auspicios', [\App\Http\Controllers\Admin\StockSponsorshipController::class, 'store'])->name('admin.sponsorships.store');
     Route::get('/users', fn() => Inertia::render('Admin/Users/Index'))->name('admin.users');
     Route::get('/settings', [\App\Http\Controllers\Admin\SettingController::class, 'index'])->name('admin.settings');
     Route::put('/settings', [\App\Http\Controllers\Admin\SettingController::class, 'update'])->name('admin.settings.update');

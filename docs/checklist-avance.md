@@ -26,7 +26,7 @@ Los certificados anteriores no tienen nota guardada: se muestra «No registrada�
 ## Siguientes bloques
 
 - Certificaciones presenciales: registro, evaluación y emisión implementados; falta validación operativa y definir recertificación/revocación.
-- Inventario: revisar cotización → venta, alertas de stock y auspicios al costo.
+- Inventario: cotización → venta, alertas de stock y auspicios al costo implementados; pendiente validación operativa.
 - Roles: administración, estudiante, instructor y coordinador; permisos de gerencia/administración.
 - Pasarela y facturación SUNAT: etapas futuras según el checklist.
 
@@ -68,3 +68,21 @@ La migración `2026_11_03_000004_add_in_person_certification.php` agrega los cam
 Desde el grupo: registrar nota/asistencia → guardar evaluación → emitir certificado → imprimir/guardar PDF. Las firmas se configuran en «Certificados». Repetir la emisión devuelve el mismo certificado, sin duplicarlo. El formato de impresión compartido se ajustó a A4 horizontal; la revisión visual en navegador y lectura de QR siguen pendientes.
 
 Verificación: `php tests/manual/in-person-certification.php` (25 comprobaciones en SQLite aislado) y `php tests/manual/in-person-registration.php` (23 comprobaciones). Cubren requisitos de emisión, límite de nota, archivos de firmas, copia de datos, emisión repetida, privacidad, protección de cambios, verificación de ambos tipos de certificado y middleware. La reversión de claves foráneas de la migración de evaluación requiere MySQL; SQLite no admite esa operación y las pruebas usan una base en memoria desechable.
+
+## Inventario y cotizaciones
+
+- [x] Se conserva el flujo existente compra → almacén → transferencia → ventas. Requiere activar «Modo almacén» en Configuración; no se modificó la preferencia existente.
+- [x] Cotización comercial imprimible/PDF con destinatario, documento opcional, productos, precios, cantidades, condiciones y fecha de vigencia opcional.
+- [x] Aprobar/cancelar cotizaciones y convertir una aprobada y vigente en venta al confirmar el pago. Aprobar no reserva stock. La conversión verifica existencias bajo bloqueo y usa el precio cotizado, con costo promedio actual guardado por renglón.
+- [x] La conversión registra un ticket interno en Ventas y no se duplica al repetir la solicitud. La integración de boleta/factura en este nuevo flujo queda pendiente; las ventas directas conservan sus opciones existentes.
+- [x] Alertas en la campana de todo el panel administrativo: productos activos con control de stock y cantidad de ventas menor o igual al mínimo (5 si no está configurado). Muestra hasta cinco productos y el total de alertas; si hay existencias en almacén, sugiere revisar una transferencia.
+- [x] Auspicios con beneficiario, motivo, ubicación y cantidad. Descuentan ventas o almacén y registran costo promedio de compra y costo total asumido por la empresa, sin generar ingresos ni venta. Requieren costo conocido y existencias suficientes; costo conocido cero se conserva como cero.
+- [x] Solicitudes de auspicio con identificador para evitar doble descuento; historial paginado y costo acumulado.
+- [x] Venta habitual vuelve a validar existencias bajo bloqueo antes de descontar, incluso si un producto aparece en varios renglones; los fallos revierten pago, detalle y stock.
+- [ ] Validación operativa con compras, cotizaciones, ventas y auspicios reales de prueba, impresión de documentos y múltiples conexiones MySQL concurrentes.
+- [ ] Alertas externas por correo y distribución por roles de gerencia/inventario, una vez implementados esos roles. Actualmente están disponibles para el rol administrador dentro del sistema.
+- [ ] Corrección/reversión administrativa de auspicios: los registros se conservan y no se eliminan desde la interfaz.
+
+Accesos: `/admin/quotes` (Ventas → Cotizaciones), `/admin/inventario/auspicios` (Inventario → Auspicios) y campana del panel. La migración `2026_11_03_000005_add_quotes_and_sponsorships.php` se aplicó en MySQL local; producción sigue pendiente de despliegue y `php artisan migrate --force`.
+
+Prueba reproducible: `php tests/manual/inventory-workflow.php` (38 comprobaciones con SQLite en memoria). Incluye valoración de auspicios, ubicación de salida, requisitos de costo, solicitudes repetidas, totales de cotización calculados en servidor, estados, vencimiento en horario de Perú, venta y reversión de transacciones fallidas, alertas, acceso administrativo y reversión de la migración. La compilación de producción está incluida.

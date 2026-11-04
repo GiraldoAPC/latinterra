@@ -26,7 +26,7 @@ const EMPTY = {
 };
 
 function isLowStock(p) {
-    return p.stock !== null && p.stock <= (p.min_stock ?? 5);
+    return p.is_active && p.stock !== null && p.stock <= (p.min_stock ?? 5);
 }
 
 function inventoryValue(p) {
