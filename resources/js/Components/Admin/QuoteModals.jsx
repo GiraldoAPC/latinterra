@@ -1,9 +1,10 @@
 import { Link, useForm } from '@inertiajs/react';
-import { Plus, Trash2, Send, AlertTriangle } from 'lucide-react';
+import { Plus, Trash2, Send, AlertTriangle, FileText, UserRound, Package, StickyNote } from 'lucide-react';
 import { Button } from '@/Components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/Components/ui/dialog';
 
-const inputClass = 'mt-1 block h-9 w-full rounded-md border border-input bg-background px-3 text-sm focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500';
+const inputClass = 'mt-1.5 block h-10 w-full rounded-xl border border-[#024A7D]/20 bg-white px-3 text-sm text-slate-800 shadow-sm placeholder:text-slate-400 focus:border-[#00ADEE] focus:outline-none focus:ring-2 focus:ring-[#00ADEE]/15';
+const primaryButton = 'rounded-xl bg-gradient-to-br from-[#00ADEE] via-[#026698] to-[#024A7D] font-semibold text-white shadow-md shadow-[#024A7D]/15 hover:brightness-110';
 
 export function QuoteFormModal({ quote, products, onClose }) {
     const editing = !!quote;
@@ -15,9 +16,9 @@ export function QuoteFormModal({ quote, products, onClose }) {
     const change = (index, values) => form.setData('items', form.data.items.map((item, i) => i === index ? { ...item, ...values } : item));
     const total = form.data.items.reduce((sum, item) => sum + Number(item.qty || 0) * Number(item.unit_price || 0), 0);
     return <Dialog open onOpenChange={(open) => { if (!open && !form.processing) onClose(); }}>
-        <DialogContent className="max-w-3xl gap-0 p-0" showClose={!form.processing}>
-            <DialogHeader className="border-b px-6 py-4 pr-12">
-                <DialogTitle>{editing ? `Editar ${quote.code}` : 'Nueva cotización'}</DialogTitle>
+        <DialogContent className="max-w-3xl gap-0 rounded-3xl border border-[#024A7D]/10 p-0 sm:rounded-3xl" showClose={!form.processing}>
+            <DialogHeader className="border-b border-[#024A7D]/10 bg-gradient-to-r from-sky-50 to-white px-6 py-5 pr-12 text-left">
+                <DialogTitle className="flex items-center gap-3 text-xl text-[#024A7D]"><span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-[#00ADEE] to-[#024A7D] text-white shadow-md"><FileText className="h-5 w-5" /></span>{editing ? `Editar ${quote.code}` : 'Nueva cotización'}</DialogTitle>
                 <DialogDescription>{editing && quote.status === 'approved' ? 'Al guardar, la cotización volverá a quedar pendiente de aprobación.' : 'Completa el destinatario y agrega los productos.'}</DialogDescription>
             </DialogHeader>
             <form className="flex min-h-0 flex-col" onSubmit={(event) => {
@@ -26,7 +27,8 @@ export function QuoteFormModal({ quote, products, onClose }) {
                 if (editing) form.put(`/admin/quotes/${quote.id}`, options);
                 else form.post('/admin/quotes', options);
             }}>
-                <div className="max-h-[68vh] space-y-4 overflow-y-auto px-6 py-4">
+                <div className="min-h-0 max-h-[68vh] space-y-4 overflow-y-auto px-6 py-4">
+                    <h3 className="flex items-center gap-2 text-sm font-semibold text-[#024A7D]"><UserRound className="h-4 w-4" />Datos del cliente</h3>
                     <div className="grid gap-3 sm:grid-cols-2">
                         <label className="text-xs font-medium">Cliente / destinatario<input autoFocus required maxLength={180} className={inputClass} value={form.data.buyer_name} onChange={(event) => form.setData('buyer_name', event.target.value)} /></label>
                         <label className="text-xs font-medium">Documento (opcional)<input maxLength={30} className={inputClass} value={form.data.buyer_document} onChange={(event) => form.setData('buyer_document', event.target.value)} /></label>
@@ -34,9 +36,9 @@ export function QuoteFormModal({ quote, products, onClose }) {
                         <label className="text-xs font-medium">Válida hasta (opcional)<input type="date" className={inputClass} value={form.data.valid_until} onChange={(event) => form.setData('valid_until', event.target.value)} /></label>
                     </div>
                     <div className="space-y-2">
-                        <div className="flex items-center justify-between"><h3 className="text-sm font-semibold">Productos</h3><Button type="button" size="sm" variant="ghost" disabled={form.data.items.length >= 50 || !products.length} onClick={() => form.setData('items', [...form.data.items, { product_id: '', qty: 1, unit_price: '' }])}><Plus className="h-3.5 w-3.5" />Agregar</Button></div>
+                        <div className="flex items-center justify-between border-t border-slate-100 pt-3"><h3 className="flex items-center gap-2 text-sm font-semibold text-[#024A7D]"><Package className="h-4 w-4" />Productos</h3><Button type="button" size="sm" variant="outline" className="rounded-xl border-[#024A7D]/15 text-[#024A7D]" disabled={form.data.items.length >= 50 || !products.length} onClick={() => form.setData('items', [...form.data.items, { product_id: '', qty: 1, unit_price: '' }])}><Plus className="h-3.5 w-3.5" />Agregar</Button></div>
                         {!products.length && <p className="rounded-md bg-amber-50 p-3 text-xs text-amber-900">No hay productos activos. <Link href="/admin/products" className="underline">Registrar productos</Link></p>}
-                        {form.data.items.map((item, i) => <div key={i} className="grid grid-cols-12 items-end gap-2 rounded-lg border bg-slate-50/60 p-3">
+                        {form.data.items.map((item, i) => <div key={i} className="grid grid-cols-12 items-end gap-2 rounded-2xl border border-[#024A7D]/10 bg-[#f4f9fc] p-3">
                             <label className="col-span-12 text-xs sm:col-span-6">Producto<select required className={inputClass} value={item.product_id} onChange={(event) => { const product = products.find((p) => String(p.id) === event.target.value); change(i, { product_id: event.target.value, unit_price: product?.price ?? '' }); }}>
                                 <option value="">Selecciona un producto</option>
                                 {!products.some((p) => String(p.id) === String(item.product_id)) && item.product_id && <option value={item.product_id}>{quote?.items[i]?.name ?? 'Producto no disponible'}</option>}
@@ -47,12 +49,12 @@ export function QuoteFormModal({ quote, products, onClose }) {
                             <Button type="button" variant="ghost" size="icon" className="col-span-2 h-9 w-full text-slate-500 hover:text-red-600 sm:col-span-1" title="Quitar producto" aria-label={`Quitar producto ${i + 1}`} onClick={() => form.setData('items', form.data.items.filter((_, index) => index !== i))}><Trash2 className="h-4 w-4" /></Button>
                         </div>)}
                     </div>
-                    <label className="block text-xs font-medium">Condiciones / notas<textarea rows={2} maxLength={2000} className={`${inputClass} h-auto py-2`} value={form.data.notes} onChange={(event) => form.setData('notes', event.target.value)} /></label>
+                    <label className="block text-xs font-medium text-[#024A7D]"><span className="flex items-center gap-2"><StickyNote className="h-4 w-4" />Condiciones / notas</span><textarea rows={2} maxLength={2000} placeholder="Condiciones de entrega, forma de pago u otras indicaciones…" className={`${inputClass} h-auto py-2`} value={form.data.notes} onChange={(event) => form.setData('notes', event.target.value)} /></label>
                     {Object.entries(form.errors).map(([key, error]) => <p key={key} role="alert" className="text-xs text-red-700">{error}</p>)}
                 </div>
-                <div className="flex flex-wrap items-center justify-between gap-3 border-t bg-slate-50 px-6 py-4">
-                    <p className="text-sm font-semibold">Total <span className="ml-2 text-lg text-[#024A7D]">S/ {total.toFixed(2)}</span></p>
-                    <div className="flex gap-2"><Button type="button" variant="outline" disabled={form.processing} onClick={onClose}>Cancelar</Button><Button disabled={form.processing || !form.data.items.length || !products.length}>{form.processing ? 'Guardando…' : editing ? 'Guardar cambios' : 'Crear cotización'}</Button></div>
+                <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[#024A7D]/10 bg-[#f4f9fc] px-6 py-4">
+                    <p className="text-xs font-medium text-slate-500">Total de la cotización <span className="mt-0.5 block text-2xl font-bold tracking-tight text-[#024A7D]">S/ {total.toFixed(2)}</span></p>
+                    <div className="flex gap-2"><Button type="button" variant="outline" className="rounded-xl" disabled={form.processing} onClick={onClose}>Cancelar</Button><Button className={primaryButton} disabled={form.processing || !form.data.items.length || !products.length}>{form.processing ? 'Guardando…' : editing ? 'Guardar cambios' : 'Crear cotización'}</Button></div>
                 </div>
             </form>
         </DialogContent>

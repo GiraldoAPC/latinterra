@@ -134,6 +134,8 @@ Pruebas: `php tests/manual/quote-delivery.php` (22 comprobaciones sin SMTP real)
 
 La pantalla de cotizaciones ahora usa una tabla con búsqueda, filtro de estado y paginación. Crear/editar se realiza en un modal compacto; las filas permiten ver, editar, eliminar, descargar PDF y enviar correo (también en modal). Editar una cotización aprobada exige nueva aprobación y recalcula los importes en servidor. Las cotizaciones con venta no pueden editarse ni eliminarse; eliminar una no vendida requiere confirmación en la interfaz y no modifica inventario ni pagos. Se revisaron capturas de la tabla y el modal en Chrome con datos ficticios y sin solicitudes de escritura. Esta mejora no agrega migraciones.
 
+Actualización visual de cotizaciones: se adaptó la referencia proporcionada a la paleta azul `#024A7D` y celeste `#00ADEE`. Incluye cabecera con ondas, botones con degradado, filtros redondeados, tabla con iconos, estado vacío con acceso a crear y modal con secciones de cliente, productos y notas. Conserva las acciones y restricciones existentes. Revisión visual en Chrome con datos ficticios: escritorio, pantalla pequeña, tabla vacía/con registros y modal. Compilación de producción verificada; no agrega migraciones ni cambios de lógica comercial.
+
 ## Roles y permisos
 
 - [x] Roles disponibles: `admin` (administración), `manager` (gerencia), `instructor`, `coordinator` (coordinador) y `student` (estudiante). Cada cuenta mantiene un solo rol, como el modelo existente.
