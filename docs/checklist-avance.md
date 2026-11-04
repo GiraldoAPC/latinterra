@@ -136,6 +136,12 @@ La pantalla de cotizaciones ahora usa una tabla con búsqueda, filtro de estado 
 
 Actualización visual de cotizaciones: se adaptó la referencia proporcionada a la paleta azul `#024A7D` y celeste `#00ADEE`. Incluye cabecera con ondas, botones con degradado, filtros redondeados, tabla con iconos, estado vacío con acceso a crear y modal con secciones de cliente, productos y notas. Conserva las acciones y restricciones existentes. Revisión visual en Chrome con datos ficticios: escritorio, pantalla pequeña, tabla vacía/con registros y modal. Compilación de producción verificada; no agrega migraciones ni cambios de lógica comercial.
 
+## Diseño administrativo compartido — 4 de noviembre de 2026
+
+El icono de cabecera quedó centrado explícitamente en ambos ejes. El diseño aprobado de cotizaciones se convirtió en componentes compartidos y una temática del panel para cabeceras, tablas, campos, botones, tarjetas y modales. Se aplicó a los listados administrativos; presenciales, auspicios y creación de personal ahora abren sus registros en modal. Los formularios extensos por etapas conservan su navegación. Guía para las siguientes pantallas: [Diseño de administración](diseno-administracion.md).
+
+Verificación en Chrome con datos ficticios y sin escrituras reales: siete pantallas de escritorio, apertura/cierre de seis modales, cuatro vistas a 390 px y sus modales. Iconos de cabecera con desviación de centro de cero píxeles, sin desbordamiento horizontal de página ni errores de ejecución. Revisión visual de tabla con registros, estados vacíos y formularios. Compilación de producción correcta. No requiere nuevas migraciones; producción no verificada.
+
 ## Roles y permisos
 
 - [x] Roles disponibles: `admin` (administración), `manager` (gerencia), `instructor`, `coordinator` (coordinador) y `student` (estudiante). Cada cuenta mantiene un solo rol, como el modelo existente.

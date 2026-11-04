@@ -1,3 +1,5 @@
+import { AdminPageHeader } from '@/Components/Admin/AdminPage';
+import { Award as PageIcon } from 'lucide-react';
 import { Head, Link } from "@inertiajs/react";
 import { useState } from 'react';
 import AdminLayout from "@/Layouts/AdminLayout";
@@ -11,11 +13,9 @@ export default function Certificados({ courses = [], certificates, inPersonCerti
     return <>
         <Head title="Modelo de certificado" />
         <AdminLayout title="Certificados">
-            <div className="mb-6 flex flex-wrap items-center justify-between gap-4 print:hidden">
-                <div><h1 className="text-xl font-semibold">Modelo de certificado</h1>
-                    <p className="mt-1 text-sm text-muted-foreground">Configura firmas por curso y revisa la vigencia de los certificados emitidos.</p></div>
-                <Button onClick={() => window.print()}>Imprimir modelo / Guardar PDF</Button>
-            </div>
+            <AdminPageHeader icon={PageIcon} title={<>Modelo de certificado</>} description={<>Configura firmas por curso y revisa la vigencia de los certificados emitidos.</>} className="print:hidden" actions={<>
+<Button onClick={() => window.print()}>Imprimir modelo / Guardar PDF</Button>
+</>} />
             <section className="mb-8 space-y-4 rounded-xl border bg-white p-5 print:hidden">
                 <h2 className="text-lg font-semibold">Firmas del certificado</h2>
                 <label className="block text-sm">Curso

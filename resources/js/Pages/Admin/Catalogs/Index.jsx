@@ -1,3 +1,5 @@
+import { AdminPageHeader } from '@/Components/Admin/AdminPage';
+import { ListChecks as PageIcon } from 'lucide-react';
 import { useState } from "react";
 import { Head, router, useForm } from "@inertiajs/react";
 import AdminLayout from "@/Layouts/AdminLayout";
@@ -163,16 +165,8 @@ export default function CatalogsIndex({ groups, options }) {
         <>
             <Head title="Catalogos" />
             <AdminLayout title="Catalogos">
-                <div className="mb-4">
-                    <h1 className="flex items-center gap-2 text-lg font-semibold">
-                        <ListChecks className="h-5 w-5 text-[#024A7D]" />
-                        Catalogos del sistema
-                    </h1>
-                    <p className="text-sm text-muted-foreground">
-                        Administra las opciones de los selects fijos (tipo de documento, genero, SCTR...) sin
-                        depender de un cambio de codigo.
-                    </p>
-                </div>
+                <AdminPageHeader icon={PageIcon} title={<>Catalogos del sistema</>} description={<>Administra las opciones de los selects fijos (tipo de documento, genero, SCTR...) sin
+                        depender de un cambio de codigo.</>} />
 
                 <div className="mb-4 flex gap-1 overflow-x-auto rounded-lg border bg-muted/40 p-1">
                     {groupKeys.map((key) => (

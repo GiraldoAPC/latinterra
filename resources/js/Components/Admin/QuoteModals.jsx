@@ -1,10 +1,11 @@
+import { AdminIcon, adminPrimaryButton, adminInput } from '@/Components/Admin/AdminPage';
 import { Link, useForm } from '@inertiajs/react';
 import { Plus, Trash2, Send, AlertTriangle, FileText, UserRound, Package, StickyNote } from 'lucide-react';
 import { Button } from '@/Components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/Components/ui/dialog';
 
-const inputClass = 'mt-1.5 block h-10 w-full rounded-xl border border-[#024A7D]/20 bg-white px-3 text-sm text-slate-800 shadow-sm placeholder:text-slate-400 focus:border-[#00ADEE] focus:outline-none focus:ring-2 focus:ring-[#00ADEE]/15';
-const primaryButton = 'rounded-xl bg-gradient-to-br from-[#00ADEE] via-[#026698] to-[#024A7D] font-semibold text-white shadow-md shadow-[#024A7D]/15 hover:brightness-110';
+const inputClass = adminInput;
+const primaryButton = adminPrimaryButton;
 
 export function QuoteFormModal({ quote, products, onClose }) {
     const editing = !!quote;
@@ -18,7 +19,7 @@ export function QuoteFormModal({ quote, products, onClose }) {
     return <Dialog open onOpenChange={(open) => { if (!open && !form.processing) onClose(); }}>
         <DialogContent className="max-w-3xl gap-0 rounded-3xl border border-[#024A7D]/10 p-0 sm:rounded-3xl" showClose={!form.processing}>
             <DialogHeader className="border-b border-[#024A7D]/10 bg-gradient-to-r from-sky-50 to-white px-6 py-5 pr-12 text-left">
-                <DialogTitle className="flex items-center gap-3 text-xl text-[#024A7D]"><span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-[#00ADEE] to-[#024A7D] text-white shadow-md"><FileText className="h-5 w-5" /></span>{editing ? `Editar ${quote.code}` : 'Nueva cotización'}</DialogTitle>
+                <DialogTitle className="flex items-center gap-3 text-xl text-[#024A7D]"><AdminIcon icon={FileText} small />{editing ? `Editar ${quote.code}` : 'Nueva cotización'}</DialogTitle>
                 <DialogDescription>{editing && quote.status === 'approved' ? 'Al guardar, la cotización volverá a quedar pendiente de aprobación.' : 'Completa el destinatario y agrega los productos.'}</DialogDescription>
             </DialogHeader>
             <form className="flex min-h-0 flex-col" onSubmit={(event) => {

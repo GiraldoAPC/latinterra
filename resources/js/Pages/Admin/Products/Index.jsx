@@ -1,3 +1,5 @@
+import { AdminPageHeader, AdminEmptyState } from '@/Components/Admin/AdminPage';
+import { Package as PageIcon } from 'lucide-react';
 import { useEffect, useState } from "react";
 import { Head, useForm, router, usePage } from "@inertiajs/react";
 import AdminLayout from "@/Layouts/AdminLayout";
@@ -330,16 +332,12 @@ export default function Index({ products, categories, brands }) {
         <>
             <Head title="Productos" />
             <AdminLayout title="Productos">
-                <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-                    <div>
-                        <h1 className="text-lg font-bold text-[#024A7D]">Productos</h1>
-                        <p className="text-sm text-muted-foreground">Catalogo e inventario — vender a estudiantes desde su perfil.</p>
-                    </div>
-                    <Button onClick={openNew}>
+                <AdminPageHeader icon={PageIcon} title={<>Productos</>} description={<>Catalogo e inventario — vender a estudiantes desde su perfil.</>} actions={<>
+<Button onClick={openNew}>
                         <Plus className="h-4 w-4" />
                         Nuevo producto
                     </Button>
-                </div>
+</>} />
 
                 {lowStockProducts.length > 0 && (
                     <div className="mb-4 flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3">
@@ -356,10 +354,7 @@ export default function Index({ products, categories, brands }) {
                 <Card>
                     <CardContent className="p-0">
                         {products.length === 0 ? (
-                            <div className="flex flex-col items-center gap-3 py-14 text-center">
-                                <Package className="h-10 w-10 text-slate-300" />
-                                <p className="text-slate-500">Aun no hay productos registrados.</p>
-                            </div>
+                            <AdminEmptyState icon={Package} title="Aún no hay productos" actions={<Button onClick={openNew}><Plus />Registrar</Button>} />
                         ) : (
                             <div className="overflow-x-auto">
                                 <table className="w-full text-sm">

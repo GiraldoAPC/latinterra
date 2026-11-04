@@ -1,3 +1,5 @@
+import { AdminPageHeader } from '@/Components/Admin/AdminPage';
+import { ShoppingCart as PageIcon } from 'lucide-react';
 import { useEffect, useState } from "react";
 import { Head, router } from "@inertiajs/react";
 import AdminLayout from "@/Layouts/AdminLayout";
@@ -95,14 +97,8 @@ export default function OtrosPagos({ payments, filters, stats }) {
         <>
             <Head title="Ventas" />
             <AdminLayout title="Ventas">
-                <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-                    <div>
-                        <h1 className="text-lg font-bold text-[#024A7D]">Ventas</h1>
-                        <p className="text-sm text-muted-foreground">
-                            Ventas de productos y otros conceptos ajenos a las cuotas de curso.
-                        </p>
-                    </div>
-                    <div className="flex gap-2">
+                <AdminPageHeader icon={PageIcon} title={<>Ventas</>} description={<>Ventas de productos y otros conceptos ajenos a las cuotas de curso.</>} actions={<>
+<div className="flex gap-2">
                         <Button variant="outline" onClick={() => setShowRegister(true)}>
                             <Plus className="h-4 w-4" />
                             Registrar pago
@@ -112,7 +108,7 @@ export default function OtrosPagos({ payments, filters, stats }) {
                             Vender producto
                         </Button>
                     </div>
-                </div>
+</>} />
 
                 <div className="mb-6 grid grid-cols-2 gap-3 md:grid-cols-4">
                     <StatCard icon={Wallet} label="Total registrado" value={`S/ ${Number(stats.monto_total).toFixed(2)}`} color="bg-gradient-to-br from-[#59CAF4] to-[#024A7D]" />

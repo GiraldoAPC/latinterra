@@ -1,3 +1,5 @@
+import { AdminPageHeader } from '@/Components/Admin/AdminPage';
+import { ClipboardList as PageIcon } from 'lucide-react';
 import { useState } from "react";
 import { Head, router, usePage } from "@inertiajs/react";
 import AdminLayout from "@/Layouts/AdminLayout";
@@ -41,14 +43,8 @@ export default function Movimientos({ purchases, transfers, stats }) {
         <>
             <Head title="Movimientos de inventario" />
             <AdminLayout title="Movimientos">
-                <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-                    <div>
-                        <h1 className="text-lg font-bold text-[#024A7D]">Movimientos de inventario</h1>
-                        <p className="text-sm text-muted-foreground">
-                            {stats.count} compras · S/ {Number(stats.total).toFixed(2)} en total.
-                        </p>
-                    </div>
-                    <div className="flex gap-2">
+                <AdminPageHeader icon={PageIcon} title={<>Movimientos de inventario</>} description={<>{stats.count} compras · S/ {Number(stats.total).toFixed(2)} en total.</>} actions={<>
+<div className="flex gap-2">
                         {warehouseMode && (
                             <Button variant="outline" onClick={() => setTransferModalOpen(true)}>
                                 <ArrowRightLeft className="h-4 w-4" />
@@ -60,7 +56,7 @@ export default function Movimientos({ purchases, transfers, stats }) {
                             Registrar compra
                         </Button>
                     </div>
-                </div>
+</>} />
 
                 {warehouseMode && (
                     <div className="mb-4 flex gap-1 rounded-lg bg-muted/50 p-1 w-fit">

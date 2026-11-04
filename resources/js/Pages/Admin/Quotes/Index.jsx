@@ -1,3 +1,4 @@
+import { AdminPageHeader, AdminPanel, adminPrimaryButton } from '@/Components/Admin/AdminPage';
 import { Head, Link, router } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import { Plus, Search, Eye, Pencil, Trash2, Download, Mail, FileText, Filter, Layers, ChevronDown, ChevronLeft, ChevronRight, Hash, UserRound, CalendarDays, CalendarCheck, Tag, Coins, Ellipsis } from 'lucide-react';
@@ -8,7 +9,7 @@ import { QuoteFormModal, QuoteEmailModal, QuoteDeleteModal } from '@/Components/
 const labels = { draft: 'Pendiente', approved: 'Aprobada', sold: 'Vendida', cancelled: 'Cancelada' };
 const colors = { draft: 'bg-amber-50 text-amber-800', approved: 'bg-sky-50 text-sky-800', sold: 'bg-emerald-50 text-emerald-800', cancelled: 'bg-slate-100 text-slate-600' };
 const date = (value) => value ? value.slice(0, 10).split('-').reverse().join('/') : '—';
-const primaryButton = 'h-11 rounded-xl bg-gradient-to-br from-[#00ADEE] via-[#026698] to-[#024A7D] px-5 font-semibold text-white shadow-lg shadow-[#024A7D]/15 hover:brightness-110';
+const primaryButton = adminPrimaryButton;
 const columns = [[Hash, 'Código'], [UserRound, 'Cliente'], [CalendarDays, 'Fecha'], [CalendarCheck, 'Vigencia'], [Tag, 'Estado'], [Coins, 'Total'], [Ellipsis, 'Acciones']];
 
 export default function Index({ quotes, products, filters = {} }) {
@@ -24,17 +25,8 @@ export default function Index({ quotes, products, filters = {} }) {
     return <>
         <Head title="Cotizaciones" />
         <AdminLayout title="Cotizaciones">
-            <section className="overflow-hidden rounded-3xl border border-[#024A7D]/10 bg-white shadow-[0_12px_40px_-18px_rgba(2,74,125,0.3)]">
-                <header className="relative isolate overflow-hidden bg-gradient-to-r from-white via-sky-50/70 to-[#e3f4fc] px-5 py-7 sm:px-8 sm:py-8">
-                    <svg aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 h-full w-full" viewBox="0 0 1200 180" preserveAspectRatio="none"><path d="M480 180C670 70 730 150 860 0H1200V180Z" fill="#00ADEE" fillOpacity=".08" /><path d="M700 180C850 100 1000 110 1100 0H1200V180Z" fill="#024A7D" fillOpacity=".06" /></svg>
-                    <div className="flex flex-wrap items-center justify-between gap-5">
-                        <div className="flex min-w-0 items-center gap-4 sm:gap-5">
-                            <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-[#00ADEE] to-[#024A7D] text-white shadow-lg shadow-[#024A7D]/20 sm:h-16 sm:w-16"><FileText className="h-7 w-7 stroke-[1.5]" /></span>
-                            <div className="min-w-0 border-l border-[#024A7D]/15 pl-4 sm:pl-5"><h1 className="text-2xl font-bold tracking-tight text-[#024A7D] sm:text-3xl">Cotizaciones</h1><p className="mt-1 text-sm text-slate-500">Gestiona tus cotizaciones y sus documentos.</p></div>
-                        </div>
-                        <Button className={`${primaryButton} w-full sm:w-auto`} onClick={() => setFormModal('new')}><Plus className="h-5 w-5" />Nueva cotización</Button>
-                    </div>
-                </header>
+            <AdminPanel>
+                <AdminPageHeader className="mb-0 rounded-none border-0" icon={FileText} title="Cotizaciones" description="Gestiona tus cotizaciones y sus documentos." actions={<Button className={primaryButton} onClick={() => setFormModal('new')}><Plus />Nueva cotización</Button>} />
                 <div className="relative rounded-t-3xl border-t border-[#024A7D]/10 bg-white px-4 pb-1 pt-6 sm:px-7">
                 <form className="mb-6 flex flex-wrap items-center gap-3" onSubmit={(event) => { event.preventDefault(); router.get('/admin/quotes', { search, status }, { preserveState: true, preserveScroll: true }); }}>
                     <div className="relative min-w-0 basis-full sm:min-w-52 sm:flex-1 sm:basis-auto"><Search className="pointer-events-none absolute left-4 top-3.5 h-5 w-5 text-[#024A7D]/70" /><input aria-label="Buscar cotizaciones" placeholder="Buscar por código, cliente o correo…" className="h-12 w-full rounded-2xl border border-[#024A7D]/20 bg-white pl-12 pr-4 text-sm shadow-sm placeholder:text-slate-400 focus:border-[#00ADEE] focus:outline-none focus:ring-2 focus:ring-[#00ADEE]/15" value={search} onChange={(event) => setSearch(event.target.value)} /></div>
@@ -71,7 +63,7 @@ export default function Index({ quotes, products, filters = {} }) {
                     </div>}
                 <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 py-5 text-xs text-slate-500"><span>{quotes.total ? `${quotes.from}–${quotes.to} de ${quotes.total} cotizaciones` : '0 cotizaciones'}</span><div className="flex gap-2"><Button variant="outline" className="rounded-xl border-[#024A7D]/15 text-[#024A7D]" disabled={!quotes.prev_page_url} onClick={() => router.get(quotes.prev_page_url, {}, { preserveState: true, preserveScroll: true })}><ChevronLeft />Anterior</Button><Button variant="outline" className="rounded-xl border-[#024A7D]/15 text-[#024A7D]" disabled={!quotes.next_page_url} onClick={() => router.get(quotes.next_page_url, {}, { preserveState: true, preserveScroll: true })}>Siguiente<ChevronRight /></Button></div></div>
                 </div>
-            </section>
+            </AdminPanel>
             {formModal && <QuoteFormModal quote={formModal === 'new' ? null : formModal} products={products} onClose={() => setFormModal(null)} />}
             {emailQuote && <QuoteEmailModal quote={emailQuote} onClose={() => setEmailQuote(null)} />}
             {deleteQuote && <QuoteDeleteModal quote={deleteQuote} onClose={() => setDeleteQuote(null)} />}

@@ -1,3 +1,5 @@
+import { AdminPageHeader, AdminEmptyState } from '@/Components/Admin/AdminPage';
+import { Tags as PageIcon } from 'lucide-react';
 import { useEffect, useState } from "react";
 import { Head, useForm, router } from "@inertiajs/react";
 import AdminLayout from "@/Layouts/AdminLayout";
@@ -90,24 +92,17 @@ export default function Index({ categories }) {
         <>
             <Head title="Categorías" />
             <AdminLayout title="Categorías">
-                <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-                    <div>
-                        <h1 className="text-lg font-bold text-[#024A7D]">Categorías</h1>
-                        <p className="text-sm text-muted-foreground">Clasificacion de productos del inventario.</p>
-                    </div>
-                    <Button onClick={openNew}>
+                <AdminPageHeader icon={PageIcon} title={<>Categorías</>} description={<>Clasificacion de productos del inventario.</>} actions={<>
+<Button onClick={openNew}>
                         <Plus className="h-4 w-4" />
                         Nueva categoria
                     </Button>
-                </div>
+</>} />
 
                 <Card>
                     <CardContent className="p-0">
                         {categories.length === 0 ? (
-                            <div className="flex flex-col items-center gap-3 py-14 text-center">
-                                <Tags className="h-10 w-10 text-slate-300" />
-                                <p className="text-slate-500">Aun no hay categorias registradas.</p>
-                            </div>
+                            <AdminEmptyState icon={Tags} title="Aún no hay categorías" actions={<Button onClick={openNew}><Plus />Registrar</Button>} />
                         ) : (
                             <div className="overflow-x-auto">
                                 <table className="w-full text-sm">

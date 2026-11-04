@@ -1,3 +1,5 @@
+import { AdminPageHeader, AdminEmptyState } from '@/Components/Admin/AdminPage';
+import { BadgeCheck as PageIcon } from 'lucide-react';
 import { useEffect, useState } from "react";
 import { Head, useForm, router } from "@inertiajs/react";
 import AdminLayout from "@/Layouts/AdminLayout";
@@ -90,24 +92,17 @@ export default function Index({ brands }) {
         <>
             <Head title="Marcas" />
             <AdminLayout title="Marcas">
-                <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-                    <div>
-                        <h1 className="text-lg font-bold text-[#024A7D]">Marcas</h1>
-                        <p className="text-sm text-muted-foreground">Fabricantes de los productos del inventario.</p>
-                    </div>
-                    <Button onClick={openNew}>
+                <AdminPageHeader icon={PageIcon} title={<>Marcas</>} description={<>Fabricantes de los productos del inventario.</>} actions={<>
+<Button onClick={openNew}>
                         <Plus className="h-4 w-4" />
                         Nueva marca
                     </Button>
-                </div>
+</>} />
 
                 <Card>
                     <CardContent className="p-0">
                         {brands.length === 0 ? (
-                            <div className="flex flex-col items-center gap-3 py-14 text-center">
-                                <BadgeCheck className="h-10 w-10 text-slate-300" />
-                                <p className="text-slate-500">Aun no hay marcas registradas.</p>
-                            </div>
+                            <AdminEmptyState icon={BadgeCheck} title="Aún no hay marcas" actions={<Button onClick={openNew}><Plus />Registrar</Button>} />
                         ) : (
                             <div className="overflow-x-auto">
                                 <table className="w-full text-sm">

@@ -1,3 +1,5 @@
+import { AdminPageHeader } from '@/Components/Admin/AdminPage';
+import { GraduationCap as PageIcon } from 'lucide-react';
 import { Head, Link, router } from "@inertiajs/react";
 import AdminLayout from "@/Layouts/AdminLayout";
 import { Button } from "@/Components/ui/button";
@@ -24,20 +26,14 @@ export default function Index({ courses }) {
         <>
             <Head title="Aula virtual - Cursos" />
             <AdminLayout title="Aula virtual">
-                <div className="flex items-center justify-between mb-4">
-                    <div>
-                        <h1 className="text-lg font-semibold">Cursos</h1>
-                        <p className="text-sm text-muted-foreground">
-                            Gestiona el contenido del aula virtual.
-                        </p>
-                    </div>
-                    <Button asChild>
+                <AdminPageHeader icon={PageIcon} title={<>Cursos</>} description={<>Gestiona el contenido del aula virtual.</>} actions={<>
+<Button asChild>
                         <Link href="/admin/cursos/nuevo">
                             <Plus className="h-4 w-4" />
                             Nuevo curso
                         </Link>
                     </Button>
-                </div>
+</>} />
 
                 <div className="rounded-xl border bg-card">
                     <Table>

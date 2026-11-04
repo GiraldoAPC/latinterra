@@ -1,3 +1,5 @@
+import { AdminPageHeader, AdminEmptyState } from '@/Components/Admin/AdminPage';
+import { Truck as PageIcon } from 'lucide-react';
 import { useState } from "react";
 import { Head, router } from "@inertiajs/react";
 import AdminLayout from "@/Layouts/AdminLayout";
@@ -30,27 +32,17 @@ export default function Proveedores({ suppliers }) {
         <>
             <Head title="Proveedores" />
             <AdminLayout title="Proveedores">
-                <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-                    <div>
-                        <h1 className="text-lg font-bold text-[#024A7D]">Proveedores</h1>
-                        <p className="text-sm text-muted-foreground">A quien le compras el inventario.</p>
-                    </div>
-                    <Button onClick={openNew}>
+                <AdminPageHeader icon={PageIcon} title={<>Proveedores</>} description={<>A quien le compras el inventario.</>} actions={<>
+<Button onClick={openNew}>
                         <Plus className="h-4 w-4" />
                         Nuevo proveedor
                     </Button>
-                </div>
+</>} />
 
                 <Card>
                     <CardContent className="p-0">
                         {suppliers.length === 0 ? (
-                            <div className="flex flex-col items-center gap-3 py-14 text-center">
-                                <Truck className="h-10 w-10 text-slate-300" />
-                                <p className="text-slate-500">Aun no hay proveedores registrados.</p>
-                                <p className="max-w-sm text-xs text-slate-400">
-                                    Se registran automaticamente al agregar uno nuevo desde "Registrar compra", o puedes crearlos aca.
-                                </p>
-                            </div>
+                            <AdminEmptyState icon={Truck} title="Aún no hay proveedores" description={<> Se registran automaticamente al agregar uno nuevo desde "Registrar compra", o puedes crearlos aca. </>} actions={<Button onClick={openNew}><Plus />Registrar</Button>} />
                         ) : (
                             <div className="overflow-x-auto">
                                 <table className="w-full text-sm">

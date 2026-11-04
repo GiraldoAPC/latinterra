@@ -1,3 +1,5 @@
+import { AdminPageHeader } from '@/Components/Admin/AdminPage';
+import { Settings as PageIcon } from 'lucide-react';
 import { useState } from "react";
 import { Head, router } from "@inertiajs/react";
 import AdminLayout from "@/Layouts/AdminLayout";
@@ -21,10 +23,7 @@ export default function Index({ warehouseMode }) {
         <>
             <Head title="Configuración" />
             <AdminLayout title="Configuración">
-                <div className="mb-6">
-                    <h1 className="text-lg font-bold text-[#024A7D]">Configuración</h1>
-                    <p className="text-sm text-muted-foreground">Ajustes generales del sistema.</p>
-                </div>
+                <AdminPageHeader icon={PageIcon} title={<>Configuración</>} description={<>Ajustes generales del sistema.</>} />
 
                 <Card className="max-w-xl">
                     <CardContent className="space-y-4 p-5">

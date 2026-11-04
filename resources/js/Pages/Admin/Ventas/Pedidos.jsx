@@ -1,3 +1,5 @@
+import { AdminPageHeader } from '@/Components/Admin/AdminPage';
+import { ShoppingCart as PageIcon } from 'lucide-react';
 import { useState } from "react";
 import { Head, router } from "@inertiajs/react";
 import AdminLayout from "@/Layouts/AdminLayout";
@@ -131,12 +133,7 @@ export default function Pedidos({ orders, filters, stats }) {
         <>
             <Head title="Pedidos de cursos" />
             <AdminLayout title="Pedidos de cursos">
-                <div className="mb-4">
-                    <h1 className="text-lg font-semibold">Pedidos de cursos</h1>
-                    <p className="text-sm text-muted-foreground">
-                        Cursos de pago unico: confirma manualmente el pago para activar el acceso del estudiante.
-                    </p>
-                </div>
+                <AdminPageHeader icon={PageIcon} title={<>Pedidos de cursos</>} description={<>Cursos de pago unico: confirma manualmente el pago para activar el acceso del estudiante.</>} />
 
                 <div className="mb-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
                     <button type="button" onClick={() => filterBy("pending")} className="text-left">

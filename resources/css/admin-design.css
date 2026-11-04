@@ -1,0 +1,68 @@
+/* Shared administrative design. Only screen UI is themed, never printed documents. */
+@media screen {
+    .lt-admin-design {
+        --admin-blue: #024a7d;
+        --admin-border: rgba(2, 74, 125, .14);
+    }
+    .lt-admin-design [data-ui="button"] { border-radius: .75rem; }
+    .lt-admin-design [data-ui="button"][data-variant="default"]:not([class*="bg-red"]):not([class*="bg-destructive"]) {
+        background-image: linear-gradient(135deg, #00adee, #026698 45%, #024a7d);
+        color: white;
+        box-shadow: 0 5px 12px -5px rgba(2, 74, 125, .4);
+    }
+    .lt-admin-design [data-ui="button"][data-variant="outline"] { border-color: var(--admin-border); }
+    .lt-admin-design [data-ui="card"],
+    .lt-admin-design main :where(div, section):has(> table),
+    .lt-admin-design main :where(div, section):has(> div > table) {
+        border-radius: 1.5rem;
+        border-color: var(--admin-border);
+    }
+    .lt-admin-design [data-ui="card"] {
+        box-shadow: 0 12px 32px -24px rgba(2, 74, 125, .35);
+    }
+    .lt-admin-design :where(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="hidden"]):not([type="file"]), select, textarea, [role="combobox"]) {
+        border-radius: .75rem;
+        border-color: rgba(2, 74, 125, .2);
+        box-shadow: 0 1px 3px rgba(2, 74, 125, .06);
+    }
+    .lt-admin-design :where(input, select, textarea, [role="combobox"]):focus-visible {
+        outline: 2px solid rgba(0, 173, 238, .3);
+        outline-offset: 1px;
+    }
+    .lt-admin-design table { border-collapse: separate; border-spacing: 0; }
+    .lt-admin-design thead,
+    .lt-admin-design thead > tr { background: #edf5f9; color: var(--admin-blue); }
+    .lt-admin-design thead th {
+        height: 3.5rem;
+        padding: .875rem 1rem;
+        border-bottom: 0;
+        color: var(--admin-blue);
+        font-size: .8125rem;
+        font-weight: 600;
+        text-transform: none;
+        letter-spacing: normal;
+        white-space: nowrap;
+    }
+    .lt-admin-design thead th:first-child { border-radius: 1rem 0 0 1rem; }
+    .lt-admin-design thead th:last-child { border-radius: 0 1rem 1rem 0; }
+    .lt-admin-design tbody > tr > td { border-bottom: 1px solid #f1f5f9; }
+    .lt-admin-design tbody > tr:last-child > td { border-bottom: 0; }
+    .lt-admin-design tbody > tr:hover { background-color: rgba(240, 249, 255, .6); }
+    .lt-admin-design [data-ui="dialog"] { border-radius: 1.5rem; border-color: var(--admin-border); }
+    .lt-admin-design [data-ui="dialog-header"] {
+        border-bottom: 1px solid var(--admin-border);
+        padding-bottom: 1rem;
+        color: var(--admin-blue);
+    }
+    .lt-admin-design [data-ui="dialog"] form { min-height: 0; overflow-y: auto; }
+    .lt-admin-design [data-ui="dialog"] form > .flex:last-child {
+        border-top: 1px solid var(--admin-border);
+        padding-top: 1rem;
+    }
+    .lt-admin-header-actions > [data-ui="button"] { min-height: 2.75rem; }
+    .lt-admin-header-actions > div { display: flex; flex-wrap: wrap; gap: .5rem; }
+    @media (max-width: 639px) {
+        .lt-admin-header-actions > div { width: 100%; }
+        .lt-admin-header-actions [data-ui="button"] { flex: 1; }
+    }
+}

@@ -1,3 +1,5 @@
+import { AdminPageHeader } from '@/Components/Admin/AdminPage';
+import { Users as PageIcon } from 'lucide-react';
 import { Head, Link, router } from "@inertiajs/react";
 import { useEffect, useRef, useState } from "react";
 import AdminLayout from "@/Layouts/AdminLayout";
@@ -131,14 +133,8 @@ export default function Index({ students, filters, stats, courses, documentTypes
         <>
             <Head title="Estudiantes" />
             <AdminLayout title="Estudiantes">
-                <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-                    <div>
-                        <h1 className="text-lg font-semibold">Estudiantes</h1>
-                        <p className="text-sm text-muted-foreground">
-                            Gestiona las cuentas de estudiantes del aula virtual.
-                        </p>
-                    </div>
-                    <div className="flex gap-2">
+                <AdminPageHeader icon={PageIcon} title={<>Estudiantes</>} description={<>Gestiona las cuentas de estudiantes del aula virtual.</>} actions={<>
+<div className="flex gap-2">
                         <Button variant="outline" asChild>
                             <a href="/admin/estudiantes/exportar">
                                 <Download className="h-4 w-4" />
@@ -150,7 +146,7 @@ export default function Index({ students, filters, stats, courses, documentTypes
                             Nuevo estudiante
                         </Button>
                     </div>
-                </div>
+</>} />
 
                 {stats && (
                     <div className="mb-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
