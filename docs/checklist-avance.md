@@ -90,7 +90,7 @@ Verificación: `php tests/manual/in-person-certification.php` (25 comprobaciones
 
 Accesos: `/admin/quotes` (Ventas → Cotizaciones), `/admin/inventario/auspicios` (Inventario → Auspicios) y campana del panel. La migración `2026_11_03_000005_add_quotes_and_sponsorships.php` se aplicó en MySQL local; producción sigue pendiente de despliegue y `php artisan migrate --force`.
 
-Prueba reproducible: `php tests/manual/inventory-workflow.php` (38 comprobaciones con SQLite en memoria). Incluye valoración de auspicios, ubicación de salida, requisitos de costo, solicitudes repetidas, totales de cotización calculados en servidor, estados, vencimiento en horario de Perú, venta y reversión de transacciones fallidas, alertas, acceso administrativo y reversión de la migración. La compilación de producción está incluida.
+Prueba reproducible: `php tests/manual/inventory-workflow.php` (48 comprobaciones con SQLite en memoria). Incluye valoración de auspicios, ubicación de salida, requisitos de costo, solicitudes repetidas, totales de cotización calculados en servidor, estados, edición/eliminación, vencimiento en horario de Perú, venta y reversión de transacciones fallidas, alertas, acceso administrativo y reversión de la migración. La compilación de producción está incluida.
 
 ### Descarga y envío de cotizaciones
 
@@ -102,7 +102,9 @@ Publicación de esta entrega: ejecutar `composer install --no-dev --optimize-aut
 
 El envío real depende del correo saliente del servidor (`MAIL_MAILER`, `MAIL_HOST`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD`, `MAIL_ENCRYPTION`, `MAIL_FROM_ADDRESS`, `MAIL_FROM_NAME`). Usa un transporte real como SMTP; los modos `log` y `array` no se reportan como entrega. Si cambian las variables de entorno, actualizar la caché de configuración. No se verificó SMTP de producción ni se modificaron sus credenciales.
 
-Pruebas: `php tests/manual/quote-delivery.php` (22 comprobaciones sin SMTP real), además de las 38 de inventario. Archivos de muestra generados en `storage/app/previews/cotizacion-modelo.pdf` y `cotizacion-multipagina.pdf` (datos ficticios, no versionados).
+Pruebas: `php tests/manual/quote-delivery.php` (22 comprobaciones sin SMTP real), además de las 48 de inventario. Archivos de muestra generados en `storage/app/previews/cotizacion-modelo.pdf` y `cotizacion-multipagina.pdf` (datos ficticios, no versionados).
+
+La pantalla de cotizaciones ahora usa una tabla con búsqueda, filtro de estado y paginación. Crear/editar se realiza en un modal compacto; las filas permiten ver, editar, eliminar, descargar PDF y enviar correo (también en modal). Editar una cotización aprobada exige nueva aprobación y recalcula los importes en servidor. Las cotizaciones con venta no pueden editarse ni eliminarse; eliminar una no vendida requiere confirmación en la interfaz y no modifica inventario ni pagos. Se revisaron capturas de la tabla y el modal en Chrome con datos ficticios y sin solicitudes de escritura. Esta mejora no agrega migraciones.
 
 ## Roles y permisos
 

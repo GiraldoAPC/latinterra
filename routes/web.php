@@ -159,6 +159,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::delete('/brands/{brand}', [\App\Http\Controllers\Admin\BrandController::class, 'destroy'])->name('admin.brands.destroy');
     Route::get('/quotes', [\App\Http\Controllers\Admin\QuoteController::class, 'index'])->name('admin.quotes');
     Route::post('/quotes', [\App\Http\Controllers\Admin\QuoteController::class, 'store'])->name('admin.quotes.store');
+    Route::put('/quotes/{quote}', [\App\Http\Controllers\Admin\QuoteController::class, 'update'])->name('admin.quotes.update');
+    Route::delete('/quotes/{quote}', [\App\Http\Controllers\Admin\QuoteController::class, 'destroy'])->name('admin.quotes.destroy');
     Route::get('/quotes/{quote}', [\App\Http\Controllers\Admin\QuoteController::class, 'show'])->name('admin.quotes.show');
     Route::post('/quotes/{quote}/aprobar', [\App\Http\Controllers\Admin\QuoteController::class, 'approve'])->name('admin.quotes.approve');
     Route::post('/quotes/{quote}/cancelar', [\App\Http\Controllers\Admin\QuoteController::class, 'cancel'])->name('admin.quotes.cancel');

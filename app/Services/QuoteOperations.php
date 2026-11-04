@@ -14,33 +14,60 @@ class QuoteOperations
 {
     public function create(array $data, int $adminId): Quote
     {
-        return DB::transaction(function () use ($data, $adminId) {
-            $items = []; $totalCents = 0; $seen = [];
-            foreach ($data['items'] as $row) {
-                $product = Product::active()->findOrFail($row['product_id']);
-                if (isset($seen[$product->id])) {
-                    throw ValidationException::withMessages(['items' => 'Agrega cada producto una sola vez y ajusta su cantidad.']);
-                }
-                $seen[$product->id] = true;
-                $cents = (int) round((float) $row['unit_price'] * 100);
-                $qty = (int) $row['qty'];
-                if ($cents < 0 || $qty < 1) {
-                    throw ValidationException::withMessages(['items' => 'Revisa cantidades y precios.']);
-                }
-                $totalCents += $cents * $qty;
-                $items[] = ['product_id' => $product->id, 'name' => $product->name, 'qty' => $qty, 'unit_price' => $cents / 100];
-            }
-            if ($totalCents > 9999999999 || !$items) {
-                throw ValidationException::withMessages(['items' => 'La cotización no tiene productos o supera el importe permitido.']);
-            }
+        return DB::transaction(fn () => Quote::create($this->prepareData($data) + [
+            'code' => 'COT-'.strtoupper(Str::random(12)), 'registered_by' => $adminId, 'status' => 'draft',
+        ]));
+    }
 
-            return Quote::create([
-                'code' => 'COT-'.strtoupper(Str::random(12)), 'buyer_name' => $data['buyer_name'],
-                'buyer_document' => $data['buyer_document'] ?? null, 'valid_until' => $data['valid_until'] ?? null,
-                'buyer_email' => $data['buyer_email'] ?? null,
-                'notes' => $data['notes'] ?? null, 'items' => $items, 'amount' => $totalCents / 100,
-                'registered_by' => $adminId, 'status' => 'draft',
-            ]);
+    private function prepareData(array $data): array
+    {
+        $items = []; $totalCents = 0; $seen = [];
+        foreach ($data['items'] as $row) {
+            $product = Product::active()->findOrFail($row['product_id']);
+            if (isset($seen[$product->id])) {
+                throw ValidationException::withMessages(['items' => 'Agrega cada producto una sola vez y ajusta su cantidad.']);
+            }
+            $seen[$product->id] = true;
+            $cents = (int) round((float) $row['unit_price'] * 100);
+            $qty = (int) $row['qty'];
+            if ($cents < 0 || $qty < 1) {
+                throw ValidationException::withMessages(['items' => 'Revisa cantidades y precios.']);
+            }
+            $totalCents += $cents * $qty;
+            $items[] = ['product_id' => $product->id, 'name' => $product->name, 'qty' => $qty, 'unit_price' => $cents / 100];
+        }
+        if ($totalCents > 9999999999 || !$items) {
+            throw ValidationException::withMessages(['items' => 'La cotización no tiene productos o supera el importe permitido.']);
+        }
+
+        return [
+            'buyer_name' => $data['buyer_name'],
+            'buyer_document' => $data['buyer_document'] ?? null, 'valid_until' => $data['valid_until'] ?? null,
+            'buyer_email' => $data['buyer_email'] ?? null,
+            'notes' => $data['notes'] ?? null, 'items' => $items, 'amount' => $totalCents / 100,
+        ];
+    }
+
+    public function update(Quote $quote, array $data): Quote
+    {
+        return DB::transaction(function () use ($quote, $data) {
+            $locked = Quote::whereKey($quote->id)->lockForUpdate()->firstOrFail();
+            if ($locked->other_payment_id || !in_array($locked->status, ['draft', 'approved'], true)) {
+                throw ValidationException::withMessages(['quote' => 'Solo puedes editar cotizaciones pendientes o aprobadas que no tengan una venta.']);
+            }
+            $locked->update($this->prepareData($data) + ['status' => 'draft', 'approved_at' => null, 'approved_by' => null]);
+            return $locked;
+        });
+    }
+
+    public function delete(Quote $quote): void
+    {
+        DB::transaction(function () use ($quote) {
+            $locked = Quote::whereKey($quote->id)->lockForUpdate()->firstOrFail();
+            if ($locked->other_payment_id || $locked->status === 'sold') {
+                throw ValidationException::withMessages(['quote' => 'No puedes eliminar una cotización con venta registrada.']);
+            }
+            $locked->delete();
         });
     }
 

@@ -101,6 +101,16 @@ try {
     $quote = $quotes->create($quoteData, $admin->id);
     check($quote->amount === '200.20' && $quote->items[0]['name'] === 'Casco', 'Server calculates quote total and product names');
     check($p->fresh()->stock === 6 && OtherPayment::count() === 0, 'Creating quote does not reserve stock or register payment');
+    $editable = $quotes->create($quoteData, $admin->id);
+    $edited = $quotes->update($editable, array_replace($quoteData, ['buyer_name' => 'Cliente editado', 'items' => [['product_id' => $p->id, 'qty' => 3, 'unit_price' => '11.25']]]));
+    check($edited->amount === '33.75' && $edited->buyer_name === 'Cliente editado' && $edited->code === $editable->code, 'Editing recalculates totals and preserves quote code');
+    $quotes->approve($edited, $admin->id);
+    $edited = $quotes->update($edited, $quoteData);
+    check($edited->status === 'draft' && $edited->approved_by === null && $edited->approved_at === null, 'Editing approved quote requires renewed approval');
+    rejected(fn () => $quotes->update($edited, array_replace($quoteData, ['items' => [$quoteData['items'][0], $quoteData['items'][0]]])), 'items', 'Invalid edit rejects duplicate product rows');
+    check($edited->fresh()->amount === '200.20', 'Invalid edit preserves previous quote');
+    $quotes->delete($edited);
+    check(!Quote::whereKey($edited->id)->exists() && $p->fresh()->stock === 6 && OtherPayment::count() === 0, 'Deleting unsold quote leaves stock and payments unchanged');
     rejected(fn () => $quotes->sell($quote, ['payment_method' => 'efectivo'], $admin->id), 'quote', 'Unapproved quote cannot be sold');
     rejected(fn () => $quotes->create(array_replace($quoteData, ['items' => [$quoteData['items'][0], $quoteData['items'][0]]]), $admin->id), 'items', 'Duplicate product rows rejected');
     $quotes->approve($quote, $admin->id);
@@ -111,6 +121,9 @@ try {
     check(SaleItem::first()->name === 'Casco' && SaleItem::first()->unit_cost === '20.00', 'Sale preserves quoted names and current cost snapshot');
     check($quotes->sell($quote, ['payment_method' => 'efectivo'], $admin->id)->id === $payment->id && OtherPayment::count() === 1 && $p->fresh()->stock === 4, 'Repeated conversion returns same sale');
     rejected(fn () => $quotes->cancel($quote), 'quote', 'Sold quote cannot be cancelled as a draft');
+    rejected(fn () => $quotes->update($quote, $quoteData), 'quote', 'Sold quote cannot be edited');
+    rejected(fn () => $quotes->delete($quote), 'quote', 'Sold quote cannot be deleted');
+    check(Quote::whereKey($quote->id)->exists() && OtherPayment::count() === 1 && $p->fresh()->stock === 4, 'Protected sale and quote remain unchanged');
 
     $large = $quotes->create(array_replace($quoteData, ['items' => [['product_id' => $p->id, 'qty' => 100, 'unit_price' => 2]]]), $admin->id);
     $quotes->approve($large, $admin->id);
@@ -148,7 +161,7 @@ try {
     check($shared['inventoryAlerts']()['count'] === $ids->count(), 'Admin receives global inventory alerts');
     $request->setUserResolver(fn () => null);
     check((new HandleInertiaRequests())->share($request)['inventoryAlerts']() === null, 'Public visitors do not receive inventory data');
-    foreach (['admin.quotes.store', 'admin.quotes.approve', 'admin.quotes.sell', 'admin.sponsorships.store'] as $name) {
+    foreach (['admin.quotes.store', 'admin.quotes.approve', 'admin.quotes.sell', 'admin.quotes.update', 'admin.quotes.destroy', 'admin.sponsorships.store'] as $name) {
         $middleware = app('router')->getRoutes()->getByName($name)->gatherMiddleware();
         check(in_array('auth', $middleware, true) && in_array('admin', $middleware, true), "$name requires administrator");
     }
