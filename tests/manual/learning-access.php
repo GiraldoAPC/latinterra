@@ -124,7 +124,8 @@ try {
     check(!LessonMaterialView::where('course_lesson_material_id', $futureMaterial->id)->exists(), 'Out-of-order material opening does not save view');
     blocked(fn () => $controller->lessonQuizSubmit(testRequest([$q->id => $correct->id]), $course->fresh(), $lesson->fresh()), 403, 'Direct topic submission requires video');
     blocked(fn () => $controller->completeLesson($course->fresh(), $lesson->fresh()), 403, 'Direct completion requires video');
-    $controller->markVideoWatched($course->fresh(), $lesson->fresh());
+    // Seed the media prerequisite here; video-progress.php exercises the tracking protocol.
+    LessonProgress::updateOrCreate(['enrollment_id' => $enrollment->id, 'course_lesson_id' => $lesson->id], ['video_watched_at' => now()]);
     blocked(fn () => $controller->lessonQuizShow($course->fresh(), $lesson->fresh()), 403, 'Topic GET requires confirmed material');
     blocked(fn () => $controller->lessonQuizSubmit(testRequest(), $course->fresh(), $lesson->fresh()), 403, 'Topic POST requires confirmed material');
     $controller->openMaterial($material->fresh()); $controller->confirmMaterialViewed($material->fresh());

@@ -308,6 +308,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/aula/{course:slug}/clase/{lesson}/quiz', [StudentCourseController::class, 'lessonQuizShow'])->name('aula.leccion.quiz');
     Route::post('/aula/{course:slug}/clase/{lesson}/quiz', [StudentCourseController::class, 'lessonQuizSubmit'])->name('aula.leccion.quiz.enviar');
     Route::post('/aula/{course:slug}/clase/{lesson}/video-visto', [StudentCourseController::class, 'markVideoWatched'])->name('aula.leccion.video-visto');
+    Route::post('/aula/{course:slug}/clase/{lesson}/video/iniciar', [StudentCourseController::class, 'startVideo'])->name('aula.leccion.video.iniciar');
+    Route::post('/aula/{course:slug}/clase/{lesson}/video/avance', [StudentCourseController::class, 'videoHeartbeat'])->middleware('throttle:60,1')->name('aula.leccion.video.avance');
     Route::post('/aula/material/{material}/abrir', [StudentCourseController::class, 'openMaterial'])->name('aula.material.abrir');
     Route::post('/aula/material/{material}/visto', [StudentCourseController::class, 'confirmMaterialViewed'])->name('aula.material.visto');
     Route::get('/aula/{course:slug}/modulo/{module}/quiz', [StudentCourseController::class, 'moduleQuizShow'])->name('aula.modulo.quiz');

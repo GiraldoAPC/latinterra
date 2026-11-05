@@ -8,7 +8,7 @@ El código incluye requisitos previos y convalidaciones registradas por administ
 
 Primera corrección tras la revisión: las pantallas del alumno usan datos explícitos que excluyen indicadores de respuesta correcta, claves de texto corto, videos/materiales de clases futuras y configuración interna de firmas. Los envíos de evaluación y avance comparten comprobaciones de curso, secuencia, matrícula activa, deuda y vencimiento. Las respuestas solo pueden referirse a preguntas/opciones del examen; los envíos ordinarios posteriores a una aprobación no revierten su progreso.
 
-Prueba: `php tests/manual/learning-access.php` (31 comprobaciones en SQLite aislado). La primera corrección no agregó migraciones ni cambió las claves de administración. La segunda entrega incorpora intentos, sorteo y tiempo de examen en servidor; la tercera parte descrita abajo cierra los cursos completados. Siguen pendientes seguimiento por diapositiva y comprobación de duración real de video. Ver `docs/revision-pendientes-checklist.md` para el detalle actualizado.
+Prueba: `php tests/manual/learning-access.php` (31 comprobaciones en SQLite aislado). La primera corrección no agregó migraciones ni cambió las claves de administración. La segunda entrega incorpora intentos, sorteo y tiempo de examen en servidor; la tercera parte descrita abajo cierra los cursos completados. El control de video se implementó en la entrega del 5 de noviembre; sigue pendiente seguimiento por diapositiva. Ver `docs/revision-pendientes-checklist.md` para el detalle actualizado.
 
 ### Segunda corrección: intentos y tiempo de examen de módulo
 
@@ -34,9 +34,16 @@ Prueba: `php tests/manual/module-exams.php` (59 comprobaciones en SQLite en memo
 - [x] «Mis cursos» conserva el progreso al 100 %, muestra el cierre y ofrece el certificado, sin botón «Revisar».
 - [x] Agregar clases posteriormente no retira el certificado ni reabre el curso. El vencimiento del certificado tampoco habilita una repetición automática; la recertificación sigue pendiente de definición.
 - [x] El acceso vencido se comprueba antes de la alternativa de repaso al usar «Continuar».
-- [ ] Seguimiento del tiempo de reproducción del video y lectura por página: siguiente parte de esta corrección. Los archivos con URL pública siguen requiriendo una entrega de almacenamiento privado para controlar su descarga directa.
+- [x] Seguimiento del tiempo de reproducción del video: [entrega del 5 de noviembre](control-video-aula.md), con sesión, controles de tiempo y reanudación.
+- [ ] Lectura por página. Los archivos con URL pública siguen requiriendo una entrega de almacenamiento privado para controlar su descarga directa.
 
 Esta parte no agrega migraciones. Prueba: `php tests/manual/course-closure.php` (51 comprobaciones, incluidas las 31 de acceso). Base SQLite en memoria; cubre las rutas de lectura/escritura del aula, cambios de contenido, certificado vencido, no repetición y conservación de los registros. No se ejecutó en producción.
+
+### Avance de video — 5 de noviembre de 2026
+
+El evento de finalización ya no otorga aprobación por sí solo. Se valida tiempo/posición en servidor, velocidad 1x, pausas y reanudación; se conserva la aprobación de videos anteriores. La duración administrativa es obligatoria y editable, con cálculo automático cuando YouTube lo permite. Ver [reglas y límites](control-video-aula.md).
+
+Esta entrega sí requiere la migración `2026_11_05_000009_add_video_tracking_to_lesson_progress.php`, aplicada solo en local. Pruebas: 64 comprobaciones aisladas y ciclo de reproducción en Chrome con la API del reproductor simulada y el servicio real. Compilación incluida. Material por página y almacenamiento privado continúan pendientes.
 
 ## Certificación con aula virtual — bloque actual
 

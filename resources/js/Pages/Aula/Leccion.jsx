@@ -28,6 +28,7 @@ import {
     ListChecks,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useVideoProgress } from '@/hooks/useVideoProgress';
 
 const QUALITY_LABELS = {
     auto: "Automatica",
@@ -57,12 +58,13 @@ function formatTime(seconds) {
  * draws our own play/pause, progress bar, volume and fullscreen controls on
  * top. Also detects "video ended" to auto-mark the lesson as completed.
  */
-function YouTubePlayer({ videoId, onEnded, locked }) {
+function YouTubePlayer({ videoId, onEnded, locked, trackingUrl }) {
     const wrapperRef = useRef(null);
     const containerRef = useRef(null);
     const playerRef = useRef(null);
-    const firedRef = useRef(false);
     const pollRef = useRef(null);
+    const lockedRef = useRef(locked);
+    lockedRef.current = locked;
 
     const [ready, setReady] = useState(false);
     const [playing, setPlaying] = useState(false);
@@ -75,10 +77,12 @@ function YouTubePlayer({ videoId, onEnded, locked }) {
     const [quality, setQuality] = useState("auto");
     const [availableQualities, setAvailableQualities] = useState([]);
     const [settingsPanel, setSettingsPanel] = useState(null); // null | "speed" | "quality"
+    const progress = useVideoProgress({ baseUrl: trackingUrl, locked, getPlayer: () => playerRef.current, onCompleted: onEnded });
+    const progressRef = useRef(progress);
+    progressRef.current = progress;
 
     useEffect(() => {
         let cancelled = false;
-        firedRef.current = false;
         setReady(false);
         setPlaying(false);
         setCurrent(0);
@@ -108,23 +112,30 @@ function YouTubePlayer({ videoId, onEnded, locked }) {
                         setCaptionsOn(false);
                         setSpeed(1);
                         setQuality("auto");
+                        progressRef.current.start();
                     },
                     onStateChange: (event) => {
                         if (cancelled) return;
                         const YT = window.YT.PlayerState;
                         setPlaying(event.data === YT.PLAYING);
+                        progressRef.current.playerState(event.data === YT.PLAYING, event.data === YT.ENDED);
                         if (event.data === YT.PLAYING) {
                             // Recien al arrancar la reproduccion YouTube ya
                             // sabe que resoluciones tiene ese video en
                             // concreto - pedirlo en onReady casi siempre
                             // devuelve vacio o solo "auto".
                             setAvailableQualities(event.target.getAvailableQualityLevels?.() ?? []);
+                            setDuration(event.target.getDuration());
+                            if (lockedRef.current) event.target.setPlaybackRate(1);
                         }
-                        if (event.data === YT.ENDED && !firedRef.current) {
-                            firedRef.current = true;
+                        if (event.data === YT.ENDED) {
                             setPlaying(false);
-                            onEnded();
                         }
+                    },
+                    onPlaybackRateChange: (event) => {
+                        if (cancelled) return;
+                        if (lockedRef.current && event.data !== 1) event.target.setPlaybackRate(1);
+                        setSpeed(lockedRef.current ? 1 : event.data);
                     },
                     onPlaybackQualityChange: (event) => {
                         if (cancelled) return;
@@ -154,6 +165,7 @@ function YouTubePlayer({ videoId, onEnded, locked }) {
             cancelled = true;
             try {
                 playerRef.current?.destroy?.();
+                playerRef.current = null;
             } catch {
                 /* player already gone */
             }
@@ -173,9 +185,10 @@ function YouTubePlayer({ videoId, onEnded, locked }) {
         return () => clearInterval(pollRef.current);
     }, [playing]);
 
-    const togglePlay = () => {
+    const togglePlay = async () => {
         if (!ready) return;
-        playing ? playerRef.current.pauseVideo() : playerRef.current.playVideo();
+        if (playing) playerRef.current.pauseVideo();
+        else if (await progress.start()) playerRef.current?.playVideo?.();
     };
 
     const seek = (value) => {
@@ -229,6 +242,7 @@ function YouTubePlayer({ videoId, onEnded, locked }) {
     };
 
     const changeSpeed = (rate) => {
+        if (locked && rate !== 1) return;
         playerRef.current?.setPlaybackRate(rate);
         setSpeed(rate);
         setSettingsPanel(null);
@@ -249,6 +263,7 @@ function YouTubePlayer({ videoId, onEnded, locked }) {
             onContextMenu={(e) => e.preventDefault()}
         >
             <div ref={containerRef} className="absolute inset-0 h-full w-full" />
+            {locked && <div role="status" className="pointer-events-none absolute inset-x-3 top-3 z-30"><span className={cn('inline-block max-w-full rounded-lg px-3 py-2 text-xs shadow-sm', progress.status.message ? 'bg-amber-950/90 text-amber-100' : 'bg-black/65 text-white/80')}>{progress.status.message || `Avance validado: ${formatTime(progress.status.position)} / ${formatTime(progress.status.duration)} · Velocidad 1x`}</span></div>}
 
             {/* Transparent overlay: intercepts clicks so YouTube's own UI never shows */}
             <button
@@ -395,7 +410,7 @@ function YouTubePlayer({ videoId, onEnded, locked }) {
                                             >
                                                 ← Velocidad
                                             </button>
-                                            {SPEED_OPTIONS.map((r) => (
+                                            {(locked ? [1] : SPEED_OPTIONS).map((r) => (
                                                 <button
                                                     key={r}
                                                     type="button"
@@ -616,22 +631,13 @@ export default function Leccion({
 
     const handleVideoEnded = () => {
         if (isCompleted || videoWatched) return;
-        router.post(
-            `/aula/${course.slug}/clase/${lesson.id}/video-visto`,
-            {},
-            {
-                preserveScroll: true,
-                preserveState: true,
-                onSuccess: () => {
-                    setVideoWatched(true);
-                    // Auto-completa solo si ya no falta revisar ningun material
-                    // ni rendir el quiz de la clase (si tiene).
-                    if (allMaterialsViewed && (!lessonHasQuiz || lessonQuizPassed)) {
-                        router.post(`/aula/${course.slug}/clase/${lesson.id}/completar`);
-                    }
-                },
-            }
-        );
+        // Called only after the server confirms the tracked video is approved.
+        setVideoWatched(true);
+        if (allMaterialsViewed && (!lessonHasQuiz || lessonQuizPassed)) {
+            router.post(`/aula/${course.slug}/clase/${lesson.id}/completar`, {}, { preserveScroll: true });
+        } else {
+            router.reload({ only: ['videoWatchedLessonIds'], preserveScroll: true });
+        }
     };
 
     // Dispara el registro de apertura del material y, tras el tiempo minimo
@@ -693,6 +699,7 @@ export default function Leccion({
                                     videoId={lesson.youtube_video_id}
                                     onEnded={handleVideoEnded}
                                     locked={!isCompleted && !videoWatched}
+                                    trackingUrl={`/aula/${course.slug}/clase/${lesson.id}/video`}
                                 />
 
                                 {prevLesson && (
@@ -720,7 +727,7 @@ export default function Leccion({
                                     {!videoWatched && !allMaterialsViewed
                                         ? "Debes terminar de ver el video y revisar el material adjunto para completar la clase."
                                         : !videoWatched
-                                        ? "La clase se marca como completada automaticamente al terminar el video."
+                                        ? "Termina el video a velocidad 1x para validar el avance."
                                         : !allMaterialsViewed
                                         ? "Revisa el material adjunto para completar la clase."
                                         : lessonHasQuiz && !lessonQuizPassed

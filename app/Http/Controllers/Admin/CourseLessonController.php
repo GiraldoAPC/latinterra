@@ -40,7 +40,7 @@ class CourseLessonController extends Controller
             'title' => ['required', 'string', 'max:180'],
             'description' => ['nullable', 'string'],
             'youtube_video_id' => ['required', 'string', 'max:50'],
-            'duration_seconds' => ['nullable', 'integer', 'min:0'],
+            'duration_seconds' => ['required', 'integer', 'min:1', 'max:604800'],
         ]);
     }
 }

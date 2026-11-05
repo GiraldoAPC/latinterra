@@ -1,7 +1,7 @@
 import { PageHeader } from '@/Components/Shared/PageDesign';
 import { GraduationCap as DesignIcon } from 'lucide-react';
 import { Head, useForm, router, Link } from "@inertiajs/react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import AdminLayout from "@/Layouts/AdminLayout";
 import CourseStepper from "@/Components/Admin/CourseStepper";
 import CourseInfoFields from "@/Components/Admin/CourseInfoFields";
@@ -231,35 +231,38 @@ function CourseInfoForm({ course, courses = [], onSaved }) {
 }
 
 function NewLessonForm({ moduleId, onDone }) {
-    const { data, setData, post, processing, reset, errors } = useForm({
+    const { data, setData, post, processing, reset, errors, transform } = useForm({
         title: "",
         youtube_video_id: "",
         duration_seconds: "",
     });
     const [fetchingDuration, setFetchingDuration] = useState(false);
+    const durationRequest = useRef(0);
 
     const autoFillDuration = async () => {
         const videoId = data.youtube_video_id.trim();
         if (!videoId) return null;
+        const request = ++durationRequest.current;
         setFetchingDuration(true);
         try {
             const seconds = await fetchYoutubeDuration(videoId);
+            if (request !== durationRequest.current) return null;
             setData("duration_seconds", seconds);
             return seconds;
         } catch {
             return null;
         } finally {
-            setFetchingDuration(false);
+            if (request === durationRequest.current) setFetchingDuration(false);
         }
     };
 
     const submit = async (e) => {
         e.preventDefault();
         const seconds = data.duration_seconds || (await autoFillDuration());
+        transform((formData) => ({ ...formData, duration_seconds: seconds || formData.duration_seconds }));
         post(`/admin/modulos/${moduleId}/clases`, {
             // setData() no refresca `data` de forma sincronica dentro de este
             // mismo submit, asi que forzamos el valor recien calculado aqui.
-            transform: (formData) => ({ ...formData, duration_seconds: seconds || formData.duration_seconds }),
             preserveState: true,
             preserveScroll: true,
             onSuccess: () => {
@@ -287,22 +290,13 @@ function NewLessonForm({ moduleId, onDone }) {
                     placeholder="ID del video de YouTube"
                     className="w-full rounded-md border px-3 py-2 text-sm"
                     value={data.youtube_video_id}
-                    onChange={(e) => setData("youtube_video_id", e.target.value)}
+                    onChange={(e) => { durationRequest.current++; setFetchingDuration(false); setData({ ...data, youtube_video_id: e.target.value, duration_seconds: "" }); }}
                     onBlur={autoFillDuration}
                 />
                 {errors.youtube_video_id && <p className="text-xs text-destructive mt-1">{errors.youtube_video_id}</p>}
             </div>
-            <div
-                className="flex items-center justify-center gap-1 rounded-md border bg-muted/40 px-2 py-2 text-xs text-muted-foreground"
-                title="Duracion calculada automaticamente"
-            >
-                {fetchingDuration ? (
-                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                ) : (
-                    formatMinSec(data.duration_seconds) ?? "—"
-                )}
-            </div>
-            <Button type="submit" size="sm" disabled={processing}>
+            <label className="text-[10px] text-slate-500">Duración (segundos)<input aria-label="Duración del video en segundos" required type="number" min={1} max={604800} step={1} value={data.duration_seconds} className="mt-1 w-full rounded-md border px-2 py-2 text-xs" onChange={(e) => { durationRequest.current++; setFetchingDuration(false); setData('duration_seconds', e.target.value); }} />{fetchingDuration ? <span className="mt-1 flex items-center gap-1"><Loader2 className="h-3 w-3 animate-spin" />Calculando…</span> : <span className="mt-1 block">{formatMinSec(data.duration_seconds) ?? 'Automática o manual'}</span>}{errors.duration_seconds && <span role="alert" className="block text-red-600">{errors.duration_seconds}</span>}</label>
+            <Button type="submit" size="sm" disabled={processing || fetchingDuration}>
                 <Plus className="h-4 w-4" />
                 Agregar
             </Button>
@@ -311,33 +305,36 @@ function NewLessonForm({ moduleId, onDone }) {
 }
 
 function EditLessonForm({ lesson, onDone }) {
-    const { data, setData, put, processing, errors } = useForm({
+    const { data, setData, put, processing, errors, transform } = useForm({
         title: lesson.title,
         youtube_video_id: lesson.youtube_video_id,
         duration_seconds: lesson.duration_seconds ?? "",
     });
     const [fetchingDuration, setFetchingDuration] = useState(false);
+    const durationRequest = useRef(0);
 
     const autoFillDuration = async () => {
         const videoId = data.youtube_video_id.trim();
         if (!videoId) return null;
+        const request = ++durationRequest.current;
         setFetchingDuration(true);
         try {
             const seconds = await fetchYoutubeDuration(videoId);
+            if (request !== durationRequest.current) return null;
             setData("duration_seconds", seconds);
             return seconds;
         } catch {
             return null;
         } finally {
-            setFetchingDuration(false);
+            if (request === durationRequest.current) setFetchingDuration(false);
         }
     };
 
     const submit = async (e) => {
         e.preventDefault();
         const seconds = data.duration_seconds || (await autoFillDuration());
+        transform((formData) => ({ ...formData, duration_seconds: seconds || formData.duration_seconds }));
         put(`/admin/clases/${lesson.id}`, {
-            transform: (formData) => ({ ...formData, duration_seconds: seconds || formData.duration_seconds }),
             preserveState: true,
             preserveScroll: true,
             onSuccess: () => onDone?.(),
@@ -362,22 +359,13 @@ function EditLessonForm({ lesson, onDone }) {
                     placeholder="ID del video de YouTube"
                     className="w-full rounded-md border px-3 py-2 text-sm"
                     value={data.youtube_video_id}
-                    onChange={(e) => setData("youtube_video_id", e.target.value)}
+                    onChange={(e) => { durationRequest.current++; setFetchingDuration(false); setData({ ...data, youtube_video_id: e.target.value, duration_seconds: "" }); }}
                     onBlur={autoFillDuration}
                 />
                 {errors.youtube_video_id && <p className="text-xs text-destructive mt-1">{errors.youtube_video_id}</p>}
             </div>
-            <div
-                className="flex items-center justify-center gap-1 rounded-md border bg-muted/40 px-2 py-2 text-xs text-muted-foreground"
-                title="Duracion calculada automaticamente"
-            >
-                {fetchingDuration ? (
-                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                ) : (
-                    formatMinSec(data.duration_seconds) ?? "—"
-                )}
-            </div>
-            <Button type="submit" size="sm" disabled={processing}>
+            <label className="text-[10px] text-slate-500">Duración (segundos)<input aria-label="Duración del video en segundos" required type="number" min={1} max={604800} step={1} value={data.duration_seconds} className="mt-1 w-full rounded-md border px-2 py-2 text-xs" onChange={(e) => { durationRequest.current++; setFetchingDuration(false); setData('duration_seconds', e.target.value); }} />{fetchingDuration ? <span className="mt-1 flex items-center gap-1"><Loader2 className="h-3 w-3 animate-spin" />Calculando…</span> : <span className="mt-1 block">{formatMinSec(data.duration_seconds) ?? 'Automática o manual'}</span>}{errors.duration_seconds && <span role="alert" className="block text-red-600">{errors.duration_seconds}</span>}</label>
+            <Button type="submit" size="sm" disabled={processing || fetchingDuration}>
                 Guardar
             </Button>
             <Button type="button" size="sm" variant="ghost" onClick={onDone}>

@@ -8,7 +8,7 @@ Los hallazgos 1 y 2 de la revisión original se atendieron con datos de respuest
 
 Prueba: `php tests/manual/learning-access.php`, con SQLite en memoria, cubre 31 comprobaciones de ausencia de claves, acceso cruzado, avance fuera de orden, requisitos de contenido, corrección, reinicio de módulo, deuda y vencimiento. No se requirió una migración nueva.
 
-La primera corrección no comprobaba tiempo real de reproducción ni lectura por página: esos dos puntos siguen pendientes. Los intentos, sorteo y tiempo de examen en servidor se atendieron en la segunda entrega descrita abajo. Los materiales existentes siguen servidos desde almacenamiento público; migrarlos a descargas privadas autenticadas requiere una entrega adicional para controlar el acceso directo al archivo mediante una URL conocida. Las pruebas de simultaneidad de envíos y la validación de producción también siguen pendientes.
+La primera corrección no comprobaba tiempo de reproducción ni lectura por página. El control de video se atendió el 5 de noviembre, como se detalla abajo; la lectura por página sigue pendiente. Los intentos, sorteo y tiempo de examen en servidor se atendieron en la segunda entrega. Los materiales existentes siguen servidos desde almacenamiento público; migrarlos a descargas privadas autenticadas requiere una entrega adicional para controlar el acceso directo al archivo mediante una URL conocida. Las pruebas de simultaneidad de envíos y la validación de producción también siguen pendientes.
 
 ### Segunda corrección aplicada
 
@@ -18,7 +18,7 @@ La migración `2026_11_03_000008_add_module_exam_sessions.php` se aplicó localm
 
 El cierre del curso certificado ya está implementado: comprobaciones en el servidor bloquean clases, materiales, avances y evaluaciones; se conserva el certificado y el progreso al 100 % aunque se agregue contenido posteriormente. «Mis cursos» ya no ofrece repaso. La entrada «Continuar» comprueba el vencimiento antes de buscar una clase anterior. Prueba: `php tests/manual/course-closure.php` (51 comprobaciones, incluidas las 31 de acceso). Esta parte no agrega migraciones. El almacenamiento público de archivos todavía permite acceso mediante una URL conocida.
 
-El siguiente bloque pendiente es seguimiento por diapositiva y duración real del video. Las secciones siguientes conservan los hallazgos de la revisión original para mantener el contexto; el hallazgo 8 corresponde al cierre ya corregido en el aula.
+El seguimiento de video se implementó el 5 de noviembre: [control de video del aula](control-video-aula.md), con tiempo/posición acotados en servidor, token, controles periódicos, velocidad 1x y reanudación. Requiere la migración `2026_11_05_000009_add_video_tracking_to_lesson_progress.php`. Se conservan aprobaciones anteriores; las clases pendientes requieren duración administrativa válida. El siguiente bloque pendiente es seguimiento por diapositiva. Las secciones siguientes conservan los hallazgos originales como contexto; los hallazgos 7 y 8 ya tienen corrección en el aula.
 
 ## Prioridad 1: completar y corregir aula/exámenes
 

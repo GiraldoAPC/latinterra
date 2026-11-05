@@ -24,6 +24,7 @@ use Inertia\Response;
 use App\Services\StudentLearningPayload;
 use Illuminate\Validation\ValidationException;
 use App\Services\ModuleExamRunner;
+use App\Services\LessonVideoTracker;
 
 class StudentCourseController extends Controller
 {
@@ -370,10 +371,27 @@ class StudentCourseController extends Controller
         ]);
     }
 
-    /**
-     * Records the player's end event after validating course access/sequence.
-     * Measuring actual watched duration requires a separate server-side protocol.
-     */
+    public function startVideo(Course $course, CourseLesson $lesson): \Illuminate\Http\JsonResponse
+    {
+        $enrollment = Enrollment::where('user_id', Auth::id())->where('course_id', $course->id)->firstOrFail();
+        if ($redirect = $this->lessonAccessRedirect($enrollment, $course, $lesson)) {
+            return response()->json(['message' => 'El acceso a esta clase está bloqueado.', 'redirect' => $redirect->getTargetUrl()], 403);
+        }
+        return response()->json(app(LessonVideoTracker::class)->start($enrollment, $lesson));
+    }
+
+    public function videoHeartbeat(Request $request, Course $course, CourseLesson $lesson): \Illuminate\Http\JsonResponse
+    {
+        $enrollment = Enrollment::where('user_id', Auth::id())->where('course_id', $course->id)->firstOrFail();
+        if ($redirect = $this->lessonAccessRedirect($enrollment, $course, $lesson)) {
+            return response()->json(['message' => 'El acceso a esta clase está bloqueado.', 'redirect' => $redirect->getTargetUrl()], 403);
+        }
+        $data = $request->validate(['token' => ['required', 'uuid'], 'position' => ['required', 'numeric', 'min:0', 'max:604800'],
+            'playing' => ['required', 'boolean'], 'ended' => ['required', 'boolean']]);
+        return response()->json(app(LessonVideoTracker::class)->heartbeat($enrollment, $lesson, $data['token'], (float) $data['position'], (bool) $data['playing'], (bool) $data['ended']));
+    }
+
+    /** An end event alone cannot award progress; only the tracker can set video_watched_at. */
     public function markVideoWatched(Course $course, CourseLesson $lesson): RedirectResponse
     {
         $enrollment = Enrollment::where('user_id', Auth::id())
@@ -382,10 +400,8 @@ class StudentCourseController extends Controller
 
         if ($redirect = $this->lessonAccessRedirect($enrollment, $course, $lesson)) return $redirect;
         abort_unless($lesson->youtube_video_id, 404);
-        $enrollment->lessonProgress()->updateOrCreate(
-            ['course_lesson_id' => $lesson->id],
-            ['video_watched_at' => now()]
-        );
+        abort_unless($enrollment->lessonProgress()->where('course_lesson_id', $lesson->id)->whereNotNull('video_watched_at')->exists(),
+            403, 'Termina el tiempo validado del video antes de continuar.');
 
         return back();
     }
