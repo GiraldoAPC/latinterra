@@ -197,6 +197,7 @@ class MeetingDemo
                 'thumbnail' => 'demo-reunion-v1/curso-'.($i + 1).'.png', 'price' => [450, 650, 800, 0][$i], 'passing_score' => 13,
                 'is_free' => $i === 3, 'is_published' => true, 'min_age' => 18, 'payment_required' => $i !== 3,
                 'billing_type' => 'unico', 'access_duration_days' => 90, 'certificate_signatories' => $signers]));
+            $course->update(['certificate_content' => $i === 0 ? file_get_contents(resource_path('data/certificate-height-course.txt')) : implode("\n", array_map(fn ($title, $number) => ($number + 1).'. '.$title, array_merge(...$topics), range(0, 5)))]);
             if ($i === 2) $course->update(['prerequisite_course_id' => $courses[0]->id]);
             $course->instructors()->attach($this->ids['Personal'][0]);
             foreach ($topics as $moduleIndex => $lessons) {
@@ -275,7 +276,8 @@ class MeetingDemo
             if ($i === 8) $this->attempt($enrollment, $course->modules->first()->exam, false, 10);
             if ($completed) {
                 $certificate = Certificate::create(['enrollment_id' => $enrollment->id, 'code' => 'LT-DEMO-'.sprintf('%04d', $i + 1),
-                    'issued_at' => $expiry->copy()->subYearNoOverflow(), 'expires_at' => $expiry, 'final_score' => 18, 'signatories' => $course->certificate_signatories]);
+                    'issued_at' => $expiry->copy()->subYearNoOverflow(), 'expires_at' => $expiry, 'final_score' => 18, 'signatories' => $course->certificate_signatories,
+                    'course_details' => CertificateCourseDetails::snapshot($course)]);
                 $enrollment->update(['completed_at' => $certificate->issued_at]);
                 $this->remember('Certificados virtuales', $certificate);
             }

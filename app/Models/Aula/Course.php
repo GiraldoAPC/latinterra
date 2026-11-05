@@ -37,6 +37,8 @@ class Course extends Model
         'access_duration_days',
         'prerequisite_course_id',
         'certificate_signatories',
+        'certificate_content',
+        'certificate_duration_hours',
     ];
 
     protected $casts = [
@@ -51,6 +53,7 @@ class Course extends Model
         'min_age' => 'integer',
         'access_duration_days' => 'integer',
         'certificate_signatories' => 'array',
+        'certificate_duration_hours' => 'decimal:2',
     ];
 
     public function modules(): HasMany

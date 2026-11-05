@@ -95,6 +95,10 @@ class CourseController extends Controller
     private function billingRules(): array
     {
         return [
+            'certificate_content' => ['nullable', 'string', 'max:4000', function ($attribute, $value, $fail) {
+                if (is_string($value) && count(preg_split('/\r\n|\r|\n/', $value)) > 45) $fail('Usa como máximo 45 líneas para el reverso del certificado.');
+            }],
+            'certificate_duration_hours' => ['nullable', 'numeric', 'min:0.25', 'max:9999.99', 'decimal:0,2'],
             'billing_type' => ['nullable', 'in:unico,matricula_mensualidad'],
             'enrollment_fee' => ['nullable', 'numeric', 'min:0'],
             'monthly_fee' => ['nullable', 'numeric', 'min:0'],

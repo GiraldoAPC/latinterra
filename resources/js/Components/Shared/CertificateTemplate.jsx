@@ -1,83 +1,98 @@
 import { useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { BrowserQRCodeSvgWriter } from '@zxing/library';
+import './certificate.css';
 
-export default function CertificateTemplate({ name, course, code, issuedAt, expiresAt, score, status, signatories = [], documentLabel, modality, preview = false }) {
-    const qrRef = useRef(null);
-    const verifyUrl = `${window.location.origin}/certificado/verificar/${encodeURIComponent(code)}`;
+const dateLabel = (value) => value ? new Date(value).toLocaleDateString('es-PE', { day: '2-digit', month: 'long', year: 'numeric' }) : 'Por registrar';
+const hoursLabel = (value) => value != null && value !== '' ? `${Number(value).toLocaleString('es-PE', { maximumFractionDigits: 2 })} horas` : 'Por configurar';
+
+function VerificationCode({ url, preview }) {
+    const ref = useRef(null);
     useEffect(() => {
-        const container = qrRef.current;
-        if (!container || preview) return;
-        container.replaceChildren(new BrowserQRCodeSvgWriter().write(verifyUrl, 92, 92));
-        return () => container.replaceChildren();
-    }, [verifyUrl, preview]);
-    const date = new Date(issuedAt).toLocaleDateString('es-PE', { year: 'numeric', month: 'long', day: 'numeric' });
+        if (!ref.current || preview) return;
+        const element = ref.current;
+        element.replaceChildren(new BrowserQRCodeSvgWriter().write(url, 108, 108));
+        return () => element.replaceChildren();
+    }, [url, preview]);
+    return preview ? <div className="cert-qr-placeholder">QR de verificación<br />al emitir</div> : <a href={url} className="cert-qr-link" aria-label="Verificar autenticidad del certificado"><span ref={ref} /></a>;
+}
+
+function Syllabus({ content }) {
+    const ref = useRef(null);
+    useEffect(() => {
+        const element = ref.current;
+        const fit = () => {
+            if (!element?.clientWidth || !element?.clientHeight) return;
+            let size = 13;
+            element.style.fontSize = `${size}px`;
+            while (size > 9.5 && (element.scrollWidth > element.clientWidth + 1 || element.scrollHeight > element.clientHeight + 1)) {
+                size -= .25;
+                element.style.fontSize = `${size}px`;
+            }
+        };
+        const observer = new ResizeObserver(fit);
+        if (element) observer.observe(element);
+        document.fonts?.ready.then(fit);
+        window.addEventListener('beforeprint', fit);
+        fit();
+        return () => { observer.disconnect(); window.removeEventListener('beforeprint', fit); };
+    }, [content]);
+    const lines = String(content ?? '').trim().split(/\r\n|\r|\n/).filter((line) => line.trim());
+    return <div className="cert-syllabus" ref={ref}>
+        {lines.length ? lines.map((line, i) => <p key={i} className={/^\s+/.test(line) ? 'cert-subtopic' : ''}>{line.trim()}</p>) : <p className="cert-unconfigured">El temario de este curso está pendiente de configuración.</p>}
+    </div>;
+}
+
+function CertificateSheets({ name, course, code, issuedAt, expiresAt, score, signatories, documentLabel, modality, preview, content, durationHours, verifyUrl }) {
     return <>
-        <article id="certificate-print" className="certificate-sheet">
-            <div className="certificate-inner">
-                <img src="/assets/img/LOGO-ACCESO-VERTICAL.png" alt="Acceso Vertical Perú" />
-                <p className="eyebrow">{preview ? 'MODELO · SIN VALIDEZ' : 'ACCESO VERTICAL PERÚ'}</p>
-                <h1>CERTIFICADO</h1><p className="subtitle">DE FINALIZACIÓN</p>
-                <p>Se otorga el presente certificado a</p>
-                <h2>{name}</h2>
-                {documentLabel && <p>{documentLabel}</p>}
+        <article className="certificate-sheet cert-front" data-certificate-face="front">
+            <header className="cert-header">
+                <div className="cert-issuer"><img src="/assets/img/LOGO-ACCESO-VERTICAL.png" alt="Acceso Vertical" /><div><strong>ACCESO VERTICAL S.A.C.</strong><span>Capacitación y formación técnica</span></div></div>
+                <div className="cert-reference"><span>{preview ? 'MODELO · SIN VALIDEZ' : 'CERTIFICADO DE CAPACITACIÓN'}</span><strong>{code}</strong></div>
+            </header>
+            <div className="cert-award">
+                <h1>CERTIFICADO</h1>
+                <p className="cert-subtitle">DE CAPACITACIÓN</p>
+                <p>Acceso Vertical S.A.C. otorga el presente certificado a</p>
+                <h2 className={name?.length > 48 ? 'cert-long-name' : ''}>{name}</h2>
+                {documentLabel && <p className="cert-document">Identificado(a) con {documentLabel}</p>}
                 <p>Por haber completado satisfactoriamente el curso</p>
                 <h3>{course}</h3>
-                {modality && <p>{modality}</p>}
-                <p className="date">Emitido el {date}</p>
-                <p>
-                    Nota: {score == null ? 'No registrada' : `${Number(score).toFixed(2)} / 20`}
-                    {expiresAt && <> · Vence el {new Date(expiresAt).toLocaleDateString('es-PE')}</>}
-                    {status && <> · {status === 'valid' ? 'Vigente' : status === 'expired' ? 'Vencido' : 'Vigencia no disponible'}</>}
-                </p>
-                <div className="signatures">
-                    {signatories.length ? signatories.map((signer, i) => <div key={i}>
-                        <img src={signer.url} alt={`Firma de ${signer.name}`} />
-                        <strong>{signer.name}</strong><small>{signer.role === 'company' ? 'Representante de la empresa' : 'Instructor'}</small>
-                    </div>) : <><div>Representante de la empresa<small>Firma no registrada</small></div><div>Instructor responsable<small>Firma no registrada</small></div></>}
-                </div>
-                <footer><span>Código: <strong>{code}</strong></span>
-                    {preview ? <span>Datos de ejemplo · Firmas pendientes de configurar</span> : <a className="certificate-verification" href={verifyUrl}><span ref={qrRef} aria-hidden="true" />Verificar autenticidad</a>}
-                </footer>
+                {modality && <p className="cert-modality">{modality}</p>}
+                <div className="cert-issue"><span>Fecha de emisión: <strong>{dateLabel(issuedAt)}</strong></span>{score != null && <span>Nota final: <strong>{Number(score).toFixed(2)} / 20</strong></span>}</div>
             </div>
+            <div className="cert-signatures">
+                {(signatories.length ? signatories : [{ name: 'Representante de la empresa', role: 'company' }, { name: 'Instructor responsable', role: 'instructor' }]).map((signer, i) => <div key={i}>
+                    <div className="cert-signature-image">{signer.url ? <img src={signer.url} alt={`Firma de ${signer.name}`} /> : <span>Firma pendiente</span>}</div>
+                    <strong>{signer.name}</strong><span>{signer.role === 'company' ? 'Representante de la empresa' : 'Instructor'}</span>
+                </div>)}
+            </div>
+            <footer className="cert-front-footer"><span>{preview ? 'Documento de ejemplo, sin validez.' : 'La autenticidad de este documento se verifica mediante el código QR del reverso.'}</span><span>Anverso · 1 / 2</span></footer>
         </article>
-        <style>{`
-            .certificate-sheet { box-sizing:border-box; width:100%; max-width:1120px; margin:auto; padding:18px; border:2px solid #024a7d; background:linear-gradient(135deg,#024a7d 0 3%,white 3% 97%,#00adee 97%); color:#183449; box-shadow:0 12px 40px #024a7d18; }
-            .certificate-inner { padding:28px 44px 20px; border:1px solid #a9c9da; background:white; text-align:center; }
-            .certificate-inner>img { width:180px; height:70px; object-fit:contain; margin:auto; }
-            .certificate-sheet .eyebrow { margin:20px 0 8px; font-size:11px; letter-spacing:4px; }
-            .certificate-sheet h1 { font-family:Georgia,serif; font-size:clamp(28px,5vw,56px); letter-spacing:4px; line-height:1.15; color:#024a7d; }
-            .certificate-sheet .subtitle { margin:10px 0 28px; letter-spacing:5px; font-size:12px; color:#397b98; }
-            .certificate-sheet p { color:#607381; font-size:14px; margin:14px 0; }
-            .certificate-sheet h2 { font-family:Georgia,serif; font-size:clamp(24px,4vw,36px); line-height:1.25; border-bottom:1px solid #bcd6e1; padding:0 12px 16px; margin:0 auto 18px; overflow-wrap:anywhere; }
-            .certificate-sheet h3 { font-size:clamp(18px,3vw,25px); font-weight:700; color:#024a7d; line-height:1.3; overflow-wrap:anywhere; }
-            .certificate-sheet .date { margin:22px 0; font-size:13px; }
-            .certificate-sheet .signatures { display:flex; flex-wrap:wrap; justify-content:space-around; gap:24px; margin:28px 0; }
-            .certificate-sheet .signatures>div { padding-top:10px; width:200px; max-width:100%; font-size:12px; }
-            .certificate-sheet .signatures img { width:150px; height:60px; object-fit:contain; margin:0 auto 5px; }
-            .certificate-sheet .signatures strong { display:block; border-top:1px solid #69899b; padding-top:6px; }
-            .certificate-sheet small { display:block; color:#718491; margin-top:3px; }
-            .certificate-sheet footer { border-top:1px solid #dce9ef; padding-top:14px; display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; font-size:10px; color:#607381; }
-            .certificate-sheet footer a { text-decoration:underline; }
-            .certificate-verification { display:flex; align-items:center; gap:10px; }
-            .certificate-verification svg { width:92px; height:92px; }
-            @media(max-width:640px) { .certificate-inner { padding:20px 14px; } .certificate-sheet .signatures { gap:20px; } }
-            @media print {
-                @page { size:A4 landscape; margin:10mm; }
-                body * { visibility:hidden !important; }
-                #certificate-print, #certificate-print * { visibility:visible !important; }
-                #certificate-print { position:absolute; left:0; top:0; width:277mm; height:190mm; max-width:none; padding:4mm; box-shadow:none; print-color-adjust:exact; -webkit-print-color-adjust:exact; }
-                .certificate-inner { box-sizing:border-box; height:100%; padding:5mm 8mm; display:flex; flex-direction:column; align-items:center; justify-content:space-between; gap:1mm; }
-                .certificate-inner>img { width:42mm; height:12mm; margin:0 auto; }
-                .certificate-sheet h1 { font-size:38px; line-height:1.1; }
-                .certificate-sheet h2 { width:100%; font-size:27px; margin:0; padding:0 0 2mm; }
-                .certificate-sheet h3 { width:100%; font-size:20px; }
-                #certificate-print p { margin:0; font-size:11px; line-height:1.2; }
-                .certificate-sheet .signatures { width:100%; break-inside:avoid; margin:0; flex-wrap:nowrap; gap:3mm; }
-                .certificate-sheet .signatures>div { flex:1; min-width:0; width:auto; font-size:9px; overflow-wrap:anywhere; }
-                .certificate-sheet .signatures img { width:100%; height:12mm; }
-                .certificate-sheet footer { width:100%; padding-top:2mm; font-size:9px; }
-                .certificate-verification svg { width:20mm; height:20mm; }
-            }
-        `}</style>
+        <article className="certificate-sheet cert-back" data-certificate-face="back">
+            <header className="cert-back-header"><div><p>CONTENIDO DE LA CAPACITACIÓN</p><h2>{course}</h2></div><span>{code}</span></header>
+            <Syllabus content={content} />
+            <footer className="cert-back-footer">
+                <div className="cert-duration"><span>DURACIÓN TOTAL</span><strong>{hoursLabel(durationHours)}</strong><p>{expiresAt ? `Certificado válido hasta el ${dateLabel(expiresAt)}.` : 'Vigencia pendiente de registrar.'}</p><small>{name} · Reverso · 2 / 2</small></div>
+                <div className="cert-verification"><div><strong>Verificación de autenticidad</strong><span>{code}</span>{!preview && <a href={verifyUrl}>{verifyUrl}</a>}</div><VerificationCode url={verifyUrl} preview={preview} /></div>
+            </footer>
+        </article>
+    </>;
+}
+
+export default function CertificateTemplate({ name, course, code, issuedAt, expiresAt, score, status, signatories = [], documentLabel, modality, preview = false, content, durationHours }) {
+    useEffect(() => {
+        document.body.classList.add('lt-certificate-document');
+        return () => document.body.classList.remove('lt-certificate-document');
+    }, []);
+    const verifyUrl = `${window.location.origin}/certificado/verificar/${encodeURIComponent(code)}`;
+    const props = { name, course, code, issuedAt, expiresAt, score, signatories, documentLabel, modality, preview, content, durationHours, verifyUrl };
+    return <>
+        <style media="print">{'@page { size:A4 landscape; margin:10mm; }'}</style>
+        <div className="certificate-screen-root">
+            <div className="cert-screen-note">Anverso y reverso · A4 horizontal. En celular, desliza cada hoja para revisarla.{status === 'expired' && ' Este certificado se encuentra vencido.'}</div>
+            <div className="certificate-preview"><CertificateSheets {...props} /></div>
+        </div>
+        {createPortal(<div className="certificate-print-root"><CertificateSheets {...props} /></div>, document.body)}
     </>;
 }

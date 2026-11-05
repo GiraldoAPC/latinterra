@@ -13,7 +13,8 @@ export default function Certificate({ certificate, sessionId }) {
             </div>
             <CertificateTemplate name={certificate.student_name} course={certificate.course_title} code={certificate.code}
                 issuedAt={certificate.issued_at} expiresAt={certificate.expires_at} score={certificate.final_score}
-                status={certificate.status} signatories={certificate.signatories} documentLabel={certificate.document_label} modality="Capacitación presencial" />
+                status={certificate.status} signatories={certificate.signatories} documentLabel={certificate.document_label} modality="Capacitación presencial"
+                content={certificate.course_content} durationHours={certificate.duration_hours} />
         </AdminLayout>
     </>;
 }

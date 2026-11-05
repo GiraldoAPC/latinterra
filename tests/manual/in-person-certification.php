@@ -59,6 +59,7 @@ Schema::create('certificates', function (Blueprint $table) {
     $table->timestamp('issued_at'); $table->timestamp('expires_at')->nullable(); $table->decimal('final_score', 5, 2)->nullable();
 });
 
+(require __DIR__.'/../../database/migrations/2026_11_05_000011_add_certificate_course_details.php')->up();
 $failure = null;
 try {
     Carbon::setTestNow('2026-11-03 12:00:00');
@@ -75,7 +76,7 @@ try {
     $service->assess($group, $participant, 13, true, $admin->id);
     rejected(fn () => $service->issue($group, $participant, $admin->id), 'certificate', 'Missing signatories cannot certify');
     $signers = [['id' => (string) Str::uuid(), 'name' => 'Empresa', 'role' => 'company', 'path' => 'company.png'], ['id' => (string) Str::uuid(), 'name' => 'Instructor', 'role' => 'instructor', 'path' => 'instructor.png']];
-    $course->update(['certificate_signatories' => $signers]);
+    $course->update(['certificate_signatories' => $signers, 'certificate_content' => "1. Seguridad\n2. Rescate", 'certificate_duration_hours' => 8]);
     rejected(fn () => $service->issue($group, $participant, $admin->id), 'certificate', 'Missing image files cannot certify');
     Storage::disk('public')->put('company.png', 'test');
     Storage::disk('public')->put('instructor.png', 'test');
@@ -83,6 +84,7 @@ try {
     rejected(fn () => $service->issue($group, $participant, $admin->id), 'certificate', 'Future session cannot certify');
     $group->update(['starts_at' => now()->subDay()]);
     $certificate = $service->issue($group, $participant, $admin->id);
+    check($certificate->course_details['content'] === "1. Seguridad\n2. Rescate" && $certificate->course_details['duration_hours'] === '8.00', 'In-person issuance snapshots syllabus and duration');
     check($certificate->final_score === '13.00', 'Minimum passing score can certify');
     check($certificate->issued_by === $admin->id && $participant->fresh()->assessed_by === $admin->id, 'Assessment and issuance administrator recorded');
     check($certificate->expires_at->toDateTimeString() === '2027-11-03 12:00:00', 'Annual validity saved');
@@ -91,12 +93,13 @@ try {
     rejected(fn () => $service->assess($group, $participant, 20, true, $admin->id), 'assessment', 'Assessment immutable after issue');
     $controller = new InPersonSessionController();
     rejected(fn () => $controller->updateParticipant(testRequest(['document_type' => 'dni', 'document_number' => '12345678', 'name' => 'Changed', 'last_name' => 'Name']), $group, $participant), 'participant', 'Identity immutable after issue');
-    $course->update(['title' => 'Changed title', 'certificate_signatories' => []]);
+    $course->update(['title' => 'Changed title', 'certificate_signatories' => [], 'certificate_content' => 'Changed syllabus', 'certificate_duration_hours' => 16]);
     check($certificate->fresh()->course_title === 'Trabajos en altura' && $certificate->fresh()->signatories[1]['name'] === 'Instructor', 'Course changes preserve issued snapshots');
     $request = testRequest();
     $request->headers->set('X-Inertia', 'true');
     $public = (new CertificateController())->verify($certificate->code)->toResponse($request)->getData(true)['props']['certificate'];
     check($public['student_name'] === 'Ana Pérez' && $public['modality'] === 'Presencial' && $public['status'] === 'valid', 'Public verifier recognizes in-person certificates');
+    check($public['course_content'] === "1. Seguridad\n2. Rescate" && $public['duration_hours'] === '8.00', 'In-person QR verification preserves issued course details after edits');
     check(!isset($public['document_number']) && !isset($public['signatories']) && !isset($public['email']) && !isset($public['participant']), 'Public verifier excludes private participant data and signatures');
     Carbon::setTestNow('2027-11-03 12:00:00');
     check($certificate->validityStatus() === 'expired', 'Expiry boundary is enforced');

@@ -31,9 +31,11 @@ export default function Certificados({ courses = [], certificates, inPersonCerti
                 </label>
                 {courses.length === 0 && <p className="text-sm text-muted-foreground">Primero registra un curso para configurar sus firmas.</p>}
                 <Button disabled={!selectedCourse} onClick={() => setSignaturesOpen(true)}><PenLine />Configurar firmas</Button>
+                {selectedCourse && <Button variant="outline" asChild><Link href={`/admin/cursos/${selectedCourse.id}?step=1`}>Editar contenido y duración</Link></Button>}
                 {selectedCourse && <FormModal open={signaturesOpen} onClose={() => setSignaturesOpen(false)} icon={PenLine} title="Firmas del certificado" description={selectedCourse.title}><CertificateSignatoriesForm key={`${selectedCourse.id}:${JSON.stringify(selectedCourse.signatories)}`} course={selectedCourse} /></FormModal>}
             </section>
             <CertificateTemplate name="María Fernanda García López" course={selectedCourse?.title ?? 'Seguridad y trabajos en altura · Nivel 1'} signatories={selectedCourse?.signatories}
+                content={selectedCourse?.content} durationHours={selectedCourse?.duration_hours}
                 code="MODELO-SIN-VALIDEZ" issuedAt="2026-11-03T12:00:00-05:00" expiresAt="2027-11-03T12:00:00-05:00" score={18} status="valid" preview />
             <section className="mt-8 space-y-4 print:hidden">
                 <h2 className="text-lg font-semibold">Certificados del aula virtual</h2>

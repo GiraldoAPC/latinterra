@@ -24,6 +24,7 @@ class CertificateController extends Controller
             'certificate' => $certificate,
             'enrollment' => $enrollment,
             'signatories' => $certificate->signatureImages(),
+            'courseDetails' => \App\Services\CertificateCourseDetails::resolve($certificate),
             'validity' => [
                 'expires_at' => $certificate->validityEndsAt()?->toIso8601String(),
                 'status' => $certificate->validityStatus(),
@@ -35,6 +36,7 @@ class CertificateController extends Controller
     {
         $certificate = Certificate::where('code', $code)->with('enrollment.course', 'enrollment.user')->first();
         $inPerson = $certificate ? null : InPersonCertificate::where('code', $code)->first();
+        $details = $certificate ? \App\Services\CertificateCourseDetails::resolve($certificate) : null;
 
         return Inertia::render('Aula/VerificarCertificado', [
             'certificate' => $certificate ? [
@@ -43,8 +45,8 @@ class CertificateController extends Controller
                 'expires_at' => $certificate->validityEndsAt()?->toIso8601String(),
                 'status' => $certificate->validityStatus(),
                 'final_score' => $certificate->final_score,
-                'student_name' => $certificate->enrollment->user->name,
-                'course_title' => $certificate->enrollment->course->title,
+                'student_name' => trim($certificate->enrollment->user->name.' '.$certificate->enrollment->user->last_name),
+                'course_title' => $details['title'], 'course_content' => $details['content'], 'duration_hours' => $details['duration_hours'],
             ] : $inPerson?->publicDetails(),
             'code' => $code,
         ]);

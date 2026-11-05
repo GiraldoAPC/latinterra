@@ -832,6 +832,7 @@ class StudentCourseController extends Controller
                 'expires_at' => $issuedAt->copy()->addYearNoOverflow(),
                 'final_score' => $scores->isEmpty() ? null : round($scores->avg(), 2),
                 'signatories' => $enrollment->course->certificate_signatories,
+                'course_details' => \App\Services\CertificateCourseDetails::snapshot($enrollment->course),
             ]);
         }
     }

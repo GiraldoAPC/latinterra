@@ -109,6 +109,25 @@ export default function CourseInfoFields({ data, setData, errors = {}, showPubli
 
                 <Separator className="md:col-span-2 lg:col-span-3" />
 
+                <div className="md:col-span-2 lg:col-span-3">
+                    <SectionHeading icon={GraduationCap} title="Contenido y duración del certificado" color="blue" />
+                    <div className="grid gap-4 md:grid-cols-[180px_1fr]">
+                        <Field label="Duración total (horas)" htmlFor="certificate_duration_hours" error={errors.certificate_duration_hours}>
+                            <Input id="certificate_duration_hours" type="number" min="0.25" max="9999.99" step="0.01"
+                                value={data.certificate_duration_hours ?? ''} onChange={(e) => setData('certificate_duration_hours', e.target.value)} placeholder="Ej. 8" />
+                            <p className="mt-2 text-xs text-muted-foreground">Duración de la capacitación que aparecerá en el reverso. Es independiente del tiempo de los videos y del plazo de acceso al aula.</p>
+                        </Field>
+                        <Field label="Temario para el reverso" htmlFor="certificate_content" error={errors.certificate_content}>
+                            <Textarea id="certificate_content" rows={9} maxLength={4000} value={data.certificate_content ?? ''}
+                                onChange={(e) => setData('certificate_content', e.target.value)}
+                                placeholder={'1. Objetivo del curso\n2. Riesgos y prevención\n   a) Evaluación de riesgos\n3. Uso del equipo'} />
+                            <p className="mt-2 text-xs text-muted-foreground">Un tema por línea; puedes numerar y añadir sangrías para los subtemas. Máximo 45 líneas y 4000 caracteres. Se usa en certificados virtuales y presenciales y en su verificación por QR. Los certificados nuevos conservan el temario y la duración que tenían al emitirse.</p>
+                        </Field>
+                    </div>
+                </div>
+
+                <Separator className="md:col-span-2 lg:col-span-3" />
+
                 {/* Precio y acceso */}
                 <div>
                     <SectionHeading icon={BadgeDollarSign} title="Precio y acceso" color="blue" />

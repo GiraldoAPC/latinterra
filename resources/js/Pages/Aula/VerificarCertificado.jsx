@@ -36,6 +36,7 @@ export default function VerificarCertificado({ certificate, code }) {
                                     <strong>{certificate.course_title}</strong>
                                 </div>
                                 {certificate.modality && <div className="beal-modal__spec"><span>Modalidad</span><strong>{certificate.modality}</strong></div>}
+                                <div className="beal-modal__spec"><span>Duración</span><strong>{certificate.duration_hours ? `${Number(certificate.duration_hours).toLocaleString('es-PE')} horas` : 'No registrada'}</strong></div>
                                 <div className="beal-modal__spec">
                                     <i className="fa-solid fa-calendar" aria-hidden="true" />
                                     <span>Emitido</span>
@@ -60,6 +61,10 @@ export default function VerificarCertificado({ certificate, code }) {
                                     <span>Codigo</span>
                                     <strong>{certificate.code}</strong>
                                 </div>
+                                {certificate.course_content && <div style={{ marginTop: 20, borderTop: '1px solid #e2e8f0', paddingTop: 16 }}>
+                                    <h2 style={{ fontSize: 16, fontWeight: 700, marginBottom: 12 }}>Contenido del curso</h2>
+                                    <p style={{ whiteSpace: 'pre-wrap', fontSize: 13, lineHeight: 1.7, overflowWrap: 'anywhere' }}>{certificate.course_content}</p>
+                                </div>}
                             </div>
                         </>
                     ) : (

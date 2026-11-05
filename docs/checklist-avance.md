@@ -195,3 +195,8 @@ Prueba reproducible: `php tests/manual/roles-workflow.php` (33 comprobaciones en
 - [ ] Almacenamiento privado y entrega autenticada de los archivos. Los enlaces públicos de storage siguen siendo una limitación independiente.
 
 Detalles y despliegue: [Lectura de materiales](lectura-materiales-aula.md). Requiere nueva dependencia Composer y migración `2026_11_05_000010_add_material_page_tracking.php`, aplicada en MySQL local. Pruebas aisladas de lectura y regresión de video/exámenes/cierre, compilación y revisión en Chrome. Producción pendiente de desplegar/verificar.
+
+
+### Certificado formal con anverso y reverso — 5 de noviembre de 2026
+
+Se sustituyó el modelo de una cara por dos páginas A4 horizontales, con diseño sobrio, temario/duración configurables por curso y QR de verificación en el reverso. Las emisiones nuevas conservan una copia de título, temario y horas; la ficha pública incluye esos datos. Aplicado a aula virtual, presenciales y modelo administrativo. Migración `2026_11_05_000011_add_certificate_course_details.php` aplicada en local. Detalles, pruebas y despliegue: [Certificado de dos caras](certificado-anverso-reverso.md). La duración del ejemplo de DEMO Ana está pendiente de confirmación. Producción no verificada.

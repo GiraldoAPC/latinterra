@@ -61,6 +61,7 @@ class InPersonCertification
                 'course_title' => $group->course->title, 'final_score' => $locked->score,
                 'signatories' => $signers->all(), 'issued_at' => $issuedAt,
                 'expires_at' => $issuedAt->copy()->addYearNoOverflow(), 'issued_by' => $adminId,
+                'course_details' => CertificateCourseDetails::snapshot($group->course),
             ]);
         });
     }

@@ -215,6 +215,8 @@ function CourseInfoForm({ course, courses = [], onSaved }) {
         min_age: course.min_age ?? "",
         access_duration_days: course.access_duration_days ?? "",
         prerequisite_course_id: course.prerequisite_course_id ?? "",
+        certificate_content: course.certificate_content ?? "",
+        certificate_duration_hours: course.certificate_duration_hours ?? "",
         is_published: course.is_published,
     });
 

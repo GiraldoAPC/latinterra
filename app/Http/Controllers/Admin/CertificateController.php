@@ -19,19 +19,20 @@ class CertificateController extends Controller
     public function index(): Response
     {
         return Inertia::render('Admin/Cursos/Certificados', [
-            'courses' => Course::orderBy('title')->get(['id', 'title', 'certificate_signatories'])->map(fn ($course) => [
+            'courses' => Course::orderBy('title')->get(['id', 'title', 'certificate_signatories', 'certificate_content', 'certificate_duration_hours'])->map(fn ($course) => [
                 'id' => $course->id,
                 'title' => $course->title,
+                'content' => $course->certificate_content, 'duration_hours' => $course->certificate_duration_hours,
                 'signatories' => collect($course->certificate_signatories ?? [])->map(fn ($signer) => [
                     'id' => $signer['id'], 'name' => $signer['name'], 'role' => $signer['role'],
-                    'url' => Storage::disk('public')->url($signer['path']),
+                    'url' => '/storage/'.ltrim($signer['path'], '/'),
                 ]),
             ]),
             'certificates' => Certificate::with('enrollment.user', 'enrollment.course')->orderByDesc('issued_at')
                 ->paginate(15)->withQueryString()->through(fn ($certificate) => [
                     'code' => $certificate->code,
                     'student' => $certificate->enrollment->user->name,
-                    'course' => $certificate->enrollment->course->title,
+                    'course' => \App\Services\CertificateCourseDetails::resolve($certificate)['title'],
                     'expires_at' => $certificate->validityEndsAt()?->toIso8601String(),
                     'status' => $certificate->validityStatus(),
                     'notice' => $certificate->renewalNotice(),

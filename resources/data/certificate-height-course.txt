@@ -1,0 +1,35 @@
+1. Objetivo del curso
+2. Riesgo y peligro
+3. Normas básicas de seguridad
+4. Acciones y condiciones inseguras
+5. Marco legal básico
+   a) Artículo 68 de Ley 16.744
+   b) Definición de EPP y explicación de artículos 53 y 54 del D.S. 594
+6. Definición de trabajo en altura (Guía Técnica N.º 3 del ISP)
+7. Riesgos generales
+8. Riesgos específicos: caída a distinto nivel y caídas de objetos
+9. Protección personal: casco, guantes y botas
+10. SPDC
+   a) Arnés tipo A, P y D
+   b) Elementos de amarre anticaídas
+   c) Absorbedores de energía
+   d) Anticaídas deslizantes
+   e) Líneas de vida: verticales, horizontales, rígidas, flexibles, temporales y fijas
+   f) Conectores: mosquetones y ganchos
+   g) Puntos de anclaje
+   h) Mantención, limpieza y condiciones para dar de baja
+11. Definición de protección colectiva y tipos
+12. Definición de protecciones a terceros y tipos
+13. Medios de acceso
+   a) Plataformas de trabajo: elevadoras y andamios (explicación breve)
+   b) Escalas (explicación breve)
+14. Principios generales del trabajo en altura: anticaídas, posicionamiento y retención
+15. Física de la caída
+16. Factor de caída
+17. Fuerza de choque
+18. Distancia libre de caída
+19. Efecto péndulo
+20. Techumbre y azotea
+21. Síndrome del arnés
+22. Activación de protocolo de emergencia según empresa
+23. Rapel básico

@@ -28,6 +28,8 @@ export default function Create({ courses = [] }) {
         min_age: "",
         access_duration_days: "",
         prerequisite_course_id: "",
+        certificate_content: "",
+        certificate_duration_hours: "",
     });
 
     const submit = (e) => {

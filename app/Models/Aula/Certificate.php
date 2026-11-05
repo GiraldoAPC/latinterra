@@ -11,13 +11,14 @@ class Certificate extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['enrollment_id', 'code', 'pdf_path', 'issued_at', 'expires_at', 'final_score', 'signatories'];
+    protected $fillable = ['enrollment_id', 'code', 'pdf_path', 'issued_at', 'expires_at', 'final_score', 'signatories', 'course_details'];
 
     protected $casts = [
         'issued_at' => 'datetime',
         'expires_at' => 'datetime',
         'final_score' => 'decimal:2',
         'signatories' => 'array',
+        'course_details' => 'array',
     ];
 
     public function enrollment(): BelongsTo
@@ -58,7 +59,7 @@ class Certificate extends Model
         return collect($this->signatories ?? [])->map(fn ($signer) => [
             'name' => $signer['name'],
             'role' => $signer['role'],
-            'url' => \Illuminate\Support\Facades\Storage::disk('public')->url($signer['path']),
+            'url' => '/storage/'.ltrim($signer['path'], '/'),
         ])->all();
     }
 

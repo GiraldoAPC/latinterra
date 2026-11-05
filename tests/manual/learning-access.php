@@ -83,6 +83,7 @@ foreach ([
 Schema::table('courses', fn (Blueprint $table) => $table->boolean('payment_required')->default(false));
 Schema::create('course_installments', function (Blueprint $table) { $table->id(); $table->unsignedBigInteger('enrollment_id'); $table->string('status'); $table->date('due_date'); });
 (require __DIR__.'/../../database/migrations/2026_11_03_000008_add_module_exam_sessions.php')->up();
+(require __DIR__.'/../../database/migrations/2026_11_05_000011_add_certificate_course_details.php')->up();
 $failure = null;
 try {
     Carbon::setTestNow('2026-11-03 12:00:00');
