@@ -148,6 +148,12 @@ La base de formularios, tablas, botones y modales se extendió a administración
 
 Verificación: 29 pantallas de escritorio y celular (58 vistas), nueve comprobaciones funcionales del selector, revisión del menú móvil y apertura/cierre de seis modales adicionales. Sin errores de ejecución, desbordamiento horizontal de página ni escrituras/correos reales durante la revisión. Compilación correcta. No requiere nuevas migraciones y aún no se verificó producción.
 
+### Dashboard de resultados — 5 de noviembre de 2026
+
+Se reemplazaron los accesos grandes por indicadores reales de cobros, matrículas, certificados y cotizaciones, gráfico diario y distribución de pagos, con períodos de 7/30/90 días. Incluye deuda actual, pedidos pendientes, cotizaciones aprobadas, stock bajo, próximos vencimientos y grupos presenciales. Se excluyen ventas anuladas y se evitan duplicaciones por cotización convertida o pedido dividido en cuotas. Las compras y los auspicios se muestran separados; no se calcula una utilidad. Actualización manual y automática cada minuto con la pestaña visible.
+
+Reglas, fuentes y despliegue: [Dashboard de resultados](dashboard-resultados.md). Prueba aislada: `php tests/manual/dashboard.php` (29 comprobaciones). Revisión de filtros, gráfico, actualización, estado vacío y adaptación móvil en Chrome. No agrega migraciones; producción pendiente de actualizar/verificar.
+
 ## Roles y permisos
 
 - [x] Roles disponibles: `admin` (administración), `manager` (gerencia), `instructor`, `coordinator` (coordinador) y `student` (estudiante). Cada cuenta mantiene un solo rol, como el modelo existente.

@@ -25,7 +25,7 @@ Los recibos, fichas, récord de notas y certificados imprimibles mantienen su fo
 
 Aplicado a cabeceras de cotizaciones, productos, categorías, marcas, clientes, proveedores, movimientos, cursos, estudiantes, ventas, pedidos, catálogos, configuración, certificados, presenciales y roles. Presenciales, auspicios y creación de personal usan registro en modal; sus listados mantienen las acciones y restricciones existentes.
 
-La continuación completa las cabeceras de creación/edición de cursos y estudiantes, perfiles de estudiante y alumno, detalles de cotización y grupo, panel académico, exámenes, catálogo y cursos del alumno, acceso y perfil de cuenta. El dashboard ofrece accesos reales a módulos, en lugar de contadores fijos en cero. Los listados académicos y de certificados usan tablas; firmas, correo/pago de cotización, correcciones/evaluación presencial y asignación docente usan modales compartidos.
+La continuación completa las cabeceras de creación/edición de cursos y estudiantes, perfiles de estudiante y alumno, detalles de cotización y grupo, panel académico, exámenes, catálogo y cursos del alumno, acceso y perfil de cuenta. El dashboard muestra [resultados dinámicos](dashboard-resultados.md), con cobros, tendencias y pendientes operativos. Los listados académicos y de certificados usan tablas; firmas, correo/pago de cotización, correcciones/evaluación presencial y asignación docente usan modales compartidos.
 
 ## Selectores
 
