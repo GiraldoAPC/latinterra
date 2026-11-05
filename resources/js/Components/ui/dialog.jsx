@@ -37,7 +37,7 @@ function isInsideNestedRadixContent(target) {
 }
 
 const DialogContent = React.forwardRef(
-    ({ className, children, showClose = true, onPointerDownOutside, onInteractOutside, ...props }, ref) => (
+    ({ className, children, showClose = true, onPointerDownOutside, onInteractOutside, onEscapeKeyDown, ...props }, ref) => (
         <DialogPortal>
             {/* DialogPrimitive.Overlay solo se renderiza cuando el Dialog es
                 modal (Radix la oculta por completo si modal={false}), y
@@ -61,6 +61,14 @@ const DialogContent = React.forwardRef(
                     }
                     onPointerDownOutside?.(e);
                 }}
+                onEscapeKeyDown={(event) => {
+                    // Portaled selectors must consume Escape before their parent form.
+                    if (document.querySelector('[data-select-popup][data-state="open"]')) {
+                        event.preventDefault();
+                        return;
+                    }
+                    onEscapeKeyDown?.(event);
+                }}
                 onInteractOutside={(e) => {
                     if (isInsideNestedRadixContent(e.target)) {
                         e.preventDefault();
@@ -83,7 +91,7 @@ const DialogContent = React.forwardRef(
 DialogContent.displayName = DialogPrimitive.Content.displayName;
 
 const DialogHeader = ({ className, ...props }) => (
-    <div data-ui="dialog-header" className={cn("flex flex-col space-y-1.5 text-center sm:text-left", className)} {...props} />
+    <div data-ui="dialog-header" className={cn("flex flex-col space-y-1.5 rounded-xl bg-gradient-to-r from-sky-50/80 to-white p-4 text-left", className)} {...props} />
 );
 DialogHeader.displayName = "DialogHeader";
 

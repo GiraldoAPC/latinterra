@@ -1,3 +1,4 @@
+import { PageHeader } from '@/Components/Shared/PageDesign';
 import { useEffect } from "react";
 import { Head, Link, useForm, usePage } from "@inertiajs/react";
 import StudentLayout from "@/Layouts/StudentLayout";
@@ -37,10 +38,7 @@ export default function LeccionQuiz({ course, lesson, lastAttempt }) {
                         </Link>{" "}
                         / Quiz de la clase
                     </p>
-                    <h1 className="mb-1 flex items-center gap-2 text-xl font-bold text-[#024A7D]">
-                        <ListChecks className="h-5 w-5 text-[#024A7D]" />
-                        Quiz: {lesson.title}
-                    </h1>
+                    <PageHeader className="px-5 py-5 sm:px-5 sm:py-5" icon={ListChecks} title={`Quiz: ${lesson.title}`} description="Evaluación del aula virtual" />
                     <p className="mb-5 text-slate-500">
                         Debes responder todas las preguntas correctamente. Si fallas alguna, repasa el tema y vuelve
                         a intentarlo - no hay limite de intentos.

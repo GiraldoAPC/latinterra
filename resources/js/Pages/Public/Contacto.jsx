@@ -1,3 +1,4 @@
+import { NativeSelect } from '@/Components/ui/smart-select';
 import { Head } from "@inertiajs/react";
 import { useState } from "react";
 import axios from "axios";
@@ -175,11 +176,11 @@ export default function Contacto() {
                                     <div className="contact-page-lt__row">
                                         <div>
                                             <label htmlFor="document_type">Tipo de documento</label>
-                                            <select id="document_type" name="document_type" defaultValue="">
+                                            <NativeSelect id="document_type" name="document_type" defaultValue="">
                                                 <option value="">Selecciona una opción</option>
                                                 <option>DNI</option>
                                                 <option>RUC</option>
-                                            </select>
+                                            </NativeSelect>
                                             {fieldError("document_type") ? <small className="contact-page-lt__error">{fieldError("document_type")}</small> : null}
                                         </div>
                                         <div>

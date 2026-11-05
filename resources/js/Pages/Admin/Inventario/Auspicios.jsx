@@ -1,3 +1,4 @@
+import { NativeSelect } from '@/Components/ui/smart-select';
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
 import AdminLayout from '@/Layouts/AdminLayout';
 import { Button } from '@/Components/ui/button';
@@ -19,9 +20,9 @@ export default function Auspicios({ products, sponsorships, totalCost }) {
             <AdminFormModal open={creating} onClose={() => setCreating(false)} processing={form.processing} icon={Gift} title="Nuevo auspicio" description="La empresa asume el costo promedio de compra; se descuenta el stock de la ubicación seleccionada.">
             <form className="space-y-4" onSubmit={(event) => { event.preventDefault(); form.post('/admin/inventario/auspicios', { preserveScroll: true, onSuccess: () => { form.reset(); form.setData('request_key', crypto.randomUUID()); setCreating(false); } }); }}>
                 <div className="grid gap-4 md:grid-cols-2">
-                    <label className="text-sm">Producto<select required className={inputClass} value={form.data.product_id} onChange={(event) => form.setData('product_id', event.target.value)}><option value="">Selecciona</option>{products.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label>
+                    <label className="text-sm">Producto<NativeSelect required className={inputClass} value={form.data.product_id} onChange={(event) => form.setData('product_id', event.target.value)}><option value="">Selecciona</option>{products.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</NativeSelect></label>
                     <label className="text-sm">Beneficiario / destinatario<input required maxLength={180} className={inputClass} value={form.data.recipient} onChange={(event) => form.setData('recipient', event.target.value)} /></label>
-                    <label className="text-sm">Ubicación de salida<select className={inputClass} value={form.data.source} onChange={(event) => form.setData('source', event.target.value)}><option value="sales">Ventas</option>{settings?.warehouseMode && <option value="warehouse">Almacén</option>}</select></label>
+                    <label className="text-sm">Ubicación de salida<NativeSelect className={inputClass} value={form.data.source} onChange={(event) => form.setData('source', event.target.value)}><option value="sales">Ventas</option>{settings?.warehouseMode && <option value="warehouse">Almacén</option>}</NativeSelect></label>
                     <label className="text-sm">Cantidad<input required type="number" min={1} max={10000} className={inputClass} value={form.data.quantity} onChange={(event) => form.setData('quantity', event.target.value)} /></label>
                 </div>
                 <label className="block text-sm">Motivo / detalle del auspicio<textarea required maxLength={2000} className={inputClass} value={form.data.notes} onChange={(event) => form.setData('notes', event.target.value)} /></label>

@@ -1,3 +1,4 @@
+import { NativeSelect } from '@/Components/ui/smart-select';
 import { AdminIcon, adminPrimaryButton, adminInput } from '@/Components/Admin/AdminPage';
 import { Link, useForm } from '@inertiajs/react';
 import { Plus, Trash2, Send, AlertTriangle, FileText, UserRound, Package, StickyNote } from 'lucide-react';
@@ -40,11 +41,11 @@ export function QuoteFormModal({ quote, products, onClose }) {
                         <div className="flex items-center justify-between border-t border-slate-100 pt-3"><h3 className="flex items-center gap-2 text-sm font-semibold text-[#024A7D]"><Package className="h-4 w-4" />Productos</h3><Button type="button" size="sm" variant="outline" className="rounded-xl border-[#024A7D]/15 text-[#024A7D]" disabled={form.data.items.length >= 50 || !products.length} onClick={() => form.setData('items', [...form.data.items, { product_id: '', qty: 1, unit_price: '' }])}><Plus className="h-3.5 w-3.5" />Agregar</Button></div>
                         {!products.length && <p className="rounded-md bg-amber-50 p-3 text-xs text-amber-900">No hay productos activos. <Link href="/admin/products" className="underline">Registrar productos</Link></p>}
                         {form.data.items.map((item, i) => <div key={i} className="grid grid-cols-12 items-end gap-2 rounded-2xl border border-[#024A7D]/10 bg-[#f4f9fc] p-3">
-                            <label className="col-span-12 text-xs sm:col-span-6">Producto<select required className={inputClass} value={item.product_id} onChange={(event) => { const product = products.find((p) => String(p.id) === event.target.value); change(i, { product_id: event.target.value, unit_price: product?.price ?? '' }); }}>
+                            <label className="col-span-12 text-xs sm:col-span-6">Producto<NativeSelect required className={inputClass} value={item.product_id} onChange={(event) => { const product = products.find((p) => String(p.id) === event.target.value); change(i, { product_id: event.target.value, unit_price: product?.price ?? '' }); }}>
                                 <option value="">Selecciona un producto</option>
                                 {!products.some((p) => String(p.id) === String(item.product_id)) && item.product_id && <option value={item.product_id}>{quote?.items[i]?.name ?? 'Producto no disponible'}</option>}
                                 {products.map((product) => <option key={product.id} value={product.id}>{product.name}</option>)}
-                            </select></label>
+                            </NativeSelect></label>
                             <label className="col-span-4 text-xs sm:col-span-2">Cantidad<input required type="number" min={1} max={10000} className={inputClass} value={item.qty} onChange={(event) => change(i, { qty: event.target.value })} /></label>
                             <label className="col-span-6 text-xs sm:col-span-3">Precio S/<input required type="number" min={0} max={999999.99} step="0.01" className={inputClass} value={item.unit_price} onChange={(event) => change(i, { unit_price: event.target.value })} /></label>
                             <Button type="button" variant="ghost" size="icon" className="col-span-2 h-9 w-full text-slate-500 hover:text-red-600 sm:col-span-1" title="Quitar producto" aria-label={`Quitar producto ${i + 1}`} onClick={() => form.setData('items', form.data.items.filter((_, index) => index !== i))}><Trash2 className="h-4 w-4" /></Button>

@@ -1,3 +1,5 @@
+import { PageHeader } from '@/Components/Shared/PageDesign';
+import { UserRound as DesignIcon } from 'lucide-react';
 import { Head, Link, useForm } from "@inertiajs/react";
 import AdminLayout from "@/Layouts/AdminLayout";
 import StudentFormFields from "@/Components/Admin/StudentFormFields";
@@ -42,6 +44,7 @@ export default function Edit({ student }) {
         <>
             <Head title={`Estudiante: ${student.name}`} />
             <AdminLayout title={student.name}>
+                <PageHeader icon={DesignIcon} title={`Editar ${student.name}`} description="Actualiza los datos y revisa la información del estudiante." />
                 <Link
                     href="/admin/cursos/estudiantes"
                     className="mb-4 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"

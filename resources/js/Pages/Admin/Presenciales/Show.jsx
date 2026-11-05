@@ -1,3 +1,5 @@
+import { PageHeader } from '@/Components/Shared/PageDesign';
+import { Users as DesignIcon } from 'lucide-react';
 import { Head, Link, useForm } from '@inertiajs/react';
 import AdminLayout from '@/Layouts/AdminLayout';
 import { Button } from '@/Components/ui/button';
@@ -15,8 +17,8 @@ export default function Show({ session, participants }) {
     return <>
         <Head title={session.title} />
         <AdminLayout title="Grupo presencial">
+                <PageHeader icon={DesignIcon} title={session.title} description={`${session.course.title} · ${session.location}`} />
             <Link href="/admin/cursos/presenciales" className="text-sm underline">Volver a grupos</Link>
-            <h1 className="mt-4 text-xl font-semibold">{session.title}</h1>
             <p className="mt-1 text-sm">{session.course.title} · {session.location}</p>
             <p className="text-sm">{new Date(session.starts_at).toLocaleString('es-PE', { timeZone: 'America/Lima' })} (Perú)</p>
             <div className="my-6 grid gap-5 rounded-xl border bg-white p-5 md:grid-cols-[auto_1fr]">

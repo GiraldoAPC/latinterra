@@ -1,6 +1,9 @@
+import { NativeSelect } from '@/Components/ui/smart-select';
 import { Head, useForm } from '@inertiajs/react';
 import { useState } from 'react';
 import { Button } from '@/Components/ui/button';
+import { PageHeader } from '@/Components/Shared/PageDesign';
+import { UserRoundPlus } from 'lucide-react';
 
 export default function InPersonRegistration({ session, registered }) {
     const [submitted, setSubmitted] = useState(false);
@@ -10,7 +13,7 @@ export default function InPersonRegistration({ session, registered }) {
         <Head title="Registro de participante | Acceso Vertical Perú"><meta name="robots" content="noindex, nofollow" /></Head>
         <div className="mx-auto max-w-xl rounded-2xl border bg-white p-6 shadow-sm sm:p-8">
             <img src="/assets/img/LOGO-ACCESO-VERTICAL.png" alt="Acceso Vertical Perú" className="mx-auto mb-6 h-16 object-contain" />
-            <h1 className="text-2xl font-bold text-[#024A7D]">Registro de participante</h1>
+            <PageHeader className="px-4 py-5 sm:px-5 sm:py-5" icon={UserRoundPlus} title="Registro de participante" description="Completa tus datos para participar en la capacitación." />
             <p className="mt-3 font-semibold">{session.title}</p><p className="text-sm">{session.course}</p>
             <p className="text-sm text-slate-600">{session.location} · {new Date(session.starts_at).toLocaleString('es-PE', { timeZone: 'America/Lima' })} (Perú)</p>
             {submitted || registered ? <div role="status" className="mt-6 rounded-lg bg-green-50 p-4 text-green-900">
@@ -20,7 +23,7 @@ export default function InPersonRegistration({ session, registered }) {
                 form.post(`/presencial/registro/${session.token}`, { onSuccess: () => { setSubmitted(true); form.reset(); } });
             }}>
                 <p className="text-sm text-slate-600">Completa tus datos tal como aparecen en tu documento. Este formulario registra tu participación en el grupo.</p>
-                <label className="block text-sm">Tipo de documento<select required className={inputClass} value={form.data.document_type} onChange={(event) => form.setData('document_type', event.target.value)}><option value="dni">DNI</option><option value="ce">Carné de extranjería</option><option value="pasaporte">Pasaporte</option></select></label>
+                <label className="block text-sm">Tipo de documento<NativeSelect required className={inputClass} value={form.data.document_type} onChange={(event) => form.setData('document_type', event.target.value)}><option value="dni">DNI</option><option value="ce">Carné de extranjería</option><option value="pasaporte">Pasaporte</option></NativeSelect></label>
                 <label className="block text-sm">Número de documento<input required maxLength={20} inputMode={form.data.document_type === 'dni' ? 'numeric' : 'text'} className={inputClass} value={form.data.document_number} onChange={(event) => form.setData('document_number', event.target.value)} /></label>
                 <label className="block text-sm">Nombres<input required autoComplete="given-name" maxLength={150} className={inputClass} value={form.data.name} onChange={(event) => form.setData('name', event.target.value)} /></label>
                 <label className="block text-sm">Apellidos<input required autoComplete="family-name" maxLength={150} className={inputClass} value={form.data.last_name} onChange={(event) => form.setData('last_name', event.target.value)} /></label>

@@ -1,3 +1,4 @@
+import { NativeSelect } from '@/Components/ui/smart-select';
 import { useForm } from '@inertiajs/react';
 import { Button } from '@/Components/ui/button';
 
@@ -7,7 +8,7 @@ export default function ModuleExamSettings({ module }) {
         <h4 className="text-sm font-semibold">Condiciones del examen</h4>
         <div className="grid gap-3 sm:grid-cols-3">
             <label className="text-xs">Máximo de intentos<input required type="number" min={1} max={20} className="mt-1 block w-full rounded border p-2 text-sm" value={form.data.max_attempts} onChange={(event) => form.setData('max_attempts', event.target.value)} /></label>
-            <label className="text-xs">Preguntas por intento<select className="mt-1 block w-full rounded border p-2 text-sm" value={form.data.question_limit} onChange={(event) => form.setData('question_limit', event.target.value)}>{[10, 15, 20].map((n) => <option key={n} value={n}>{n}</option>)}</select></label>
+            <label className="text-xs">Preguntas por intento<NativeSelect className="mt-1 block w-full rounded border p-2 text-sm" value={form.data.question_limit} onChange={(event) => form.setData('question_limit', event.target.value)}>{[10, 15, 20].map((n) => <option key={n} value={n}>{n}</option>)}</NativeSelect></label>
             <label className="text-xs">Duración (minutos)<input required type="number" min={1} max={180} className="mt-1 block w-full rounded border p-2 text-sm" value={form.data.duration_minutes} onChange={(event) => form.setData('duration_minutes', event.target.value)} /></label>
         </div>
         <p className="text-xs text-slate-500">Si el banco es menor, se usan todas sus preguntas. Los cambios se aplican a nuevos intentos.</p>

@@ -368,17 +368,12 @@ export function ProfileHeader({
     extraAction,
 }) {
     return (
-        <div className="-mx-4 -mt-4 mb-0 overflow-hidden rounded-b-xl shadow-sm ring-1 ring-black/5 md:-mx-6 md:-mt-6">
+        <div className="lt-profile-header mb-6 overflow-hidden rounded-3xl border border-[#024A7D]/10 shadow-lg shadow-[#024A7D]/10">
             <div className="relative overflow-hidden bg-[#024A7D]">
-                <img
-                    src="/assets/img/slider/slider4.jpg"
-                    alt=""
-                    className="absolute inset-0 h-full w-full object-cover"
-                    aria-hidden="true"
-                />
+                <svg aria-hidden="true" className="pointer-events-none absolute inset-0 h-full w-full" viewBox="0 0 1200 220" preserveAspectRatio="none"><path d="M400 220C700 40 750 160 950 0H1200V220Z" fill="#00ADEE" fillOpacity=".25" /><path d="M700 220C900 100 1040 120 1150 0H1200V220Z" fill="white" fillOpacity=".06" /></svg>
                 <div className="absolute inset-0 bg-gradient-to-r from-[#024A7D]/90 via-[#024A7D]/75 to-[#4E80A4]/55" />
 
-                <div className="relative px-4 pb-6 pt-12 md:px-6 md:pb-8 md:pt-16">
+                <div className="relative px-5 py-6 md:px-7 md:py-8">
                     <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
                         <div className="flex items-center gap-4">
                             {onAvatarChange ? (
@@ -436,7 +431,7 @@ export function ProfileHeader({
                         </div>
 
                         {stats && stats.length > 0 && (
-                            <div className="flex gap-2 self-start sm:self-auto">
+                            <div className="flex flex-wrap gap-2 self-start sm:self-auto">
                                 {stats.map((s) => (
                                     <StatCard key={s.label} icon={s.icon} value={s.value} label={s.label} color={s.color} />
                                 ))}
@@ -444,7 +439,7 @@ export function ProfileHeader({
                         )}
                     </div>
 
-                    <div className="mt-14 flex flex-wrap items-center justify-between gap-3 md:mt-20">
+                    <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
                         <div className="flex gap-1 overflow-x-auto rounded-lg bg-white/10 p-1">
                             {tabs.map((t) => (
                                 <button

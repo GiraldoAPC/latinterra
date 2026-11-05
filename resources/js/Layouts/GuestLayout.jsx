@@ -1,4 +1,5 @@
-import { Link } from "@inertiajs/react";
+import { Link, usePage } from "@inertiajs/react";
+import { PageIcon } from '@/Components/Shared/PageDesign';
 import { HardHat, ShieldCheck, Wrench, GraduationCap } from "lucide-react";
 
 const TAGS = ["Trabajos en altura", "EPP", "Certificaciones", "Capacitación"];
@@ -15,8 +16,11 @@ const FEATURES = [
  * formulario a la derecha, con la paleta de Acceso Vertical Peru.
  */
 export default function Guest({ children }) {
+    const { component } = usePage();
+    const titles = { Register: 'Crear una cuenta', ForgotPassword: 'Recuperar contraseña', ResetPassword: 'Nueva contraseña', VerifyEmail: 'Verifica tu correo', ConfirmPassword: 'Confirma tu contraseña' };
+    const title = titles[component.split('/').at(-1)];
     return (
-        <div className="lt-fullscreen-layout flex h-dvh w-full flex-col overflow-hidden lg:flex-row">
+        <div className="lt-fullscreen-layout flex min-h-dvh w-full flex-col lg:h-dvh lg:flex-row">
             <div className="relative hidden w-1/2 flex-col overflow-hidden bg-[#024A7D] p-8 text-white lg:flex lg:p-10 xl:p-12">
                 <img
                     src="/assets/img/slider/slider4.jpg"
@@ -70,7 +74,7 @@ export default function Guest({ children }) {
                 </div>
             </div>
 
-            <div className="flex w-full flex-1 flex-col items-center justify-between gap-5 overflow-hidden bg-slate-50 px-5 py-10 sm:gap-6 sm:px-6 sm:py-12 lg:w-1/2">
+            <div className="flex min-h-0 w-full flex-1 flex-col items-center justify-between gap-5 overflow-y-auto bg-gradient-to-br from-sky-50/70 via-white to-sky-50 px-5 py-8 sm:gap-6 sm:px-6 sm:py-10 lg:w-1/2">
                 <Link href="/" className="flex shrink-0 items-center">
                     <img
                         src="/assets/img/acceso-vertical-form.png"
@@ -79,7 +83,8 @@ export default function Guest({ children }) {
                     />
                 </Link>
 
-                <div className="w-full max-w-md shrink-0 rounded-2xl border border-slate-200 bg-white p-8 shadow-xl shadow-slate-200/60 sm:max-w-sm sm:p-8">
+                <div className="w-full max-w-md shrink-0 overflow-hidden rounded-3xl border border-[#024A7D]/10 bg-white p-6 shadow-[0_12px_40px_-18px_rgba(2,74,125,0.3)] sm:p-8">
+                    <div className="mb-5 flex items-center gap-3 border-b border-[#024A7D]/10 pb-5"><PageIcon small icon={ShieldCheck} /><div><p className="text-xs font-medium text-slate-400">Acceso Vertical Perú</p>{title ? <h1 className="text-lg font-semibold text-[#024A7D]">{title}</h1> : <p className="font-semibold text-[#024A7D]">Bienvenido a tu plataforma</p>}</div></div>
                     {children}
                 </div>
 

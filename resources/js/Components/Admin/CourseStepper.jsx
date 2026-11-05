@@ -16,7 +16,7 @@ import { cn } from "@/lib/utils";
  */
 export default function CourseStepper({ steps, current, completedUntil, onStepClick, bare = false }) {
     return (
-        <div className={bare ? "mb-5" : "mb-6 rounded-xl border bg-card px-4 py-4 sm:px-6"}>
+        <div className={bare ? "mb-5" : "mb-6 rounded-3xl border border-[#024A7D]/10 bg-gradient-to-r from-sky-50/60 to-white px-4 py-5 sm:px-6"}>
             <div className="flex items-center">
                 {steps.map((step, idx) => {
                     const isLast = idx === steps.length - 1;
@@ -40,7 +40,7 @@ export default function CourseStepper({ steps, current, completedUntil, onStepCl
                             >
                                 <span
                                     className={cn(
-                                        "box-border flex shrink-0 items-center justify-center rounded-full font-bold leading-none ring-4 transition-colors",
+                                        "box-border flex shrink-0 items-center justify-center rounded-xl font-bold leading-none ring-4 transition-colors",
                                         circleSize,
                                         done
                                             ? "bg-[#00ADEE] text-white ring-[#00ADEE]/15"

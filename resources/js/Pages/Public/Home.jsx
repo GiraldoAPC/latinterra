@@ -299,7 +299,7 @@ export default function Home() {
                             </p>
 
                             <a className="link" href="/trabajos-en-altura">
-                                Detalles ->
+                                Detalles &rarr;
                             </a>
                         </article>
 
@@ -595,7 +595,7 @@ export default function Home() {
                             </p>
 
                             <a className="link" href="/parques-eolicos">
-                                Detalles ->
+                                Detalles &rarr;
                             </a>
                         </article>
                     </div>

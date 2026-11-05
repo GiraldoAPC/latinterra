@@ -1,3 +1,4 @@
+import { NativeSelect } from '@/Components/ui/smart-select';
 import { Head, Link, useForm } from '@inertiajs/react';
 import AdminLayout from '@/Layouts/AdminLayout';
 import { Button } from '@/Components/ui/button';
@@ -16,9 +17,9 @@ export default function Index({ courses, sessions }) {
             <AdminFormModal open={creating} onClose={() => setCreating(false)} processing={form.processing} icon={Users} title="Nuevo grupo presencial" description="Crea un grupo y comparte su QR para que cada participante complete sus propios datos.">
             <form className="space-y-4" onSubmit={(event) => { event.preventDefault(); form.post('/admin/cursos/presenciales', { onSuccess: () => setCreating(false) }); }}>
                 <div className="grid gap-4 md:grid-cols-2">
-                    <label className="text-sm">Curso<select required className={inputClass} value={form.data.course_id} onChange={(event) => form.setData('course_id', event.target.value)}>
+                    <label className="text-sm">Curso<NativeSelect required className={inputClass} value={form.data.course_id} onChange={(event) => form.setData('course_id', event.target.value)}>
                         <option value="">Selecciona un curso</option>{courses.map((course) => <option key={course.id} value={course.id}>{course.title}</option>)}
-                    </select></label>
+                    </NativeSelect></label>
                     <label className="text-sm">Nombre del grupo<input required maxLength={255} className={inputClass} value={form.data.title} onChange={(event) => form.setData('title', event.target.value)} placeholder="Capacitación empresa · Grupo 1" /></label>
                     <label className="text-sm">Lugar<input required maxLength={255} className={inputClass} value={form.data.location} onChange={(event) => form.setData('location', event.target.value)} /></label>
                     <label className="text-sm">Fecha y hora de capacitación (Perú)<input required type="datetime-local" className={inputClass} value={form.data.starts_at} onChange={(event) => form.setData('starts_at', event.target.value)} /></label>

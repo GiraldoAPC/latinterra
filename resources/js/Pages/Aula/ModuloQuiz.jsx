@@ -1,3 +1,4 @@
+import { PageHeader } from '@/Components/Shared/PageDesign';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Head, Link, useForm } from '@inertiajs/react';
 import StudentLayout from '@/Layouts/StudentLayout';
@@ -76,7 +77,7 @@ export default function ModuloQuiz({ course, module, lastAttempt, attemptCount =
     return <><Head title={`Examen · ${module.title}`} /><StudentLayout>
         <div className="mx-auto max-w-3xl">
             <Link className="text-sm text-slate-500 hover:underline" href={`/aula/${course.slug}`}>{course.title}</Link>
-            <h1 className="mb-3 mt-2 flex items-center gap-2 text-xl font-bold text-[#024A7D]"><ListChecks className="h-5 w-5" />Examen: {module.title}</h1>
+            <PageHeader className="px-5 py-5 sm:px-5 sm:py-5" icon={ListChecks} title={`Examen: ${module.title}`} description="Evaluación del aula virtual" />
             {passed ? <div className="rounded-xl border bg-white p-6 text-center"><CheckCircle2 className="mx-auto mb-3 h-10 w-10 text-green-600" /><h2 className="font-semibold">Examen aprobado · {Number(lastAttempt.score).toFixed(2)}/20</h2><Button className="mt-5" asChild><Link href={`/aula/${course.slug}/continuar`}>Continuar curso</Link></Button></div> : !attempt ? <div className="space-y-4 rounded-xl border bg-white p-6">
                 <p className="text-sm text-slate-600">Se seleccionarán {questionLimit} preguntas del banco. Necesitas 13/20 para aprobar. Al iniciar dispondrás de {durationMinutes} minutos.</p>
                 <p className="text-sm">Intentos utilizados: <strong>{attemptCount}/{maxAttempts}</strong>. Recargar no reinicia el tiempo ni cambia las preguntas.</p>

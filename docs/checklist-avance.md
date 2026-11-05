@@ -142,6 +142,12 @@ El icono de cabecera quedó centrado explícitamente en ambos ejes. El diseño a
 
 Verificación en Chrome con datos ficticios y sin escrituras reales: siete pantallas de escritorio, apertura/cierre de seis modales, cuatro vistas a 390 px y sus modales. Iconos de cabecera con desviación de centro de cero píxeles, sin desbordamiento horizontal de página ni errores de ejecución. Revisión visual de tabla con registros, estados vacíos y formularios. Compilación de producción correcta. No requiere nuevas migraciones; producción no verificada.
 
+### Continuación visual del sistema — 4 de noviembre de 2026
+
+La base de formularios, tablas, botones y modales se extendió a administración, aula, panel académico, acceso, perfil y formularios públicos. Se completaron las pantallas de detalle/edición y los registros en modales descritos en [Diseño compartido](diseno-administracion.md). Los selectores visibles del navegador se sustituyeron por un componente común con menú propio, búsqueda para listas largas, navegación por teclado y conservación de la validación/serialización del formulario. Incluye países, ubigeo, cursos y selectores dentro de modales. No cambia reglas comerciales, permisos, rutas ni documentos de impresión.
+
+Verificación: 29 pantallas de escritorio y celular (58 vistas), nueve comprobaciones funcionales del selector, revisión del menú móvil y apertura/cierre de seis modales adicionales. Sin errores de ejecución, desbordamiento horizontal de página ni escrituras/correos reales durante la revisión. Compilación correcta. No requiere nuevas migraciones y aún no se verificó producción.
+
 ## Roles y permisos
 
 - [x] Roles disponibles: `admin` (administración), `manager` (gerencia), `instructor`, `coordinator` (coordinador) y `student` (estudiante). Cada cuenta mantiene un solo rol, como el modelo existente.

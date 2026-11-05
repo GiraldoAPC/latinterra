@@ -1,6 +1,8 @@
 export default function SecondaryButton({ type = 'button', className = '', disabled, children, ...props }) {
     return (
         <button
+            data-ui="button"
+            data-variant="outline"
             {...props}
             type={type}
             className={

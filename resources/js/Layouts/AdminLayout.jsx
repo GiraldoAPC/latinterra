@@ -310,13 +310,6 @@ function currentPageLabel(url) {
 export default function AdminLayout({ title = "Admin", children }) {
     const { auth, inventoryAlerts } = usePage().props;
     const { url } = usePage();
-    const { component } = usePage();
-    // Includes dialogs rendered in portals; printed documents keep their own layout.
-    useEffect(() => {
-        const documentPage = /\/(ReciboPago|ReciboOtroPago|FichaMatricula|RecordNotas|Certificate)$/.test(component);
-        document.body.classList.toggle('lt-admin-design', !documentPage);
-        return () => document.body.classList.remove('lt-admin-design');
-    }, [component]);
     const [collapsed, setCollapsed] = useState(false);
     const showLoader = useGlobalLoader();
 

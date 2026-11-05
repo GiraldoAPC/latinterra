@@ -1,3 +1,5 @@
+import { PageHeader } from '@/Components/Shared/PageDesign';
+import { GraduationCap as DesignIcon } from 'lucide-react';
 import { Head, useForm } from "@inertiajs/react";
 import AdminLayout from "@/Layouts/AdminLayout";
 import CourseStepper from "@/Components/Admin/CourseStepper";
@@ -37,6 +39,7 @@ export default function Create({ courses = [] }) {
         <>
             <Head title="Nuevo curso" />
             <AdminLayout title="Nuevo curso">
+                <PageHeader icon={DesignIcon} title="Nuevo curso" description="Configura la información, los módulos y la publicación del curso." />
                 <CourseStepper steps={STEPS} current={1} completedUntil={1} />
 
                 <form onSubmit={submit} className="space-y-6">

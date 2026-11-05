@@ -1,3 +1,5 @@
+import { PageHeader } from '@/Components/Shared/PageDesign';
+import { GraduationCap as DesignIcon } from 'lucide-react';
 import { Head, useForm, router, Link } from "@inertiajs/react";
 import { useState } from "react";
 import AdminLayout from "@/Layouts/AdminLayout";
@@ -1023,6 +1025,7 @@ export default function Edit({ course, courses = [] }) {
         <>
             <Head title={`Editar curso: ${course.title}`} />
             <AdminLayout title={course.title}>
+                <PageHeader icon={DesignIcon} title={course.title} description="Edita la información del curso, sus clases y evaluaciones." />
                 <div className="mb-4 flex items-center gap-2">
                     <Badge variant={course.is_published ? "default" : "secondary"}>
                         {course.is_published ? "Publicado" : "Borrador"}

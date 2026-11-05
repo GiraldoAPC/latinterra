@@ -1,3 +1,5 @@
+import { PageHeader } from '@/Components/Shared/PageDesign';
+import { GraduationCap as DesignIcon } from 'lucide-react';
 import { Head, Link } from "@inertiajs/react";
 import StudentLayout from "@/Layouts/StudentLayout";
 import { Card, CardContent } from "@/Components/ui/card";
@@ -9,7 +11,7 @@ const BANNER_GRADIENTS = [
     "from-[#024A7D] to-[#4E80A4]",
     "from-[#024A7D] to-[#00ADEE]",
     "from-[#0f6f96] to-[#14a0c9]",
-    "from-[#7c3aed] to-[#a78bfa]",
+    "from-[#0077a8] to-[#59CAF4]",
 ];
 
 function bannerFor(id) {
@@ -21,7 +23,7 @@ export default function MisCursos({ enrollments }) {
         <>
             <Head title="Mis Cursos | Aula Virtual" />
             <StudentLayout title="Mis cursos">
-                <h1 className="mb-4 text-xl font-bold text-[#024A7D]">Mis cursos</h1>
+                <PageHeader icon={DesignIcon} title="Mis cursos" description="Consulta tu avance, continúa tu formación y accede a tus certificados." />
                 {enrollments.filter((enrollment) => enrollment.certificate_notice).map((enrollment) => (
                     <div key={`notice-${enrollment.id}`} role="status" className="mb-4 rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm text-amber-950">
                         <strong>{enrollment.course.title}</strong>

@@ -1,3 +1,4 @@
+import { NativeSelect } from '@/Components/ui/smart-select';
 import { Link, router, useForm, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import { Button } from '@/Components/ui/button';
@@ -7,7 +8,7 @@ import { AdminPageHeader, AdminFormModal } from '@/Components/Admin/AdminPage';
 function UserRow({ user, roles, ownId }) {
     const form = useForm({ role: user.role, is_active: user.is_active });
     return <tr className="border-b align-top"><td className="p-3"><strong>{user.name}</strong><p className="text-xs text-muted-foreground">{user.email}</p></td>
-        <td className="p-3"><select aria-label={`Rol de ${user.name}`} disabled={user.id === ownId} className="rounded-md border p-2" value={form.data.role} onChange={(event) => form.setData('role', event.target.value)}>{Object.entries(roles).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></td>
+        <td className="p-3"><NativeSelect aria-label={`Rol de ${user.name}`} disabled={user.id === ownId} className="rounded-md border p-2" value={form.data.role} onChange={(event) => form.setData('role', event.target.value)}>{Object.entries(roles).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</NativeSelect></td>
         <td className="p-3"><label className="flex items-center gap-2"><input type="checkbox" disabled={user.id === ownId} checked={form.data.is_active} onChange={(event) => form.setData('is_active', event.target.checked)} />Activa</label></td>
         <td className="p-3"><Button size="sm" disabled={user.id === ownId || form.processing || !form.isDirty} onClick={() => form.put(`/admin/usuarios/roles/${user.id}`, { preserveScroll: true })}>Guardar</Button>
             {user.id === ownId && <p className="mt-1 text-xs text-muted-foreground">Tu cuenta</p>}
@@ -35,7 +36,7 @@ export default function RoleManagement({ users, roles, search }) {
             <div className="grid gap-4 sm:grid-cols-2">
                 <label className="text-sm">Nombre<input required maxLength={150} className={inputClass} value={staff.data.name} onChange={(event) => staff.setData('name', event.target.value)} /></label>
                 <label className="text-sm">Correo de acceso<input required type="email" maxLength={255} className={inputClass} value={staff.data.email} onChange={(event) => staff.setData('email', event.target.value)} /></label>
-                <label className="text-sm">Rol<select className={inputClass} value={staff.data.role} onChange={(event) => staff.setData('role', event.target.value)}>{Object.entries(roles).filter(([role]) => role !== 'student').map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
+                <label className="text-sm">Rol<NativeSelect className={inputClass} value={staff.data.role} onChange={(event) => staff.setData('role', event.target.value)}>{Object.entries(roles).filter(([role]) => role !== 'student').map(([value, label]) => <option key={value} value={value}>{label}</option>)}</NativeSelect></label>
                 <label className="text-sm">Contraseña inicial<input required type="password" minLength={8} autoComplete="new-password" className={inputClass} value={staff.data.password} onChange={(event) => staff.setData('password', event.target.value)} /></label>
                 <label className="text-sm">Repetir contraseña<input required type="password" minLength={8} autoComplete="new-password" className={inputClass} value={staff.data.password_confirmation} onChange={(event) => staff.setData('password_confirmation', event.target.value)} /></label>
             </div>

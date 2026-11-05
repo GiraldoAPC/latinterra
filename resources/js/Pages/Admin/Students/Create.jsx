@@ -1,3 +1,5 @@
+import { PageHeader } from '@/Components/Shared/PageDesign';
+import { UserRoundPlus as DesignIcon } from 'lucide-react';
 import { Head, useForm } from "@inertiajs/react";
 import AdminLayout from "@/Layouts/AdminLayout";
 import StudentFormFields from "@/Components/Admin/StudentFormFields";
@@ -35,6 +37,7 @@ export default function Create() {
         <>
             <Head title="Nuevo estudiante" />
             <AdminLayout title="Nuevo estudiante">
+                <PageHeader icon={DesignIcon} title="Nuevo estudiante" description="Registra sus datos personales, de contacto y acceso al aula." />
                 <form onSubmit={submit} className="max-w-3xl space-y-6">
                     <StudentFormFields data={data} setData={setData} errors={errors} showAccountFields />
 

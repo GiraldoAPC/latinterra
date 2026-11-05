@@ -1,3 +1,10 @@
+import { useState } from 'react';
+import { QuoteEmailModal } from '@/Components/Admin/QuoteModals';
+import { FormModal } from '@/Components/Shared/PageDesign';
+import { Mail, CreditCard } from 'lucide-react';
+import { PageHeader } from '@/Components/Shared/PageDesign';
+import { FileText as DesignIcon } from 'lucide-react';
+import { NativeSelect } from '@/Components/ui/smart-select';
 import { Head, Link, useForm } from '@inertiajs/react';
 import AdminLayout from '@/Layouts/AdminLayout';
 import { Button } from '@/Components/ui/button';
@@ -5,11 +12,13 @@ import { Button } from '@/Components/ui/button';
 export default function Show({ quote, expired }) {
     const action = useForm({});
     const payment = useForm({ payment_method: 'efectivo', payment_reference: '' });
-    const email = useForm({ recipient_email: quote.emailed_to ?? quote.buyer_email ?? '', message: '' });
+    const [emailOpen, setEmailOpen] = useState(false);
+    const [paymentOpen, setPaymentOpen] = useState(false);
     const labels = { draft: 'Pendiente de aprobación', approved: 'Aprobada', sold: 'Convertida en venta', cancelled: 'Cancelada' };
     return <>
         <Head title={`Cotización ${quote.code}`} />
         <AdminLayout title="Cotización">
+                <PageHeader className="print:hidden" icon={DesignIcon} title={`Cotización ${quote.code}`} description="Revisa el documento, coordina el envío y registra su aprobación o venta." />
             <div className="mb-5 flex flex-wrap gap-3 print:hidden"><Button variant="outline" asChild><Link href="/admin/quotes">Volver a cotizaciones</Link></Button>
                 <Button asChild><a href={`/admin/quotes/${quote.id}/pdf`}>Descargar PDF</a></Button>
                 <Button variant="outline" onClick={() => window.print()}>Imprimir</Button>
@@ -27,29 +36,20 @@ export default function Show({ quote, expired }) {
                 {quote.notes && <p className="mt-5 whitespace-pre-wrap text-sm">{quote.notes}</p>}
             </article>
             <section className="mt-6 space-y-4 print:hidden">
-                <form className="space-y-3 rounded-lg border bg-white p-5" onSubmit={(event) => {
-                    event.preventDefault();
-                    email.post(`/admin/quotes/${quote.id}/correo`, { preserveScroll: true });
-                }}>
-                    <h2 className="font-semibold">Enviar cotización por correo</h2>
-                    <p className="text-sm text-muted-foreground">Se adjuntará el PDF de esta cotización.</p>
-                    <label className="block text-sm">Correo del destinatario<input required type="email" maxLength={255} className="mt-1 block w-full rounded-md border p-2" value={email.data.recipient_email} onChange={(event) => email.setData('recipient_email', event.target.value)} /></label>
-                    <label className="block text-sm">Mensaje (opcional)<textarea maxLength={2000} className="mt-1 block w-full rounded-md border p-2" value={email.data.message} onChange={(event) => email.setData('message', event.target.value)} /></label>
-                    {Object.entries(email.errors).map(([key, message]) => <p key={key} role="alert" className="text-sm text-red-700">{message}</p>)}
-                    <Button disabled={email.processing}>{email.processing ? 'Enviando…' : 'Enviar cotización'}</Button>
-                    {email.recentlySuccessful && <p role="status" className="text-sm text-green-700">Cotización enviada con el PDF adjunto.</p>}
-                    {quote.emailed_at && <p className="text-xs text-muted-foreground">Último envío: {quote.emailed_to} · {new Date(quote.emailed_at).toLocaleString('es-PE', { timeZone: 'America/Lima' })} (Perú)</p>}
-                </form>
+                <div className="flex flex-wrap gap-3"><Button variant="outline" onClick={() => setEmailOpen(true)}><Mail />Enviar por correo</Button>{quote.status === 'approved' && !expired && <Button onClick={() => setPaymentOpen(true)}><CreditCard />Registrar pago y venta</Button>}</div>
+                {emailOpen && <QuoteEmailModal quote={quote} onClose={() => setEmailOpen(false)} />}
+                {quote.emailed_at && <p className="text-xs text-slate-500">Último envío: {quote.emailed_to} · {new Date(quote.emailed_at).toLocaleString('es-PE', { timeZone: 'America/Lima' })} (Perú)</p>}
+
                 <p className="text-sm text-muted-foreground">Aprobar no reserva ni descuenta stock. Al confirmar el pago se verifica el stock de ventas y se emite un ticket interno.</p>
                 <div className="flex flex-wrap gap-3">{quote.status === 'draft' && !expired && <Button disabled={action.processing} onClick={() => action.post(`/admin/quotes/${quote.id}/aprobar`)}>Registrar aprobación</Button>}
                     {['draft', 'approved'].includes(quote.status) && <Button variant="outline" disabled={action.processing || payment.processing} onClick={() => action.post(`/admin/quotes/${quote.id}/cancelar`)}>Cancelar cotización</Button>}
                 </div>
-                {quote.status === 'approved' && !expired && <form className="space-y-3 rounded-lg border bg-white p-5" onSubmit={(event) => { event.preventDefault(); payment.post(`/admin/quotes/${quote.id}/vender`); }}>
+                {quote.status === 'approved' && !expired && <FormModal open={paymentOpen} onClose={() => setPaymentOpen(false)} processing={payment.processing} icon={CreditCard} title="Registrar pago y venta" description={quote.code}><form className="space-y-4" onSubmit={(event) => { event.preventDefault(); payment.post(`/admin/quotes/${quote.id}/vender`, { onSuccess: () => setPaymentOpen(false) }); }}>
                     <h2 className="font-semibold">Registrar pago confirmado y venta</h2>
-                    <label className="block text-sm">Medio de pago<select className="mt-1 block w-full rounded-md border p-2" value={payment.data.payment_method} onChange={(event) => payment.setData('payment_method', event.target.value)}>{['efectivo', 'transferencia', 'yape', 'tarjeta', 'otro'].map((method) => <option key={method} value={method}>{method}</option>)}</select></label>
+                    <label className="block text-sm">Medio de pago<NativeSelect className="mt-1 block w-full rounded-md border p-2" value={payment.data.payment_method} onChange={(event) => payment.setData('payment_method', event.target.value)}>{['efectivo', 'transferencia', 'yape', 'tarjeta', 'otro'].map((method) => <option key={method} value={method}>{method}</option>)}</NativeSelect></label>
                     <label className="block text-sm">Referencia (opcional)<input maxLength={120} className="mt-1 block w-full rounded-md border p-2" value={payment.data.payment_reference} onChange={(event) => payment.setData('payment_reference', event.target.value)} /></label>
                     <Button disabled={payment.processing || action.processing}>Confirmar pago y registrar venta</Button>
-                </form>}
+                </form></FormModal>}
                 {quote.payment && <p className="text-sm"><Link className="underline" href={`/admin/ventas/otros-pagos/${quote.other_payment_id}/recibo`}>Ver ticket {quote.payment.receipt_code}</Link>{quote.payment.voided_at && ' · Venta anulada'}</p>}
                 {[...Object.entries(action.errors), ...Object.entries(payment.errors)].map(([key, message], i) => <p key={`${key}-${i}`} role="alert" className="text-sm text-red-700">{message}</p>)}
             </section>

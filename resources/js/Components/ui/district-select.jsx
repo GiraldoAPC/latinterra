@@ -1,10 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { SmartSelect } from '@/Components/ui/smart-select';
+import { useEffect, useState } from "react";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/Components/ui/select";
-import { Popover, PopoverTrigger, PopoverContent } from "@/Components/ui/popover";
-import { Input } from "@/Components/ui/input";
 import { Label } from "@/Components/ui/label";
-import { cn } from "@/lib/utils";
-import { ChevronDown, Search } from "lucide-react";
 
 /**
  * Select de pais (catalogo ISO completo, 246 paises) con buscador: un
@@ -13,94 +10,17 @@ import { ChevronDown, Search } from "lucide-react";
  */
 export function CountrySelect({ value, onChange, onLoad, error }) {
     const [paises, setPaises] = useState([]);
-    const [open, setOpen] = useState(false);
-    const [query, setQuery] = useState("");
-    const inputRef = useRef(null);
-
+    const [loading, setLoading] = useState(true);
+    const [loadError, setLoadError] = useState(false);
     useEffect(() => {
-        window.axios.get("/ubigeo/paises").then((res) => {
-            setPaises(res.data);
-            onLoad?.(res.data);
-        });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        let cancelled = false;
+        window.axios.get('/ubigeo/paises').then((response) => {
+            if (cancelled) return;
+            setPaises(response.data); onLoad?.(response.data);
+        }).catch(() => { if (!cancelled) setLoadError(true); }).finally(() => { if (!cancelled) setLoading(false); });
+        return () => { cancelled = true; };
     }, []);
-
-    const selected = paises.find((p) => String(p.id) === String(value));
-    const filtered = query.trim()
-        ? paises.filter((p) => p.nombre.toLowerCase().includes(query.trim().toLowerCase()))
-        : paises;
-
-    return (
-        <div>
-            <Label htmlFor="pais_id" className="text-xs text-muted-foreground">
-                Pais
-            </Label>
-            <div className="mt-1">
-                <Popover
-                    open={open}
-                    onOpenChange={(v) => {
-                        setOpen(v);
-                        if (v) setQuery("");
-                    }}
-                >
-                    <PopoverTrigger asChild>
-                        <button
-                            type="button"
-                            id="pais_id"
-                            className={cn(
-                                "flex h-9 w-full items-center justify-between rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-all hover:border-[#00ADEE]/50 focus-visible:border-[#00ADEE] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#00ADEE]/15",
-                                !selected && "text-muted-foreground"
-                            )}
-                        >
-                            <span className="truncate">{selected ? selected.nombre : "Selecciona"}</span>
-                            <ChevronDown className="h-4 w-4 shrink-0 opacity-70" />
-                        </button>
-                    </PopoverTrigger>
-                    <PopoverContent
-                        align="start"
-                        className="w-[--radix-popover-trigger-width] p-0"
-                        onOpenAutoFocus={(e) => {
-                            e.preventDefault();
-                            inputRef.current?.focus();
-                        }}
-                    >
-                        <div className="relative border-b p-1.5">
-                            <Search className="pointer-events-none absolute left-4 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
-                            <Input
-                                ref={inputRef}
-                                value={query}
-                                onChange={(e) => setQuery(e.target.value)}
-                                placeholder="Buscar pais..."
-                                className="h-8 pl-8"
-                            />
-                        </div>
-                        <div className="max-h-56 overflow-y-auto p-1">
-                            {filtered.length === 0 && (
-                                <p className="px-2 py-4 text-center text-xs text-muted-foreground">Sin resultados.</p>
-                            )}
-                            {filtered.map((p) => (
-                                <button
-                                    key={p.id}
-                                    type="button"
-                                    onClick={() => {
-                                        onChange(String(p.id));
-                                        setOpen(false);
-                                    }}
-                                    className={cn(
-                                        "lt-hover-sweep flex w-full items-center rounded-sm px-2.5 py-1.5 text-left text-sm",
-                                        String(p.id) === String(value) && "font-semibold text-[#024A7D]"
-                                    )}
-                                >
-                                    {p.nombre}
-                                </button>
-                            ))}
-                        </div>
-                    </PopoverContent>
-                </Popover>
-            </div>
-            {error && <p className="mt-1 text-xs text-destructive">{error}</p>}
-        </div>
-    );
+    return <div><Label htmlFor="pais_id" className="text-xs text-muted-foreground">País</Label><div className="mt-1"><SmartSelect id="pais_id" searchable disabled={loading} value={String(value ?? '')} onValueChange={onChange} placeholder={loading ? 'Cargando países…' : 'Selecciona un país'} options={paises.map((country) => ({ value: String(country.id), label: country.nombre, text: country.nombre }))} /></div>{(error || loadError) && <p className="mt-1 text-xs text-destructive">{error || 'No se pudieron cargar los países. Recarga la página para intentarlo de nuevo.'}</p>}</div>;
 }
 
 /**

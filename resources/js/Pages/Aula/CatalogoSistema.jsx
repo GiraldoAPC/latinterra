@@ -1,3 +1,5 @@
+import { PageHeader } from '@/Components/Shared/PageDesign';
+import { LibraryBig as DesignIcon } from 'lucide-react';
 import { Head, Link, router } from "@inertiajs/react";
 import StudentLayout from "@/Layouts/StudentLayout";
 import { Card, CardContent } from "@/Components/ui/card";
@@ -9,7 +11,7 @@ const BANNER_GRADIENTS = [
     "from-[#024A7D] to-[#4E80A4]",
     "from-[#024A7D] to-[#00ADEE]",
     "from-[#0f6f96] to-[#14a0c9]",
-    "from-[#7c3aed] to-[#a78bfa]",
+    "from-[#0077a8] to-[#59CAF4]",
 ];
 
 function bannerFor(id) {
@@ -25,10 +27,7 @@ export default function CatalogoSistema({ courses }) {
         <>
             <Head title="Catalogo de cursos | Aula Virtual" />
             <StudentLayout title="Catalogo de cursos">
-                <h1 className="mb-1 text-xl font-bold text-[#024A7D]">Catalogo de cursos</h1>
-                <p className="mb-4 text-sm text-slate-500">
-                    Explora todos los cursos disponibles e inscribete sin salir del panel.
-                </p>
+                <PageHeader icon={DesignIcon} title="Catálogo de cursos" description="Explora los cursos disponibles y elige tu próxima capacitación." />
 
                 {courses.length === 0 ? (
                     <Card>
