@@ -1,6 +1,6 @@
 # Certificado formal de dos caras
 
-Actualización del 5 de noviembre de 2026. Plantilla compartida del aula, presenciales y modelo administrativo: anverso y reverso en A4 horizontal, fondo blanco, marco fino, tipografía sobria y logo institucional. Sin figuras geométricas ni degradados.
+Actualización del 5 de noviembre de 2026. Plantilla compartida del aula, presenciales y modelo administrativo: anverso y reverso en A4 horizontal, fondo de matiz suave, marco doble azul/celeste, acentos de esquina, tipografía sobria y logo institucional. El nombre, el título y el curso tienen mayor presencia visual.
 
 El anverso contiene entidad emisora, estudiante/documento, curso, modalidad, emisión, nota y firmas. El reverso muestra temario, duración total, vencimiento, código y QR. Ambas caras repiten el código. La impresión genera dos páginas, para guardar como PDF o imprimir a doble cara.
 
@@ -46,3 +46,8 @@ php artisan optimize:clear
 ```
 
 Recursos compilados incluidos en Git. Producción no verificada.
+
+
+### Refinamiento del marco
+
+El marco compartido se dibuja con SVG vectorial para pantalla e impresión y se aplica a ambas caras, también en el modelo administrativo. Se comprobó el PDF de dos páginas, nombres/títulos largos, seis firmas, 45 líneas de temario y vista móvil. Conserva el QR solo en el reverso y no agrega otra migración.
