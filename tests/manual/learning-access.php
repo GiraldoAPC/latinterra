@@ -97,7 +97,7 @@ try {
     $third = CourseLesson::create(['course_module_id' => $next->id, 'title' => 'Tema 3', 'youtube_video_id' => 'video-futuro', 'position' => 1]);
     $external = CourseLesson::create(['course_module_id' => $foreign->id, 'title' => 'Tema ajeno', 'youtube_video_id' => 'privado', 'position' => 1]);
     $enrollment = Enrollment::create(['course_id' => $course->id, 'user_id' => $user->id, 'status' => 'active']);
-    $material = CourseLessonMaterial::create(['course_lesson_id' => $lesson->id, 'title' => 'Material 1', 'file_path' => 'private/example.pdf', 'original_name' => 'example.pdf']);
+    $material = CourseLessonMaterial::create(['course_lesson_id' => $lesson->id, 'title' => 'Material 1', 'file_path' => 'private/example.zip', 'original_name' => 'example.zip']);
     $futureMaterial = CourseLessonMaterial::create(['course_lesson_id' => $second->id, 'title' => 'Material 2', 'file_path' => 'private/future.pdf', 'original_name' => 'future.pdf']);
     $topic = Exam::create(['course_id' => $course->id, 'course_lesson_id' => $lesson->id, 'title' => 'Quiz tema']);
     $exam = Exam::create(['course_id' => $course->id, 'course_module_id' => $module->id, 'title' => 'Examen módulo']);
@@ -143,7 +143,8 @@ try {
     check(ExamAttempt::first()->passed && (float) ExamAttempt::first()->score === 20.0, 'Valid topic answers graded on server');
     $controller->completeLesson($course->fresh(), $lesson->fresh());
     check(LessonProgress::where('course_lesson_id', $lesson->id)->whereNotNull('completed_at')->exists(), 'Valid completion still succeeds');
-    $controller->openMaterial($futureMaterial->fresh()); Carbon::setTestNow(now()->addSeconds(12)); $controller->confirmMaterialViewed($futureMaterial->fresh());
+    // PDF protocol is exercised in material-reading.php; seed this prerequisite for access checks.
+    LessonMaterialView::create(['enrollment_id' => $enrollment->id, 'course_lesson_material_id' => $futureMaterial->id, 'opened_at' => now(), 'confirmed_at' => now()]);
     $controller->completeLesson($course->fresh(), $second->fresh()); testRequest();
     $controller->moduleQuizStart($course->fresh(), $module->fresh());
     $token = App\Models\Aula\ModuleExamSession::whereNull('completed_at')->firstOrFail()->token;

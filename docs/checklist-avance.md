@@ -8,7 +8,7 @@ El código incluye requisitos previos y convalidaciones registradas por administ
 
 Primera corrección tras la revisión: las pantallas del alumno usan datos explícitos que excluyen indicadores de respuesta correcta, claves de texto corto, videos/materiales de clases futuras y configuración interna de firmas. Los envíos de evaluación y avance comparten comprobaciones de curso, secuencia, matrícula activa, deuda y vencimiento. Las respuestas solo pueden referirse a preguntas/opciones del examen; los envíos ordinarios posteriores a una aprobación no revierten su progreso.
 
-Prueba: `php tests/manual/learning-access.php` (31 comprobaciones en SQLite aislado). La primera corrección no agregó migraciones ni cambió las claves de administración. La segunda entrega incorpora intentos, sorteo y tiempo de examen en servidor; la tercera parte descrita abajo cierra los cursos completados. El control de video se implementó en la entrega del 5 de noviembre; sigue pendiente seguimiento por diapositiva. Ver `docs/revision-pendientes-checklist.md` para el detalle actualizado.
+Prueba: `php tests/manual/learning-access.php` (31 comprobaciones en SQLite aislado). La primera corrección no agregó migraciones ni cambió las claves de administración. La segunda entrega incorpora intentos, sorteo y tiempo de examen en servidor; la tercera parte descrita abajo cierra los cursos completados. El control de video se implementó en la entrega del 5 de noviembre; el seguimiento por página de PDF también está implementado; para PowerPoint se requiere exportar a PDF. Ver `docs/revision-pendientes-checklist.md` para el detalle actualizado.
 
 ### Segunda corrección: intentos y tiempo de examen de módulo
 
@@ -181,3 +181,17 @@ Accesos: `/admin/usuarios/roles` para cuentas y permisos; `/academico` para coor
 La migración `2026_11_03_000007_add_staff_roles_and_course_assignments.php` agrega tablas de asignación y auditoría; se aplicó en MySQL local. Al desplegar, ejecutar `php artisan migrate --force` antes de usar las nuevas pantallas.
 
 Prueba reproducible: `php tests/manual/roles-workflow.php` (33 comprobaciones en SQLite en memoria). Verifica acceso por rol, aislamiento de cursos, retiro de asignación, ausencia de datos financieros en el seguimiento, protección de última cuenta administradora, auditoría, creación y autenticación de personal y revocación de sesiones. Compilación de producción y sintaxis PHP verificadas.
+
+
+### Lectura de PDF por página — 5 de noviembre de 2026
+
+- [x] Conteo de páginas en servidor al subir el PDF o iniciar la primera lectura de archivos anteriores. No se acepta el número de páginas enviado por el alumno.
+- [x] Doce segundos por página, con desbloqueo secuencial. Volver a páginas ya revisadas no acredita las siguientes.
+- [x] Avance parcial persistido por matrícula/material, reanudación y sesión renovada al abrir. Las sesiones antiguas y el endpoint anterior de confirmación no pueden aprobar un PDF pendiente.
+- [x] Controles periódicos mientras la página está renderizada y la ventana visible/enfocada. Pausas, cierre del visor y cortes prolongados no suman tiempo de ausencia.
+- [x] Aprobación únicamente después de completar todas las páginas en servidor; se conservan las aprobaciones anteriores. Desaprobar el módulo elimina también el progreso de lectura.
+- [x] Mismos controles de matrícula, secuencia, deuda, acceso vencido y cierre del curso en ambos endpoints de lectura.
+- [ ] Conversión automática de Office a PDF. PowerPoint/Word/Excel conservan el control previo por archivo; para seguimiento por diapositiva se debe subir su versión PDF.
+- [ ] Almacenamiento privado y entrega autenticada de los archivos. Los enlaces públicos de storage siguen siendo una limitación independiente.
+
+Detalles y despliegue: [Lectura de materiales](lectura-materiales-aula.md). Requiere nueva dependencia Composer y migración `2026_11_05_000010_add_material_page_tracking.php`, aplicada en MySQL local. Pruebas aisladas de lectura y regresión de video/exámenes/cierre, compilación y revisión en Chrome. Producción pendiente de desplegar/verificar.

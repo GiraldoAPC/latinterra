@@ -422,6 +422,27 @@ class StudentCourseController extends Controller
         return back();
     }
 
+    public function startMaterialReading(CourseLessonMaterial $material): \Illuminate\Http\JsonResponse
+    {
+        $lesson = $material->lesson;
+        $enrollment = Enrollment::where('user_id', Auth::id())->where('course_id', $lesson->module->course_id)->firstOrFail();
+        if ($redirect = $this->lessonAccessRedirect($enrollment, $lesson->module->course, $lesson)) {
+            return response()->json(['message' => 'El acceso a este material está bloqueado.', 'redirect' => $redirect->getTargetUrl()], 403);
+        }
+        return response()->json(app(\App\Services\MaterialPageTracker::class)->start($enrollment, $material));
+    }
+
+    public function materialReadingHeartbeat(Request $request, CourseLessonMaterial $material): \Illuminate\Http\JsonResponse
+    {
+        $lesson = $material->lesson;
+        $enrollment = Enrollment::where('user_id', Auth::id())->where('course_id', $lesson->module->course_id)->firstOrFail();
+        if ($redirect = $this->lessonAccessRedirect($enrollment, $lesson->module->course, $lesson)) {
+            return response()->json(['message' => 'El acceso a este material está bloqueado.', 'redirect' => $redirect->getTargetUrl()], 403);
+        }
+        $data = $request->validate(['token' => ['required', 'uuid'], 'page' => ['required', 'integer', 'min:1', 'max:1000'], 'active' => ['required', 'boolean']]);
+        return response()->json(app(\App\Services\MaterialPageTracker::class)->heartbeat($enrollment, $material, $data['token'], (int) $data['page'], (bool) $data['active']));
+    }
+
     public function confirmMaterialViewed(CourseLessonMaterial $material): RedirectResponse
     {
         $lesson = $material->lesson;
@@ -434,6 +455,8 @@ class StudentCourseController extends Controller
             ->where('course_lesson_material_id', $material->id)
             ->first();
 
+        if ($view?->confirmed_at) return back();
+        abort_if($material->isPdf(), 403, 'Completa la lectura de todas las páginas del PDF antes de continuar.');
         if (!$view || now()->diffInSeconds($view->opened_at) < self::MATERIAL_MIN_DWELL_SECONDS) {
             return back()->with('error', 'Todavia no paso el tiempo minimo para marcar este material como visto.');
         }

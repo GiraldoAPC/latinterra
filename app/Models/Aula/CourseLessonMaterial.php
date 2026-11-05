@@ -17,9 +17,19 @@ class CourseLessonMaterial extends Model
         'original_name',
         'mime_type',
         'size',
+        'pdf_page_count',
+        'pdf_checksum',
     ];
 
     protected $appends = ['url'];
+
+    protected $casts = ['pdf_page_count' => 'integer'];
+
+    public function isPdf(): bool
+    {
+        return strtolower(pathinfo($this->original_name ?: $this->file_path, PATHINFO_EXTENSION)) === 'pdf'
+            || $this->mime_type === 'application/pdf';
+    }
 
     public function lesson(): BelongsTo
     {

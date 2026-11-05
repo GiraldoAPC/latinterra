@@ -4,7 +4,7 @@ import StudentLayout from "@/Layouts/StudentLayout";
 import { Button } from "@/Components/ui/button";
 import { Badge } from "@/Components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/Components/ui/dialog";
-import PdfViewer from "@/Components/Shared/PdfViewer";
+import TrackedPdfReader from "@/Components/Shared/TrackedPdfReader";
 import {
     CircleCheck,
     CirclePlay,
@@ -468,6 +468,7 @@ function formatDuration(seconds) {
 }
 
 function fileExtension(material) {
+    if (material.mime_type === 'application/pdf') return 'pdf';
     const fromName = material.original_name?.split(".").pop()?.toLowerCase();
     return fromName || "";
 }
@@ -478,18 +479,18 @@ function isPreviewable(material) {
 
 /**
  * Inline preview modal for lesson materials. PDFs render directly in the
- * browser's native PDF viewer; Office formats go through Microsoft's Office
+ * tracked PDF reader; Office formats go through Microsoft's Office
  * Online viewer, which requires the file to be reachable at a public HTTPS
  * URL (won't render on localhost, works once the site is deployed).
  */
-function MaterialPreviewModal({ material, onClose }) {
+function MaterialPreviewModal({ material, onClose, onComplete }) {
     if (!material) return null;
 
     const ext = fileExtension(material);
     const isPdf = ext === "pdf";
     const viewerSrc = isPdf
         ? material.url
-        : `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(material.url)}`;
+        : `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(new URL(material.url, window.location.origin).href)}`;
 
     return (
         <Dialog open={!!material} onOpenChange={(open) => !open && onClose()}>
@@ -504,7 +505,7 @@ function MaterialPreviewModal({ material, onClose }) {
                 <div className="relative flex-1 select-none bg-muted" onContextMenu={(e) => e.preventDefault()}>
                     {isPdf ? (
                         <div className="absolute inset-0">
-                            <PdfViewer url={material.url} />
+                            <TrackedPdfReader key={material.id} material={material} onComplete={onComplete} />
                         </div>
                     ) : (
                         <iframe
@@ -560,7 +561,7 @@ export default function Leccion({
 
     // Requisitos para poder completar la clase: ver el video hasta el final
     // (sin poder adelantar) y, si tiene material adjunto (PDF/PPT/Word),
-    // permanecer en el al menos `materialMinDwellSeconds` - todo validado
+    // cumplir la lectura por página del PDF (otros adjuntos: tiempo por archivo), validada
     // tambien del lado del servidor, esto solo refleja ese estado.
     const [videoWatched, setVideoWatched] = useState(isCompleted || videoWatchedLessonIds.includes(lesson.id));
     const [viewedMaterialIds, setViewedMaterialIds] = useState(() => new Set(confirmedMaterialIds));
@@ -573,6 +574,8 @@ export default function Leccion({
         setOpenedMaterialIds(new Set());
         Object.values(materialTimers.current).forEach(clearTimeout);
         materialTimers.current = {};
+        setPreviewMaterial(null);
+        return () => Object.values(materialTimers.current).forEach(clearTimeout);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [lesson.id]);
 
@@ -640,11 +643,22 @@ export default function Leccion({
         }
     };
 
+    const handleMaterialConfirmed = (id) => {
+        if (viewedMaterialIds.has(id)) return;
+        const next = new Set(viewedMaterialIds).add(id);
+        setViewedMaterialIds(next);
+        if (!isCompleted && videoWatched && lessonMaterials.every((m) => next.has(m.id)) && (!lessonHasQuiz || lessonQuizPassed)) {
+            router.post(`/aula/${course.slug}/clase/${lesson.id}/completar`, {}, { preserveScroll: true });
+        } else {
+            router.reload({ only: ['confirmedMaterialIds'], preserveScroll: true });
+        }
+    };
+
     // Dispara el registro de apertura del material y, tras el tiempo minimo
     // de permanencia, confirma que fue visto (el servidor vuelve a medir el
     // tiempo real transcurrido, no confia solo en este timer del cliente).
     const registerMaterialOpen = (material) => {
-        if (viewedMaterialIds.has(material.id) || openedMaterialIds.has(material.id)) return;
+        if (fileExtension(material) === "pdf" || viewedMaterialIds.has(material.id) || openedMaterialIds.has(material.id)) return;
 
         setOpenedMaterialIds((prev) => new Set(prev).add(material.id));
         router.post(`/aula/material/${material.id}/abrir`, {}, { preserveScroll: true, preserveState: true });
@@ -656,19 +670,8 @@ export default function Leccion({
                 {
                     preserveScroll: true,
                     preserveState: true,
-                    onSuccess: () => {
-                        setViewedMaterialIds((prev) => {
-                            const next = new Set(prev).add(material.id);
-                            if (
-                                !isCompleted &&
-                                videoWatched &&
-                                lessonMaterials.every((m) => next.has(m.id)) &&
-                                (!lessonHasQuiz || lessonQuizPassed)
-                            ) {
-                                router.post(`/aula/${course.slug}/clase/${lesson.id}/completar`);
-                            }
-                            return next;
-                        });
+                    onSuccess: (response) => {
+                        if (response.props.confirmedMaterialIds?.includes(material.id)) handleMaterialConfirmed(material.id);
                     },
                 }
             );
@@ -1036,6 +1039,7 @@ export default function Leccion({
 
                 <MaterialPreviewModal
                     material={previewMaterial}
+                    onComplete={handleMaterialConfirmed}
                     onClose={() => setPreviewMaterial(null)}
                 />
             </StudentLayout>

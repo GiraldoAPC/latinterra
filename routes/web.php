@@ -312,6 +312,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/aula/{course:slug}/clase/{lesson}/video/avance', [StudentCourseController::class, 'videoHeartbeat'])->middleware('throttle:60,1')->name('aula.leccion.video.avance');
     Route::post('/aula/material/{material}/abrir', [StudentCourseController::class, 'openMaterial'])->name('aula.material.abrir');
     Route::post('/aula/material/{material}/visto', [StudentCourseController::class, 'confirmMaterialViewed'])->name('aula.material.visto');
+    Route::post('/aula/material/{material}/lectura/iniciar', [StudentCourseController::class, 'startMaterialReading'])->middleware('throttle:60,1')->name('aula.material.lectura.iniciar');
+    Route::post('/aula/material/{material}/lectura/avance', [StudentCourseController::class, 'materialReadingHeartbeat'])->middleware('throttle:60,1')->name('aula.material.lectura.avance');
     Route::get('/aula/{course:slug}/modulo/{module}/quiz', [StudentCourseController::class, 'moduleQuizShow'])->name('aula.modulo.quiz');
     Route::post('/aula/{course:slug}/modulo/{module}/quiz/iniciar', [StudentCourseController::class, 'moduleQuizStart'])->name('aula.modulo.quiz.iniciar');
     Route::put('/aula/{course:slug}/modulo/{module}/quiz/respuestas', [StudentCourseController::class, 'moduleQuizSave'])->name('aula.modulo.quiz.guardar');

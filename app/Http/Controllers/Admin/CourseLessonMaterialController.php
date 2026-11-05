@@ -19,9 +19,11 @@ class CourseLessonMaterialController extends Controller
         ]);
 
         $file = $request->file('file');
+        $metadata = (strtolower($file->getClientOriginalExtension()) === 'pdf' || $file->getMimeType() === 'application/pdf')
+            ? app(\App\Services\MaterialPdfMetadata::class)->inspect($file->getRealPath()) : [];
         $path = $file->store('course-materials', 'public');
 
-        $lesson->materials()->create([
+        $lesson->materials()->create($metadata + [
             'title' => $data['title'],
             'file_path' => $path,
             'original_name' => $file->getClientOriginalName(),

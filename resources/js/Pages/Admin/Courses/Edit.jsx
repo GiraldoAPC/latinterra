@@ -145,6 +145,9 @@ function NewMaterialForm({ lessonId, onDone }) {
                 <Upload className="h-4 w-4" />
                 Subir
             </Button>
+            <p className="text-xs text-muted-foreground md:col-span-3">
+                Los PDF requieren 12 segundos de lectura por página. Para validar cada diapositiva de una presentación, expórtala a PDF antes de subirla. Máximo 20 MB; PDF sin contraseña y hasta 1000 páginas.
+            </p>
         </form>
     );
 }
@@ -171,6 +174,7 @@ function LessonMaterials({ lesson }) {
                         <FileText className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
                         <span className="truncate font-medium">{m.title}</span>
                         <span className="shrink-0 text-muted-foreground">{formatFileSize(m.size)}</span>
+                        {!!m.pdf_page_count && <span className="text-muted-foreground">· {m.pdf_page_count} páginas</span>}
                     </a>
                     <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => deleteMaterial(m)}>
                         <Trash2 className="h-3.5 w-3.5 text-destructive" />

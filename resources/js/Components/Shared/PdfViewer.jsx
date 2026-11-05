@@ -30,7 +30,10 @@ function touchDistance(touches) {
  * En touch (celular/tablet) se puede hacer zoom con pellizco de dos dedos,
  * ademas del +/- de la barra.
  */
-export default function PdfViewer({ url }) {
+export default function PdfViewer({ url, page = null, maxPage = null, expectedPages = null, onPageChange, onPageReady }) {
+    const tracked = page !== null;
+    const callbacks = useRef({ onPageReady, onPageChange });
+    callbacks.current = { onPageReady, onPageChange };
     const containerRef = useRef(null);
     const viewportBoxRef = useRef(null);
     const docRef = useRef(null);
@@ -49,6 +52,10 @@ export default function PdfViewer({ url }) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
     const [isFullscreen, setIsFullscreen] = useState(false);
+
+    useEffect(() => {
+        if (tracked) { setCurrentPage(page); setPageInput(String(page)); }
+    }, [page, tracked, numPages]);
 
     useEffect(() => {
         const onChange = () => {
@@ -103,6 +110,7 @@ export default function PdfViewer({ url }) {
                     .promise.then((doc) => {
                         if (cancelled) return;
                         docRef.current = doc;
+                        if (expectedPages && doc.numPages !== expectedPages) throw new Error('PDF page count changed');
                         setNumPages(doc.numPages);
                         setLoading(false);
                     });
@@ -127,19 +135,21 @@ export default function PdfViewer({ url }) {
         if (!docRef.current || !numPages || !viewportBoxRef.current) return;
 
         let cancelled = false;
+        if (tracked) callbacks.current.onPageReady?.(false);
 
         async function renderAll() {
             const box = viewportBoxRef.current.getBoundingClientRect();
             const availWidth = box.width - 32;
 
             for (let i = 1; i <= numPages; i++) {
+                if (tracked && i !== page) continue;
                 if (cancelled) return;
                 const pdfPage = await docRef.current.getPage(i);
                 if (cancelled) return;
 
                 const base = pdfPage.getViewport({ scale: 1 });
                 const renderScale = autoFit ? Math.max(0.25, availWidth / base.width) : scale;
-                if (autoFit && i === 1) setScale(renderScale);
+                if (autoFit && i === (tracked ? page : 1)) setScale(renderScale);
 
                 const viewport = pdfPage.getViewport({ scale: renderScale });
                 const canvas = canvasRefs.current[i];
@@ -159,24 +169,33 @@ export default function PdfViewer({ url }) {
 
                 const task = pdfPage.render({ canvasContext: ctx, viewport });
                 renderTasksRef.current[i] = task;
-                await task.promise.catch(() => {});
-                if (!cancelled) setRenderedUpTo(i);
+                await task.promise;
+                if (!cancelled) {
+                    setRenderedUpTo(i);
+                    if (tracked) callbacks.current.onPageReady?.(true);
+                }
             }
         }
 
-        renderAll();
+        renderAll().catch((err) => {
+            if (!cancelled && err?.name !== 'RenderingCancelledException') {
+                setError(true);
+                callbacks.current.onPageReady?.(false);
+            }
+        });
 
         return () => {
             cancelled = true;
+            Object.values(renderTasksRef.current).forEach((task) => task?.cancel());
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [numPages, resizeTick, autoFit, scale]);
+    }, [numPages, resizeTick, autoFit, scale, page, tracked]);
 
     // Detecta que pagina esta mas visible para actualizar el numero de
     // pagina mientras se scrollea (sin esto, solo cambiaria al usar los
     // botones/el input).
     useEffect(() => {
-        if (!viewportBoxRef.current || !numPages) return;
+        if (tracked || !viewportBoxRef.current || !numPages) return;
         const observer = new IntersectionObserver(
             (entries) => {
                 const visible = entries.filter((e) => e.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio);
@@ -190,10 +209,16 @@ export default function PdfViewer({ url }) {
         );
         Object.values(pageWrapRefs.current).forEach((el) => el && observer.observe(el));
         return () => observer.disconnect();
-    }, [numPages, renderedUpTo]);
+    }, [numPages, renderedUpTo, tracked]);
 
     const goToPage = (n) => {
-        const clamped = Math.min(Math.max(1, n), numPages || 1);
+        const clamped = Math.min(Math.max(1, n), maxPage ?? (numPages || 1));
+        if (tracked) {
+            setPageInput(String(clamped));
+            callbacks.current.onPageChange?.(clamped);
+            viewportBoxRef.current?.scrollTo({ top: 0 });
+            return;
+        }
         pageWrapRefs.current[clamped]?.scrollIntoView({ behavior: "smooth", block: "start" });
     };
 
@@ -248,12 +273,14 @@ export default function PdfViewer({ url }) {
                     <button
                         type="button"
                         onClick={() => goToPage(currentPage - 1)}
+                        aria-label="Página anterior"
                         disabled={currentPage <= 1}
                         className="flex h-8 w-8 items-center justify-center rounded-md hover:bg-white/15 disabled:opacity-30"
                     >
                         <ChevronLeft className="h-4 w-4" />
                     </button>
                     <input
+                        aria-label="Número de página"
                         value={pageInput}
                         onChange={(e) => setPageInput(e.target.value)}
                         onBlur={submitPageInput}
@@ -264,7 +291,8 @@ export default function PdfViewer({ url }) {
                     <button
                         type="button"
                         onClick={() => goToPage(currentPage + 1)}
-                        disabled={currentPage >= numPages}
+                        aria-label="Página siguiente"
+                        disabled={currentPage >= (maxPage ?? numPages)}
                         className="flex h-8 w-8 items-center justify-center rounded-md hover:bg-white/15 disabled:opacity-30"
                     >
                         <ChevronRight className="h-4 w-4" />
@@ -313,7 +341,7 @@ export default function PdfViewer({ url }) {
                 )}
                 {!loading && !error && (
                     <div className="mx-auto flex w-fit flex-col items-center gap-4">
-                        {Array.from({ length: numPages }, (_, i) => i + 1).map((n) => (
+                        {(tracked ? [page] : Array.from({ length: numPages }, (_, i) => i + 1)).map((n) => (
                             <div key={n} ref={(el) => (pageWrapRefs.current[n] = el)} data-page={n} className="relative">
                                 <canvas ref={(el) => (canvasRefs.current[n] = el)} className="block shadow-2xl" />
                                 {renderedUpTo < n && (
