@@ -13,7 +13,7 @@ export function PageIcon({ icon: Icon = FileText, small = false, className }) {
 }
 
 export function PageHeader({ title, description, icon, actions, className }) {
-    return <header className={cn('lt-admin-page-header relative isolate mb-6 overflow-hidden rounded-3xl border border-[#024A7D]/10 bg-gradient-to-r from-white via-sky-50/70 to-[#e3f4fc] px-5 py-7 sm:px-8 sm:py-8', className)}>
+    return <header className={cn('lt-admin-page-header relative isolate z-0 mb-6 overflow-hidden rounded-3xl border border-[#024A7D]/10 bg-gradient-to-r from-white via-sky-50/70 to-[#e3f4fc] px-5 py-7 sm:px-8 sm:py-8', className)}>
         <svg aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 h-full w-full" viewBox="0 0 1200 180" preserveAspectRatio="none"><path d="M480 180C670 70 730 150 860 0H1200V180Z" fill="#00ADEE" fillOpacity=".08" /><path d="M700 180C850 100 1000 110 1100 0H1200V180Z" fill="#024A7D" fillOpacity=".06" /></svg>
         <div className="flex flex-wrap items-center justify-between gap-5">
             <div className="flex min-w-0 flex-1 items-center gap-4 sm:gap-5"><PageIcon icon={icon} /><div className="min-w-0 border-l border-[#024A7D]/15 pl-4 sm:pl-5"><h1 className="text-2xl font-bold tracking-tight text-[#024A7D] sm:text-3xl">{title}</h1>{description && <p className="mt-1 text-sm text-slate-500">{description}</p>}</div></div>

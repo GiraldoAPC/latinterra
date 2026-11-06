@@ -58,3 +58,6 @@ Revisión en Chrome con datos locales reales: filtros, actualización, gráfico 
 
 
 Preferencia posterior del usuario: el menú lateral administrativo recupera el fondo azul original `#024A7D`, textos claros y selección celeste. Se conserva el nuevo diseño de tarjetas, cabecera y gráficos. Se aplica también al menú móvil y no requiere migración adicional.
+
+
+Corrección de superposición: las cabeceras compartidas usan una capa local de nivel cero para que la barra superior y los resultados del buscador queden por encima. Se comprobó en Chrome la búsqueda de estudiantes DEMO, la recepción del clic sobre una fila situada delante de la cabecera y la apertura del perfil. No agrega migraciones.
