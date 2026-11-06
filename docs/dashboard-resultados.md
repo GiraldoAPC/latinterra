@@ -46,3 +46,12 @@ No requiere migraciones, dependencias adicionales ni tareas programadas. Despleg
 `php tests/manual/dashboard.php`: 29 comprobaciones en SQLite en memoria. Incluye estado vacío, conciliación de cobros/gráfico, anulaciones, cuotas, pedidos divididos, límites UTC/Perú, pagos futuros, comparación, certificados de ambas modalidades y aniversario bisiesto, fechas y prioridad de cotizaciones, deuda, inventario, grupos, controles administrativos y ausencia de escrituras. `--preview` genera datos ficticios de muestra en `storage/app/previews/dashboard-fixture.json`, sin tocar la base configurada.
 
 Revisión local en Chrome a 1920 y 390 px: datos poblados/vacíos, cambio de período con recálculo, gráfico por teclado, actualización manual y automática, pausa con pestaña oculta y ausencia de errores/desbordamiento de página. Las solicitudes de prueba fueron únicamente GET.
+
+
+## Diseño del dashboard — 5 de noviembre de 2026
+
+Se adaptó la referencia visual con menú administrativo claro, navegación activa azul/celeste, cabecera con ondas, cuatro indicadores con iconos y acentos azul/violeta/verde/naranja, tarjetas con bordes y sombras suaves y títulos más destacados. El gráfico y el desglose usan azul para ventas, celeste para cuotas y verde para pedidos pagados. Se conservan las fuentes, importes, períodos y reglas del reporte.
+
+El menú y la barra superior se comparten con las demás pantallas administrativas. La temática del dashboard está limitada a su contenedor y a pantalla; no cambia certificados ni documentos de impresión. El buscador mantiene su alcance de estudiantes y ahora admite Ctrl + K o Cmd + K. La selección del menú permanece activa al cambiar el período por parámetros de URL.
+
+Revisión en Chrome con datos locales reales: filtros, actualización, gráfico por teclado, atajo de búsqueda, navegación activa, menú plegable, menú móvil y productos. Se comprobó el diseño a 1768, 1280, 768 y 390 px; en celular las tarjetas ocupan una columna legible. También se revisó el estado vacío con la respuesta de la prueba aislada, sin modificar datos de la aplicación. Sin errores de ejecución. La prueba de reporte conserva sus 29 comprobaciones correctas. Compilación de producción verificada. No agrega migraciones; producción no verificada.

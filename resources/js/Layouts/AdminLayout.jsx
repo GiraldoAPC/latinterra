@@ -18,6 +18,7 @@ import {
 } from "@/Components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/Components/ui/avatar";
 import { cn } from "@/lib/utils";
+import '../../css/admin-dashboard.css';
 
 import {
     LayoutDashboard,
@@ -47,6 +48,7 @@ import {
     Building2,
     ShieldCheck,
     ListChecks,
+    Home,
 } from "lucide-react";
 
 const NAV = [
@@ -101,6 +103,7 @@ const NAV = [
 ];
 
 function isActive(url, href) {
+    url = url.split(/[?#]/)[0];
     if (href === "/admin") return url === "/admin";
     return url === href || url.startsWith(href + "/");
 }
@@ -117,9 +120,11 @@ function NavLink({ href, icon: Icon, label, collapsed, sub }) {
     return (
         <Link
             href={href}
+            aria-current={active ? 'page' : undefined}
+            data-active={active}
             title={collapsed ? label : undefined}
             className={cn(
-                "group relative flex items-center gap-3 rounded-md py-2 text-sm font-medium transition-colors",
+                "lt-admin-nav-link group relative flex items-center gap-3 rounded-md py-2 text-sm font-medium transition-colors",
                 collapsed ? "justify-center px-2" : sub ? "py-1.5 pl-9 pr-3" : "px-3",
                 active
                     ? "bg-white/10 text-white"
@@ -163,8 +168,10 @@ function NavGroup({ item, collapsed, open, onToggle }) {
             <button
                 type="button"
                 onClick={onToggle}
+                aria-expanded={open}
+                data-active={active}
                 className={cn(
-                    "flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                    "lt-admin-nav-group flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
                     active
                         ? "text-white"
                         : "text-slate-400 lt-hover-sweep hover:text-white [--lt-sweep-color:rgba(255,255,255,0.08)]"
@@ -207,10 +214,10 @@ function SidebarContent({ collapsed = false, onToggleCollapse }) {
     }, [activeGroupLabel]);
 
     return (
-        <div className="flex h-full flex-col bg-[#024A7D] text-slate-300">
+        <div className="lt-admin-sidebar flex h-full flex-col">
             <div
                 className={cn(
-                    "flex h-16 items-center gap-2 px-4",
+                    "flex h-[72px] items-center gap-2 px-4",
                     collapsed && "justify-center px-2"
                 )}
             >
@@ -222,7 +229,7 @@ function SidebarContent({ collapsed = false, onToggleCollapse }) {
                     />
                     {!collapsed && (
                         <div className="min-w-0 leading-tight">
-                            <div className="truncate font-semibold text-white">
+                            <div className="truncate font-semibold text-[#0c2355]">
                                 Acceso Vertical Perú
                             </div>
                             <div className="text-xs text-slate-400">
@@ -233,7 +240,7 @@ function SidebarContent({ collapsed = false, onToggleCollapse }) {
                 </Link>
             </div>
 
-            <Separator className="bg-white/10" />
+            <Separator className="bg-slate-200/60" />
 
             <nav className="lt-admin-scroll flex-1 space-y-1 overflow-y-auto px-3 py-4">
                 {NAV.map((item) =>
@@ -255,13 +262,13 @@ function SidebarContent({ collapsed = false, onToggleCollapse }) {
                 )}
             </nav>
 
-            <Separator className="bg-white/10" />
+            <Separator className="bg-slate-200/60" />
 
             <div className="p-3">
                 <Link
                     href="/"
                     className={cn(
-                        "flex items-center gap-2 rounded-md px-3 py-2 text-sm text-slate-400 lt-hover-sweep hover:text-white [--lt-sweep-color:rgba(255,255,255,0.08)]",
+                        "lt-admin-sidebar-footer-link flex items-center gap-2 rounded-md px-3 py-2 text-sm text-slate-400 lt-hover-sweep hover:text-white [--lt-sweep-color:rgba(255,255,255,0.08)]",
                         collapsed && "justify-center px-2"
                     )}
                     title={collapsed ? "Ir al sitio web" : undefined}
@@ -274,8 +281,9 @@ function SidebarContent({ collapsed = false, onToggleCollapse }) {
                     <button
                         type="button"
                         onClick={onToggleCollapse}
+                        aria-label={collapsed ? 'Expandir menú' : 'Colapsar menú'}
                         className={cn(
-                            "mt-1 hidden w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-slate-400 lt-hover-sweep hover:text-white [--lt-sweep-color:rgba(255,255,255,0.08)] md:flex",
+                            "lt-admin-sidebar-footer-link mt-1 hidden w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-slate-400 lt-hover-sweep hover:text-white [--lt-sweep-color:rgba(255,255,255,0.08)] md:flex",
                             collapsed && "justify-center px-2"
                         )}
                         title={collapsed ? "Expandir menú" : undefined}
@@ -343,8 +351,8 @@ export default function AdminLayout({ title = "Admin", children }) {
         <FlashToast />
         <div
             className={cn(
-                "min-h-screen bg-muted/30 md:grid md:transition-[grid-template-columns] md:duration-200",
-                collapsed ? "md:grid-cols-[4rem_1fr]" : "md:grid-cols-[16rem_1fr]"
+                "lt-admin-shell min-h-screen bg-muted/30 md:grid md:transition-[grid-template-columns] md:duration-200",
+                collapsed ? "md:grid-cols-[4rem_1fr]" : "md:grid-cols-[17rem_1fr]"
             )}
         >
             {/* Sidebar desktop. CSS Grid (not fixed + padding) keeps this and
@@ -359,14 +367,15 @@ export default function AdminLayout({ title = "Admin", children }) {
             {/* Main */}
             <div className="min-w-0">
                 {/* Header */}
-                <header className="sticky top-0 z-40 border-b bg-background/80 shadow-sm backdrop-blur">
-                    <div className="flex h-16 items-center gap-3 px-4 md:px-6">
+                <header className="lt-admin-topbar sticky top-0 z-40 border-b bg-background/80 shadow-sm backdrop-blur">
+                    <div className="flex h-[72px] items-center gap-3 px-4 md:px-6">
                         {/* Mobile sidebar */}
                         <Sheet>
                             <SheetTrigger asChild>
                                 <Button
                                     variant="ghost"
                                     size="icon"
+                                    aria-label="Abrir menú"
                                     className="shrink-0 md:hidden"
                                 >
                                     <Menu className="h-5 w-5" />
@@ -379,6 +388,7 @@ export default function AdminLayout({ title = "Admin", children }) {
 
                         {/* Breadcrumb / title */}
                         <div className="flex min-w-0 items-center gap-1.5 text-sm">
+                            <Home className="hidden h-4 w-4 text-[#152d69] sm:block" />
                             <span className="hidden text-muted-foreground sm:inline">
                                 Admin
                             </span>
@@ -397,8 +407,8 @@ export default function AdminLayout({ title = "Admin", children }) {
                         </div>
 
                         {/* Search */}
-                        <div className="hidden flex-1 items-center justify-center md:flex">
-                            <div className="w-full max-w-sm">
+                        <div className="hidden min-w-0 flex-1 items-center justify-center md:flex">
+                            <div className="w-full max-w-md">
                                 <GlobalSearch />
                             </div>
                         </div>

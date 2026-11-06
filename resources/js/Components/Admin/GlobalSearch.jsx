@@ -25,6 +25,19 @@ export default function GlobalSearch() {
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
     const boxRef = useRef(null);
+    const inputRef = useRef(null);
+
+    useEffect(() => {
+        const shortcut = (event) => {
+            if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+                if (!inputRef.current?.offsetParent) return;
+                event.preventDefault();
+                inputRef.current?.focus();
+            }
+        };
+        document.addEventListener('keydown', shortcut);
+        return () => document.removeEventListener('keydown', shortcut);
+    }, []);
 
     useEffect(() => {
         const term = query.trim();
@@ -59,7 +72,7 @@ export default function GlobalSearch() {
     const showPanel = open && query.trim() !== "";
 
     return (
-        <div ref={boxRef} className="relative w-full">
+        <div ref={boxRef} className="lt-admin-search relative w-full">
             <div
                 className={cn(
                     "relative flex items-center rounded-md transition-shadow",
@@ -68,8 +81,10 @@ export default function GlobalSearch() {
             >
                 <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
+                    ref={inputRef}
+                    aria-label="Buscar estudiantes"
                     placeholder="Buscar estudiantes..."
-                    className={cn("pl-8 pr-8", showPanel && "border-[#00ADEE]/50")}
+                    className={cn("pl-8 pr-8", !query && 'pr-20', showPanel && "border-[#00ADEE]/50")}
                     value={query}
                     onFocus={() => setOpen(true)}
                     onChange={(e) => {
@@ -77,6 +92,7 @@ export default function GlobalSearch() {
                         setOpen(true);
                     }}
                 />
+                {!query && <kbd className="lt-admin-search-shortcut" aria-hidden="true">Ctrl + K</kbd>}
                 {query !== "" && (
                     <button
                         type="button"
