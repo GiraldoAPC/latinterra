@@ -1,20 +1,19 @@
 /* Administrative chrome and results dashboard. Print documents keep their own styles. */
 @media screen {
     .lt-admin-shell { background:#f7faff; color:#0d1b49; }
-    .lt-admin-sidebar { position:relative; isolation:isolate; background:linear-gradient(145deg,#fff 24%,#f3f6ff 100%); color:#233563; border-right:1px solid #e0e8f6; }
-    .lt-admin-sidebar::before { content:''; position:absolute; z-index:-1; inset:47% 0 9%; background:linear-gradient(35deg,#e7effd7a,#fff0 65%); clip-path:polygon(0 0,65% 53%,100% 64%,100% 100%,0 76%); pointer-events:none; }
-    .lt-admin-sidebar .lt-admin-scroll { scrollbar-color:#c7d6eb transparent; }
+    .lt-admin-sidebar { position:relative; isolation:isolate; background:#024a7d; color:#b1cede; border-right:1px solid #ffffff12; }
+    .lt-admin-sidebar .lt-admin-scroll { scrollbar-color:#ffffff40 transparent; }
     .lt-admin-sidebar nav { padding:24px 14px; }
-    .lt-admin-sidebar .lt-admin-nav-link,.lt-admin-sidebar .lt-admin-nav-group { min-height:48px; border-radius:13px; color:#233563; font-size:15px; padding-top:12px; padding-bottom:12px; --lt-sweep-color:#e6f2ff; }
-    .lt-admin-sidebar .lt-admin-nav-link:hover,.lt-admin-sidebar .lt-admin-nav-group:hover { color:#005fc8; background-color:#edf5ff; }
-    .lt-admin-sidebar .lt-admin-nav-link[aria-current="page"] { background:linear-gradient(115deg,#00b9f2 0%,#0786eb 45%,#0058c5 100%); color:#fff; box-shadow:0 5px 12px #008fe127,inset 0 1px 0 #ffffff59; }
-    .lt-admin-sidebar .lt-admin-nav-link[aria-current="page"]>span:first-child:not(:last-child) { background:transparent; }
+    .lt-admin-sidebar .lt-admin-nav-link,.lt-admin-sidebar .lt-admin-nav-group { min-height:48px; border-radius:13px; color:#b1cede; font-size:15px; padding-top:12px; padding-bottom:12px; --lt-sweep-color:#ffffff14; }
+    .lt-admin-sidebar .lt-admin-nav-link:hover,.lt-admin-sidebar .lt-admin-nav-group:hover { color:#fff; background-color:#ffffff10; }
+    .lt-admin-sidebar .lt-admin-nav-link[aria-current="page"] { background:#ffffff1a; color:#fff; box-shadow:none; }
+    .lt-admin-sidebar .lt-admin-nav-link[aria-current="page"]>span:first-child:not(:last-child) { background:#00adee; }
     .lt-admin-sidebar .lt-admin-nav-link>svg,.lt-admin-sidebar .lt-admin-nav-group>svg { width:19px; height:19px; color:currentColor; stroke-width:1.7; }
     .lt-admin-sidebar .lt-admin-nav-group>svg:last-child { width:14px; height:14px; }
-    .lt-admin-sidebar .lt-admin-nav-group[data-active="true"] { color:#0065b9; }
+    .lt-admin-sidebar .lt-admin-nav-group[data-active="true"] { color:#fff; }
     .lt-admin-sidebar .lt-admin-nav-group+div .lt-admin-nav-link { min-height:35px; font-size:12px; padding-top:7px; padding-bottom:7px; }
-    .lt-admin-sidebar .lt-admin-sidebar-footer-link { color:#485c85; border-radius:12px; min-height:40px; --lt-sweep-color:#e5f0ff; }
-    .lt-admin-sidebar .lt-admin-sidebar-footer-link:hover { color:#0062bd; background:#eaf3ff; }
+    .lt-admin-sidebar .lt-admin-sidebar-footer-link { color:#b1cede; border-radius:12px; min-height:40px; --lt-sweep-color:#ffffff14; }
+    .lt-admin-sidebar .lt-admin-sidebar-footer-link:hover { color:#fff; background:#ffffff10; }
     .lt-admin-topbar { border-color:#e8eef8; background:#ffffffeb; box-shadow:0 3px 20px #123a7a04; }
     .lt-admin-topbar .lt-admin-search input { height:43px; border-radius:24px; border-color:#e1e9f7; background:#fcfdff; box-shadow:0 3px 12px #233a7a09; }
     .lt-admin-search-shortcut { position:absolute; right:10px; top:50%; transform:translateY(-50%); border-radius:10px; padding:4px 8px; background:#eaf2ff; font-family:inherit; font-size:10px; font-weight:600; color:#24467f; pointer-events:none; }

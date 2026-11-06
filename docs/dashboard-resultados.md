@@ -55,3 +55,6 @@ Se adaptó la referencia visual con menú administrativo claro, navegación acti
 El menú y la barra superior se comparten con las demás pantallas administrativas. La temática del dashboard está limitada a su contenedor y a pantalla; no cambia certificados ni documentos de impresión. El buscador mantiene su alcance de estudiantes y ahora admite Ctrl + K o Cmd + K. La selección del menú permanece activa al cambiar el período por parámetros de URL.
 
 Revisión en Chrome con datos locales reales: filtros, actualización, gráfico por teclado, atajo de búsqueda, navegación activa, menú plegable, menú móvil y productos. Se comprobó el diseño a 1768, 1280, 768 y 390 px; en celular las tarjetas ocupan una columna legible. También se revisó el estado vacío con la respuesta de la prueba aislada, sin modificar datos de la aplicación. Sin errores de ejecución. La prueba de reporte conserva sus 29 comprobaciones correctas. Compilación de producción verificada. No agrega migraciones; producción no verificada.
+
+
+Preferencia posterior del usuario: el menú lateral administrativo recupera el fondo azul original `#024A7D`, textos claros y selección celeste. Se conserva el nuevo diseño de tarjetas, cabecera y gráficos. Se aplica también al menú móvil y no requiere migración adicional.

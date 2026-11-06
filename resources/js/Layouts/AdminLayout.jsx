@@ -229,10 +229,10 @@ function SidebarContent({ collapsed = false, onToggleCollapse }) {
                     />
                     {!collapsed && (
                         <div className="min-w-0 leading-tight">
-                            <div className="truncate font-semibold text-[#0c2355]">
+                            <div className="truncate font-semibold text-white">
                                 Acceso Vertical Perú
                             </div>
-                            <div className="text-xs text-slate-400">
+                            <div className="text-xs text-sky-200/70">
                                 Admin Panel
                             </div>
                         </div>
@@ -240,7 +240,7 @@ function SidebarContent({ collapsed = false, onToggleCollapse }) {
                 </Link>
             </div>
 
-            <Separator className="bg-slate-200/60" />
+            <Separator className="bg-white/10" />
 
             <nav className="lt-admin-scroll flex-1 space-y-1 overflow-y-auto px-3 py-4">
                 {NAV.map((item) =>
@@ -262,7 +262,7 @@ function SidebarContent({ collapsed = false, onToggleCollapse }) {
                 )}
             </nav>
 
-            <Separator className="bg-slate-200/60" />
+            <Separator className="bg-white/10" />
 
             <div className="p-3">
                 <Link
